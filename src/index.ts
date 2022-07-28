@@ -76,11 +76,14 @@ const getEmotesGame = async (channel: string): Promise<void> => {
 	var erros: number = 0;
 
 	//ESSA LOGICA TA QUEBRADA MAS TAMO CHEGANDO PERTOOOOOOOOOOOOOOOOO LESFUCKINGOOOOOOOO
-	for (let i = 0; i < 4; i++) {
+	
 		emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
-		console.log(emoteAtual.name);
 		showEmote(emoteAtual);
+
+		inputEmote.replaceWith(inputEmote.cloneNode(true));
 		inputEmote.addEventListener("change", (): void => {
+			console.log(inputEmote.value);
+			for (let i = 0; i < 4; i++) {
 			if (inputEmote.value === emoteAtual.name) {
 				inputEmote.value = "";
 				alert("Acertou!");
@@ -90,8 +93,9 @@ const getEmotesGame = async (channel: string): Promise<void> => {
 				erros++;
 				console.log(erros);
 			}
+		}
 		});
-	}
+	
 };
 
 const showEmote = (emote: Emote): void => {

@@ -76,7 +76,7 @@ var getEmotesShow = function (channel) { return __awaiter(void 0, void 0, void 0
     });
 }); };
 var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0, function () {
-    var data, emotes, emoteAtual, erros, i;
+    var data, emotes, emoteAtual, erros;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -103,11 +103,13 @@ var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0
                 });
                 emoteAtual = emotesList[0];
                 erros = 0;
-                for (i = 0; i < 4; i++) {
-                    emoteAtual =
-                        emotesList[Math.floor(Math.random() * emotesList.length)];
-                    console.log(emoteAtual.name);
-                    inputEmote.addEventListener("change", function () {
+                //ESSA LOGICA TA QUEBRADA MAS TAMO CHEGANDO PERTOOOOOOOOOOOOOOOOO LESFUCKINGOOOOOOOO
+                emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
+                showEmote(emoteAtual);
+                inputEmote.replaceWith(inputEmote.cloneNode(true));
+                inputEmote.addEventListener("change", function () {
+                    console.log(inputEmote.value);
+                    for (var i = 0; i < 4; i++) {
                         if (inputEmote.value === emoteAtual.name) {
                             inputEmote.value = "";
                             alert("Acertou!");
@@ -118,8 +120,8 @@ var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0
                             erros++;
                             console.log(erros);
                         }
-                    });
-                }
+                    }
+                });
                 return [2 /*return*/];
         }
     });
