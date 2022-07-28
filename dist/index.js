@@ -106,17 +106,15 @@ var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0
                 //ESSA LOGICA TA QUEBRADA MAS TAMO CHEGANDO PERTOOOOOOOOOOOOOOOOO LESFUCKINGOOOOOOOO
                 emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
                 showEmote(emoteAtual);
-                inputEmote.replaceWith(inputEmote.cloneNode(true));
                 inputEmote.addEventListener("change", function () {
                     console.log(inputEmote.value);
                     for (var i = 0; i < 4; i++) {
                         if (inputEmote.value === emoteAtual.name) {
                             inputEmote.value = "";
                             alert("Acertou!");
-                            return;
                         }
                         else {
-                            alert("Não acertou");
+                            alert("Não acertou, tente novamente!");
                             erros++;
                             console.log(erros);
                         }

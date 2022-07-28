@@ -80,16 +80,15 @@ const getEmotesGame = async (channel: string): Promise<void> => {
 		emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
 		showEmote(emoteAtual);
 
-		inputEmote.replaceWith(inputEmote.cloneNode(true));
 		inputEmote.addEventListener("change", (): void => {
 			console.log(inputEmote.value);
+			
 			for (let i = 0; i < 4; i++) {
 			if (inputEmote.value === emoteAtual.name) {
 				inputEmote.value = "";
 				alert("Acertou!");
-				return;
 			} else {
-				alert("Não acertou");
+				alert("Não acertou, tente novamente!");
 				erros++;
 				console.log(erros);
 			}
