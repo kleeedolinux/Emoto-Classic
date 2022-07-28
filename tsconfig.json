@@ -1,0 +1,14 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"module": "commonjs",
+		"jsx": "preserve",
+		"esModuleInterop": true,
+		"sourceMap": true,
+		"declaration": true /* Generates corresponding '.d.ts' file. */,
+		"lib": ["es6", "dom", "ESNext.Array"],
+		"rootDir": "src",
+		"outDir": "dist",
+		"experimentalDecorators": true /* Enables experimental support for ES7 decorators. */
+	}
+}
