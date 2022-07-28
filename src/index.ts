@@ -8,9 +8,13 @@ const inputChannel: HTMLInputElement = document.getElementById(
 	"channel"
 )! as HTMLInputElement;
 
+const inputEmote: HTMLInputElement = document.getElementById(
+	"emoteTry"
+)! as HTMLInputElement;
+
 inputChannel.addEventListener("change", (): void => {
 	clear(container);
-	getEmotes(inputChannel.value);
+	getEmotesGame(inputChannel.value);
 });
 
 interface Emote {
@@ -18,12 +22,9 @@ interface Emote {
 	image: string;
 }
 
-const getEmotes = async (channel: string): Promise<void> => {
+const getEmotesShow = async (channel: string): Promise<void> => {
 	console.log(channel);
-
-	loading.innerHTML = `<a class="card">
-	<h1 class="card--name">Loading...</h1>
-	</a>`; // achar um jeito de otimizar essa parte aqui
+	// achar um jeito de otimizar essa parte aqui
 
 	const data: Response = await fetch(
 		`https://emotes.adamcy.pl/v1/channel/${channel}/emotes/twitch.7tv.bttv.ffz`,
@@ -35,13 +36,63 @@ const getEmotes = async (channel: string): Promise<void> => {
 		}
 	);
 	const emotes = await data.json();
+	//pega os emotes do canal especificado
+
 	emotes.forEach((emote: any) => {
+		//para cada emote, exibir o nome e a imagem no site
+		const emoteData: Emote = {
+			name: emote.code,
+			image: emote.urls[1].url,
+		};
+		showEmote(emoteData);
+	});
+};
+
+const getEmotesGame = async (channel: string): Promise<void> => {
+	console.log(channel);
+	// achar um jeito de otimizar essa parte aqui
+
+	const data: Response = await fetch(
+		`https://emotes.adamcy.pl/v1/channel/${channel}/emotes/twitch.7tv.bttv`,
+		{
+			method: "GET",
+			headers: {
+				"Content-Type": "application/json",
+			},
+		}
+	);
+	const emotes = await data.json();
+	//pega os emotes do canal especificado
+
+	emotes.forEach((emote: any) => {
+		//adicionar cada emote no array emotesList
 		const emoteData: Emote = {
 			name: emote.code,
 			image: emote.urls[2].url,
 		};
-		showEmote(emoteData);
+		emotesList.push(emoteData);
 	});
+	var emoteAtual: Emote = emotesList[0];
+	var erros: number = 0;
+
+	//ESSA LOGICA TA QUEBRADA MAS TAMO CHEGANDO PERTOOOOOOOOOOOOOOOOO LESFUCKINGOOOOOOOO
+	for (let i = 0; i < 4; i++) {
+		emoteAtual =
+			emotesList[Math.floor(Math.random() * emotesList.length)];
+			console.log(emoteAtual.name);
+		inputEmote.addEventListener("change", (): void => {
+			
+			if (inputEmote.value === emoteAtual.name) {
+				inputEmote.value = "";
+				alert("Acertou!");
+				return;
+			} else {
+				alert("Não acertou");
+				erros++;
+				console.log(erros);
+			}
+		});
+	}
 };
 
 const showEmote = (emote: Emote): void => {
@@ -57,10 +108,3 @@ const showEmote = (emote: Emote): void => {
 const clear = (container: HTMLElement): void => {
 	container.innerHTML = "";
 };
-
-// const fetchEmotes =(): void => {
-//     for(let i = 0; i < emotesList.length; i++) {
-//         showEmote(emotesList[i]);
-//     }
-// }
-// fetchEmotes();

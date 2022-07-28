@@ -40,6 +40,7 @@ a {
 
 #app {
 	margin-top: 1rem;
+	margin-bottom: 1rem;
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
 	grid-gap: 1.5rem;
@@ -68,6 +69,20 @@ a {
 	font-size: 1rem;
 	font-weight: bold;
 	text-transform: uppercase;
+	outline: none;
+	cursor: pointer;
+}
+
+#emoteTry {
+	width: 100%;
+	border: 0;
+	border-bottom: 2px solid #444;
+	background-color: #7bc3ce;
+	border-radius: 2px;
+	padding: 0.5rem;
+	color: #fff;
+	font-size: 1rem;
+	font-weight: bold;
 	outline: none;
 	cursor: pointer;
 }

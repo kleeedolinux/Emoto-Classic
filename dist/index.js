@@ -40,17 +40,17 @@ var container = document.getElementById("app");
 var loading = document.getElementById("loading");
 var emotesList = [];
 var inputChannel = document.getElementById("channel");
+var inputEmote = document.getElementById("emoteTry");
 inputChannel.addEventListener("change", function () {
     clear(container);
-    getEmotes(inputChannel.value);
+    getEmotesGame(inputChannel.value);
 });
-var getEmotes = function (channel) { return __awaiter(void 0, void 0, void 0, function () {
+var getEmotesShow = function (channel) { return __awaiter(void 0, void 0, void 0, function () {
     var data, emotes;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 console.log(channel);
-                loading.innerHTML = "<a class=\"card\">\n\t<h1 class=\"card--name\">Loading...</h1>\n\t</a>"; // achar um jeito de otimizar essa parte aqui
                 return [4 /*yield*/, fetch("https://emotes.adamcy.pl/v1/channel/".concat(channel, "/emotes/twitch.7tv.bttv.ffz"), {
                         method: "GET",
                         headers: {
@@ -62,13 +62,64 @@ var getEmotes = function (channel) { return __awaiter(void 0, void 0, void 0, fu
                 return [4 /*yield*/, data.json()];
             case 2:
                 emotes = _a.sent();
+                //pega os emotes do canal especificado
                 emotes.forEach(function (emote) {
+                    //para cada emote, exibir o nome e a imagem no site
+                    var emoteData = {
+                        name: emote.code,
+                        image: emote.urls[1].url
+                    };
+                    showEmote(emoteData);
+                });
+                return [2 /*return*/];
+        }
+    });
+}); };
+var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0, function () {
+    var data, emotes, emoteAtual, erros, i;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                console.log(channel);
+                return [4 /*yield*/, fetch("https://emotes.adamcy.pl/v1/channel/".concat(channel, "/emotes/twitch.7tv.bttv"), {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    })];
+            case 1:
+                data = _a.sent();
+                return [4 /*yield*/, data.json()];
+            case 2:
+                emotes = _a.sent();
+                //pega os emotes do canal especificado
+                emotes.forEach(function (emote) {
+                    //adicionar cada emote no array emotesList
                     var emoteData = {
                         name: emote.code,
                         image: emote.urls[2].url
                     };
-                    showEmote(emoteData);
+                    emotesList.push(emoteData);
                 });
+                emoteAtual = emotesList[0];
+                erros = 0;
+                for (i = 0; i < 4; i++) {
+                    emoteAtual =
+                        emotesList[Math.floor(Math.random() * emotesList.length)];
+                    console.log(emoteAtual.name);
+                    inputEmote.addEventListener("change", function () {
+                        if (inputEmote.value === emoteAtual.name) {
+                            inputEmote.value = "";
+                            alert("Acertou!");
+                            return;
+                        }
+                        else {
+                            alert("Não acertou");
+                            erros++;
+                            console.log(erros);
+                        }
+                    });
+                }
                 return [2 /*return*/];
         }
     });
@@ -80,10 +131,4 @@ var showEmote = function (emote) {
 var clear = function (container) {
     container.innerHTML = "";
 };
-// const fetchEmotes =(): void => {
-//     for(let i = 0; i < emotesList.length; i++) {
-//         showEmote(emotesList[i]);
-//     }
-// }
-// fetchEmotes();
 //# sourceMappingURL=index.js.map
