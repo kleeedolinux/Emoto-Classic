@@ -1,4 +1,4 @@
-# Emotle Protótipo
+# 🤠 Emotle Protótipo
 ## Desenvolvido em TypeScript, HTML e CSS
 ### Por enquanto, o App apenas mostra todos os emotes de um canal específico ao pesquisar
 Inclui os emotes da Twitch, BTTV, 7TV e FFZ
