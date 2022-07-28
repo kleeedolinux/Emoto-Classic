@@ -77,11 +77,10 @@ const getEmotesGame = async (channel: string): Promise<void> => {
 
 	//ESSA LOGICA TA QUEBRADA MAS TAMO CHEGANDO PERTOOOOOOOOOOOOOOOOO LESFUCKINGOOOOOOOO
 	for (let i = 0; i < 4; i++) {
-		emoteAtual =
-			emotesList[Math.floor(Math.random() * emotesList.length)];
-			console.log(emoteAtual.name);
+		emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
+		console.log(emoteAtual.name);
+		showEmote(emoteAtual);
 		inputEmote.addEventListener("change", (): void => {
-			
 			if (inputEmote.value === emoteAtual.name) {
 				inputEmote.value = "";
 				alert("Acertou!");
