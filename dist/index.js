@@ -38,11 +38,21 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 var container = document.getElementById("app");
 var loading = document.getElementById("loading");
+var showAcertos = document.getElementById("acertos");
+var showTentativas = document.getElementById("tentativas");
 var emotesList = [];
+var tentativas = 0;
+var emoteAtual;
+var acertos = 0;
 var inputChannel = document.getElementById("channel");
 var inputEmote = document.getElementById("emoteTry");
 inputChannel.addEventListener("change", function () {
+    tentativas = 0;
+    acertos = 0;
+    showTentativas.innerHTML = "Tentativas: ".concat(tentativas);
+    showAcertos.innerHTML = "Acertos: ".concat(acertos);
     clear(container);
+    emotesList.length = 0;
     getEmotesGame(inputChannel.value);
 });
 var getEmotesShow = function (channel) { return __awaiter(void 0, void 0, void 0, function () {
@@ -76,7 +86,7 @@ var getEmotesShow = function (channel) { return __awaiter(void 0, void 0, void 0
     });
 }); };
 var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0, function () {
-    var data, emotes, emoteAtual, erros;
+    var data, emotes;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -101,29 +111,46 @@ var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0
                     };
                     emotesList.push(emoteData);
                 });
-                emoteAtual = emotesList[0];
-                erros = 0;
-                //ESSA LOGICA TA QUEBRADA MAS TAMO CHEGANDO PERTOOOOOOOOOOOOOOOOO LESFUCKINGOOOOOOOO
                 emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
                 showEmote(emoteAtual);
-                inputEmote.addEventListener("change", function () {
-                    console.log(inputEmote.value);
-                    for (var i = 0; i < 4; i++) {
-                        if (inputEmote.value === emoteAtual.name) {
-                            inputEmote.value = "";
-                            alert("Acertou!");
-                        }
-                        else {
-                            alert("Não acertou, tente novamente!");
-                            erros++;
-                            console.log(erros);
-                        }
-                    }
-                });
                 return [2 /*return*/];
         }
     });
 }); };
+var gameplay = function () {
+    if (inputEmote.value == emoteAtual.name) {
+        alert("Acertou!");
+        acertos++;
+        showAcertos.innerHTML = "Acertos: ".concat(acertos);
+        clear(container);
+        getEmotesGame(inputChannel.value);
+    }
+    else {
+        console.log(emoteAtual.name);
+        alert("Errou!");
+        tentativas++;
+        showTentativas.innerHTML = "Tentativas: ".concat(tentativas);
+        if (tentativas === 3) {
+            alert("Game Over!");
+            tentativas = 0;
+            clear(container);
+            getEmotesGame(inputChannel.value);
+        }
+    }
+    // inputEmote.addEventListener("change", (): void => {
+    // 	console.log(inputEmote.value);
+    // 	for (let i = 0; i < 4; i++) {
+    // 		if (inputEmote.value === emoteAtual.name) {
+    // 			alert("Acertou!");
+    // 			return;
+    // 		} else {
+    // 			alert("Não acertou, tente novamente!");
+    // 			tentativas++;
+    // 			console.log(tentativas);
+    // 		}
+    // 	}
+    // });
+};
 var showEmote = function (emote) {
     var output = "\n    <a class=\"card\">\n        <img class=\"card--image\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n        <h1 class=\"card--name\">").concat(emote.name, "</h1>\n    </a>\n    ");
     container.innerHTML += output;
