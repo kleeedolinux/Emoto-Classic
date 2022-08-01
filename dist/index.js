@@ -41,6 +41,7 @@ var loading = document.getElementById("loading");
 var showAcertos = document.getElementById("acertos");
 var showTentativas = document.getElementById("tentativas");
 var emotesList = [];
+var emoteNames = [];
 var tentativas = 0;
 var emoteAtual;
 var acertos = 0;
@@ -111,8 +112,9 @@ var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0
                     };
                     emotesList.push(emoteData);
                 });
+                getEmotenames(emotesList);
                 emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
-                showEmote(emoteAtual);
+                showEmoteGame(emoteAtual);
                 return [2 /*return*/];
         }
     });
@@ -137,6 +139,7 @@ var gameplay = function () {
             getEmotesGame(inputChannel.value);
         }
     }
+    //guardar esse código pra mostrar no vídeo
     // inputEmote.addEventListener("change", (): void => {
     // 	console.log(inputEmote.value);
     // 	for (let i = 0; i < 4; i++) {
@@ -154,6 +157,16 @@ var gameplay = function () {
 var showEmote = function (emote) {
     var output = "\n    <a class=\"card\">\n        <img class=\"card--image\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n        <h1 class=\"card--name\">").concat(emote.name, "</h1>\n    </a>\n    ");
     container.innerHTML += output;
+};
+var showEmoteGame = function (emote) {
+    var output = "\n    <a class=\"card\">\n        <img class=\"card--image\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n    </a>\n    ");
+    container.innerHTML += output;
+};
+var getEmotenames = function (emote) {
+    emote.forEach(function (emote) {
+        emoteNames.push(emote.name);
+    });
+    console.log(emoteNames);
 };
 var clear = function (container) {
     container.innerHTML = "";

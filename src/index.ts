@@ -5,11 +5,11 @@ const loading: HTMLElement = document.getElementById("loading")!;
 const showAcertos: HTMLElement = document.getElementById("acertos")!;
 const showTentativas: HTMLElement = document.getElementById("tentativas")!;
 const emotesList: Emote[] = [];
+const emoteNames: string[] = [];
+
 var tentativas: number = 0;
 var emoteAtual: Emote;
 var acertos: number = 0;
-
-
 
 const inputChannel: HTMLInputElement = document.getElementById(
 	"channel"
@@ -84,8 +84,9 @@ const getEmotesGame = async (channel: string): Promise<void> => {
 		};
 		emotesList.push(emoteData);
 	});
+	getEmotenames(emotesList);
 	emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
-	showEmote(emoteAtual);
+	showEmoteGame(emoteAtual);
 };
 
 const gameplay = (): void => {
@@ -107,7 +108,7 @@ const gameplay = (): void => {
 			getEmotesGame(inputChannel.value);
 		}
 	}
-
+	//guardar esse código pra mostrar no vídeo
 	// inputEmote.addEventListener("change", (): void => {
 	// 	console.log(inputEmote.value);
 
@@ -134,6 +135,23 @@ const showEmote = (emote: Emote): void => {
 	container.innerHTML += output;
 };
 
+const showEmoteGame = (emote: Emote): void => {
+	let output: string = `
+    <a class="card">
+        <img class="card--image" src=${emote.image} alt=${emote.name} />
+    </a>
+    `;
+	container.innerHTML += output;
+};
+
+const getEmotenames = (emote: Emote[]): void => {
+	emote.forEach((emote: Emote) => {
+		emoteNames.push(emote.name);
+	});
+	console.log(emoteNames);
+}
+
 const clear = (container: HTMLElement): void => {
 	container.innerHTML = "";
 };
+
