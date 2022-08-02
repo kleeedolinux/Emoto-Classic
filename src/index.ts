@@ -70,7 +70,7 @@ function createAutoCompleteDropdown(list: string[]): void {
 
 		listElement.appendChild(listItem);
 	});
-	console.log(listElement)
+	console.log(listElement);
 	autocompleteWrapper.appendChild(listElement);
 }
 

@@ -87,12 +87,12 @@ a {
 	cursor: pointer;
 }
 
-.autocomplete-wrapper{
+.autocomplete-wrapper {
 	display: inline-block;
 	position: relative;
 }
 
-.autocomplete-list{
+.autocomplete-list {
 	list-style: none;
 	padding: none;
 	margin: unset;
@@ -100,7 +100,7 @@ a {
 	width: 100%;
 }
 
-.autocomplete-list button{
+.autocomplete-list button {
 	border: unset;
 	background: #444;
 	color: #ffffff;
@@ -111,14 +111,13 @@ a {
 	text-align: left;
 }
 
-.autocomplete-list li{
+.autocomplete-list li {
 	border: 1px solid #444;
 	border-top: unset;
 }
-.autocomplete-list li:hover{
+.autocomplete-list li:hover {
 	background: #444;
 }
-
 
 .card {
 	width: 12rem auto;
