@@ -59,7 +59,7 @@ a {
 }
 
 #channel {
-	width: 100%;
+	display: inline-block;
 	border: 0;
 	border-bottom: 2px solid #444;
 	background-color: #7bc3ce;
@@ -86,6 +86,39 @@ a {
 	outline: none;
 	cursor: pointer;
 }
+
+.autocomplete-wrapper{
+	display: inline-block;
+	position: relative;
+}
+
+.autocomplete-list{
+	list-style: none;
+	padding: none;
+	margin: unset;
+	position: absolute;
+	width: 100%;
+}
+
+.autocomplete-list button{
+	border: unset;
+	background: #444;
+	color: #ffffff;
+	padding: 0.3rem;
+	cursor: pointer;
+	display: block;
+	width: 100%;
+	text-align: left;
+}
+
+.autocomplete-list li{
+	border: 1px solid #444;
+	border-top: unset;
+}
+.autocomplete-list li:hover{
+	background: #444;
+}
+
 
 .card {
 	width: 12rem auto;

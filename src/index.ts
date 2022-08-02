@@ -4,6 +4,9 @@ const container: HTMLElement = document.getElementById("app")!;
 const loading: HTMLElement = document.getElementById("loading")!;
 const showAcertos: HTMLElement = document.getElementById("acertos")!;
 const showTentativas: HTMLElement = document.getElementById("tentativas")!;
+const autocompleteWrapper: HTMLElement =
+	document.getElementById("autocomplete")!;
+
 const emotesList: Emote[] = [];
 const emoteNames: string[] = [];
 
@@ -28,6 +31,62 @@ inputChannel.addEventListener("change", (): void => {
 	emotesList.length = 0;
 	getEmotesGame(inputChannel.value);
 });
+
+inputEmote.addEventListener("input", onInputChange);
+
+// inputEmote.addEventListener("change", (): void => {
+// 	gameplay();
+// });
+
+function onInputChange(): void {
+	removeAutocompleteDropdown();
+
+	const value: string = inputEmote.value.toLowerCase();
+
+	if (value.length === 0) return;
+
+	const filteredEmoteNames: string[] = [];
+
+	emoteNames.forEach((emoteName: string) => {
+		if (emoteName.substring(0, value.length).toLowerCase() === value) {
+			filteredEmoteNames.push(emoteName);
+		}
+	});
+	createAutoCompleteDropdown(filteredEmoteNames);
+}
+
+function createAutoCompleteDropdown(list: string[]): void {
+	const listElement = document.createElement("ul");
+	listElement.className = "autocomplete-list";
+	listElement.id = "autocomplete-list";
+
+	list.forEach((emoteName: string) => {
+		const listItem = document.createElement("li")!;
+
+		const emoteNameButton = document.createElement("button");
+		emoteNameButton.innerHTML = emoteName;
+		emoteNameButton.addEventListener("click", onEmoteButtonClick);
+		listItem.appendChild(emoteNameButton);
+
+		listElement.appendChild(listItem);
+	});
+
+	autocompleteWrapper.appendChild(listElement);
+}
+
+function removeAutocompleteDropdown(): void {
+	const listElement = document.getElementById("autocomplete-list")!;
+	if (listElement) {
+		listElement.remove();
+	}
+}
+
+function onEmoteButtonClick(e: Event): void {
+	const buttonElement = e.target as HTMLButtonElement;
+	inputEmote.value = buttonElement.innerHTML;
+
+	removeAutocompleteDropdown();
+}
 
 interface Emote {
 	name: string;
@@ -149,9 +208,8 @@ const getEmotenames = (emote: Emote[]): void => {
 		emoteNames.push(emote.name);
 	});
 	console.log(emoteNames);
-}
+};
 
 const clear = (container: HTMLElement): void => {
 	container.innerHTML = "";
 };
-

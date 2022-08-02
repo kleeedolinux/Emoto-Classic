@@ -40,6 +40,7 @@ var container = document.getElementById("app");
 var loading = document.getElementById("loading");
 var showAcertos = document.getElementById("acertos");
 var showTentativas = document.getElementById("tentativas");
+var autocompleteWrapper = document.getElementById("autocomplete");
 var emotesList = [];
 var emoteNames = [];
 var tentativas = 0;
@@ -56,6 +57,48 @@ inputChannel.addEventListener("change", function () {
     emotesList.length = 0;
     getEmotesGame(inputChannel.value);
 });
+inputEmote.addEventListener("input", onInputChange);
+// inputEmote.addEventListener("change", (): void => {
+// 	gameplay();
+// });
+function onInputChange() {
+    removeAutocompleteDropdown();
+    var value = inputEmote.value.toLowerCase();
+    if (value.length === 0)
+        return;
+    var filteredEmoteNames = [];
+    emoteNames.forEach(function (emoteName) {
+        if (emoteName.substring(0, value.length).toLowerCase() === value) {
+            filteredEmoteNames.push(emoteName);
+        }
+    });
+    createAutoCompleteDropdown(filteredEmoteNames);
+}
+function createAutoCompleteDropdown(list) {
+    var listElement = document.createElement("ul");
+    listElement.className = "autocomplete-list";
+    listElement.id = "autocomplete-list";
+    list.forEach(function (emoteName) {
+        var listItem = document.createElement("li");
+        var emoteNameButton = document.createElement("button");
+        emoteNameButton.innerHTML = emoteName;
+        emoteNameButton.addEventListener("click", onEmoteButtonClick);
+        listItem.appendChild(emoteNameButton);
+        listElement.appendChild(listItem);
+    });
+    autocompleteWrapper.appendChild(listElement);
+}
+function removeAutocompleteDropdown() {
+    var listElement = document.getElementById("autocomplete-list");
+    if (listElement) {
+        listElement.remove();
+    }
+}
+function onEmoteButtonClick(e) {
+    var buttonElement = e.target;
+    inputEmote.value = buttonElement.innerHTML;
+    removeAutocompleteDropdown();
+}
 var getEmotesShow = function (channel) { return __awaiter(void 0, void 0, void 0, function () {
     var data, emotes;
     return __generator(this, function (_a) {
