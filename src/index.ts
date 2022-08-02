@@ -43,11 +43,9 @@ function onInputChange(): void {
 
 	const value: string = inputEmote.value.toLowerCase();
 
-	
 	const filteredEmoteNames: string[] = [];
 
 	if (value.length === 0) return;
-
 
 	emoteNames.forEach((emoteName: string) => {
 		if (emoteName.substring(0, value.length).toLowerCase() === value) {
