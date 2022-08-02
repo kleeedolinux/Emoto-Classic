@@ -64,9 +64,9 @@ inputEmote.addEventListener("input", onInputChange);
 function onInputChange() {
     removeAutocompleteDropdown();
     var value = inputEmote.value.toLowerCase();
+    var filteredEmoteNames = [];
     if (value.length === 0)
         return;
-    var filteredEmoteNames = [];
     emoteNames.forEach(function (emoteName) {
         if (emoteName.substring(0, value.length).toLowerCase() === value) {
             filteredEmoteNames.push(emoteName);
@@ -169,6 +169,7 @@ var gameplay = function () {
         showAcertos.innerHTML = "Acertos: ".concat(acertos);
         clear(container);
         getEmotesGame(inputChannel.value);
+        inputEmote.value = "";
     }
     else {
         console.log(emoteAtual.name);

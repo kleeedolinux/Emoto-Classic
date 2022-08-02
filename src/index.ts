@@ -43,9 +43,11 @@ function onInputChange(): void {
 
 	const value: string = inputEmote.value.toLowerCase();
 
+	
+	const filteredEmoteNames: string[] = [];
+
 	if (value.length === 0) return;
 
-	const filteredEmoteNames: string[] = [];
 
 	emoteNames.forEach((emoteName: string) => {
 		if (emoteName.substring(0, value.length).toLowerCase() === value) {
@@ -155,6 +157,7 @@ const gameplay = (): void => {
 		showAcertos.innerHTML = `Acertos: ${acertos}`;
 		clear(container);
 		getEmotesGame(inputChannel.value);
+		inputEmote.value = "";
 	} else {
 		console.log(emoteAtual.name);
 		alert("Errou!");
