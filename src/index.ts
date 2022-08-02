@@ -164,6 +164,7 @@ const gameplay = (): void => {
 		if (tentativas === 3) {
 			alert("Game Over!");
 			tentativas = 0;
+			acertos = 0;
 			clear(container);
 			getEmotesGame(inputChannel.value);
 		}
