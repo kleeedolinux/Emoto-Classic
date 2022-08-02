@@ -70,7 +70,7 @@ function createAutoCompleteDropdown(list: string[]): void {
 
 		listElement.appendChild(listItem);
 	});
-
+	console.log(listElement)
 	autocompleteWrapper.appendChild(listElement);
 }
 
@@ -121,7 +121,6 @@ const getEmotesShow = async (channel: string): Promise<void> => {
 
 const getEmotesGame = async (channel: string): Promise<void> => {
 	console.log(channel);
-	// achar um jeito de otimizar essa parte aqui
 
 	const data: Response = await fetch(
 		`https://emotes.adamcy.pl/v1/channel/${channel}/emotes/twitch.7tv.bttv`,
@@ -134,7 +133,8 @@ const getEmotesGame = async (channel: string): Promise<void> => {
 	);
 	const emotes = await data.json();
 	//pega os emotes do canal especificado
-
+	emotesList.length = 0;
+	emoteNames.length = 0;
 	emotes.forEach((emote: any) => {
 		//adicionar cada emote no array emotesList
 		const emoteData: Emote = {

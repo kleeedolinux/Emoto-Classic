@@ -86,6 +86,7 @@ function createAutoCompleteDropdown(list) {
         listItem.appendChild(emoteNameButton);
         listElement.appendChild(listItem);
     });
+    console.log(listElement);
     autocompleteWrapper.appendChild(listElement);
 }
 function removeAutocompleteDropdown() {
@@ -147,6 +148,8 @@ var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0
             case 2:
                 emotes = _a.sent();
                 //pega os emotes do canal especificado
+                emotesList.length = 0;
+                emoteNames.length = 0;
                 emotes.forEach(function (emote) {
                     //adicionar cada emote no array emotesList
                     var emoteData = {
