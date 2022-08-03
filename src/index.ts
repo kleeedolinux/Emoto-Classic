@@ -30,6 +30,7 @@ inputChannel.addEventListener("change", (): void => {
 	clear(container);
 	emotesList.length = 0;
 	getEmotesGame(inputChannel.value);
+
 });
 
 inputEmote.addEventListener("input", onInputChange);
@@ -70,7 +71,6 @@ function createAutoCompleteDropdown(list: string[]): void {
 
 		listElement.appendChild(listItem);
 	});
-	console.log(listElement);
 	autocompleteWrapper.appendChild(listElement);
 }
 
@@ -93,58 +93,84 @@ interface Emote {
 	image: string;
 }
 
-const getEmotesShow = async (channel: string): Promise<void> => {
-	console.log(channel);
-	// achar um jeito de otimizar essa parte aqui
+interface GameRound{
+	emotes: Emote[];
+	acertos: number;
+	tentativas: number;
+	completo: boolean;
+}
 
-	const data: Response = await fetch(
-		`https://emotes.adamcy.pl/v1/channel/${channel}/emotes/twitch.7tv.bttv.ffz`,
-		{
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-			},
-		}
-	);
-	const emotes = await data.json();
-	//pega os emotes do canal especificado
+//Código que eu usei pra mostrar todos os emotes de um canal específico
+// const getEmotesShow = async (channel: string): Promise<void> => {
+// 	console.log(channel);
+// 	// achar um jeito de otimizar essa parte aqui
 
-	emotes.forEach((emote: any) => {
-		//para cada emote, exibir o nome e a imagem no site
-		const emoteData: Emote = {
-			name: emote.code,
-			image: emote.urls[1].url,
-		};
-		showEmote(emoteData);
-	});
-};
+// 	const data: Response = await fetch(
+// 		`https://emotes.adamcy.pl/v1/channel/${channel}/emotes/twitch.7tv.bttv.ffz`,
+// 		{
+// 			method: "GET",
+// 			headers: {
+// 				"Content-Type": "application/json",
+// 			},
+// 		}
+// 	);
+// 	const emotes = await data.json();
+// 	//pega os emotes do canal especificado
+
+// 	emotes.forEach((emote: any) => {
+// 		//para cada emote, exibir o nome e a imagem no site
+// 		const emoteData: Emote = {
+// 			name: emote.code,
+// 			image: emote.urls[1].url,
+// 		};
+// 		showEmote(emoteData);
+// 	});
+// };
 
 const getEmotesGame = async (channel: string): Promise<void> => {
 	console.log(channel);
+	try {
+		const data: Response = await fetch(
+			`https://emotes.adamcy.pl/v1/channel/${channel}/emotes/twitch.7tv.bttv`,
+			{
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			}
+		);
+		const emotes = await data.json();
+		//pega os emotes do canal especificado
+		emotesList.length = 0;
+		emoteNames.length = 0;
+		emotes.forEach((emote: any) => {
+			//adicionar cada emote no array emotesList
+			const emoteData: Emote = {
+				name: emote.code,
+				image: emote.urls[2].url,
+			};
+			emotesList.push(emoteData);
+		});
+		getEmotenames(emotesList);
+		emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
+		showEmoteGame(emoteAtual);
+	} catch (error) {
+		alert("Canal não encontrado");
+	}
+	
+};
 
-	const data: Response = await fetch(
-		`https://emotes.adamcy.pl/v1/channel/${channel}/emotes/twitch.7tv.bttv`,
-		{
-			method: "GET",
-			headers: {
-				"Content-Type": "application/json",
-			},
-		}
-	);
-	const emotes = await data.json();
-	//pega os emotes do canal especificado
-	emotesList.length = 0;
-	emoteNames.length = 0;
-	emotes.forEach((emote: any) => {
-		//adicionar cada emote no array emotesList
-		const emoteData: Emote = {
-			name: emote.code,
-			image: emote.urls[2].url,
-		};
-		emotesList.push(emoteData);
-	});
-	getEmotenames(emotesList);
+//Remove emote acertado do array de emotes 
+//Dá outro emote da lista para a variavel emoteAtual
+//limpa o output do emote anterior
+//exibe o novo emote
+const continueGame = (emotesList: Emote[]): void => {
+	emotesList.splice(emotesList.indexOf(emoteAtual), 1);
+	emoteNames.splice(emoteNames.indexOf(emoteAtual.name), 1);
 	emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
+	clear(container);
+	inputEmote.value = "";
+	console.log(emotesList);
 	showEmoteGame(emoteAtual);
 };
 
@@ -153,9 +179,7 @@ const gameplay = (): void => {
 		alert("Acertou!");
 		acertos++;
 		showAcertos.innerHTML = `Acertos: ${acertos}`;
-		clear(container);
-		getEmotesGame(inputChannel.value);
-		inputEmote.value = "";
+		continueGame(emotesList);
 	} else {
 		console.log(emoteAtual.name);
 		alert("Errou!");
@@ -169,22 +193,45 @@ const gameplay = (): void => {
 			getEmotesGame(inputChannel.value);
 		}
 	}
-	//guardar esse código pra mostrar no vídeo
-	// inputEmote.addEventListener("change", (): void => {
-	// 	console.log(inputEmote.value);
-
-	// 	for (let i = 0; i < 4; i++) {
-	// 		if (inputEmote.value === emoteAtual.name) {
-	// 			alert("Acertou!");
-	// 			return;
-	// 		} else {
-	// 			alert("Não acertou, tente novamente!");
-	// 			tentativas++;
-	// 			console.log(tentativas);
-	// 		}
-	// 	}
-	// });
 };
+//Primeiro protótipo de gameplay (não remove o emote acertado da lista de emotes)
+// const gameplay = (): void => {
+// 	if (inputEmote.value == emoteAtual.name) {
+// 		alert("Acertou!");
+// 		acertos++;
+// 		showAcertos.innerHTML = `Acertos: ${acertos}`;
+// 		clear(container);
+// 		getEmotesGame(inputChannel.value);
+// 		inputEmote.value = "";
+// 	} else {
+// 		console.log(emoteAtual.name);
+// 		alert("Errou!");
+// 		tentativas++;
+// 		showTentativas.innerHTML = `Tentativas: ${tentativas}`;
+// 		if (tentativas === 3) {
+// 			alert("Game Over!");
+// 			tentativas = 0;
+// 			acertos = 0;
+// 			clear(container);
+// 			getEmotesGame(inputChannel.value);
+// 		}
+// 	}
+// 	//guardar esse código pra mostrar no vídeo
+// 	// inputEmote.addEventListener("change", (): void => {
+// 	// 	console.log(inputEmote.value);
+
+// 	// 	for (let i = 0; i < 4; i++) {
+// 	// 		if (inputEmote.value === emoteAtual.name) {
+// 	// 			alert("Acertou!");
+// 	// 			return;
+// 	// 		} else {
+// 	// 			alert("Não acertou, tente novamente!");
+// 	// 			tentativas++;
+// 	// 			console.log(tentativas);
+// 	// 		}
+// 	// 	}
+// 	// });
+// };
 
 const showEmote = (emote: Emote): void => {
 	let output: string = `

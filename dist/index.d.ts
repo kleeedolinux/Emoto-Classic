@@ -18,8 +18,14 @@ interface Emote {
     name: string;
     image: string;
 }
-declare const getEmotesShow: (channel: string) => Promise<void>;
+interface GameRound {
+    emotes: Emote[];
+    acertos: number;
+    tentativas: number;
+    completo: boolean;
+}
 declare const getEmotesGame: (channel: string) => Promise<void>;
+declare const continueGame: (emotesList: Emote[]) => void;
 declare const gameplay: () => void;
 declare const showEmote: (emote: Emote) => void;
 declare const showEmoteGame: (emote: Emote) => void;
