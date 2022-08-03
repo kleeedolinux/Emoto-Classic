@@ -129,6 +129,10 @@ interface GameRound{
 
 const getEmotesGame = async (channel: string): Promise<void> => {
 	console.log(channel);
+	tentativas = 0;
+	acertos = 0;
+	showTentativas.innerHTML = `Tentativas: ${tentativas}`
+	showAcertos.innerHTML = `Acertos: ${acertos}`;
 	try {
 		const data: Response = await fetch(
 			`https://emotes.adamcy.pl/v1/channel/${channel}/emotes/twitch.7tv.bttv`,
@@ -178,17 +182,18 @@ const gameplay = (): void => {
 	if (inputEmote.value == emoteAtual.name) {
 		alert("Acertou!");
 		acertos++;
+		tentativas = 0;
 		showAcertos.innerHTML = `Acertos: ${acertos}`;
+		showTentativas.innerHTML = `Tentativas: ${tentativas}`;
 		continueGame(emotesList);
 	} else {
 		console.log(emoteAtual.name);
 		alert("Errou!");
 		tentativas++;
+		showAcertos.innerHTML = `Acertos: ${acertos}`;
 		showTentativas.innerHTML = `Tentativas: ${tentativas}`;
 		if (tentativas === 3) {
 			alert("Game Over!");
-			tentativas = 0;
-			acertos = 0;
 			clear(container);
 			getEmotesGame(inputChannel.value);
 		}

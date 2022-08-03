@@ -129,6 +129,10 @@ var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0
         switch (_a.label) {
             case 0:
                 console.log(channel);
+                tentativas = 0;
+                acertos = 0;
+                showTentativas.innerHTML = "Tentativas: ".concat(tentativas);
+                showAcertos.innerHTML = "Acertos: ".concat(acertos);
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 4, , 5]);
@@ -183,18 +187,19 @@ var gameplay = function () {
     if (inputEmote.value == emoteAtual.name) {
         alert("Acertou!");
         acertos++;
+        tentativas = 0;
         showAcertos.innerHTML = "Acertos: ".concat(acertos);
+        showTentativas.innerHTML = "Tentativas: ".concat(tentativas);
         continueGame(emotesList);
     }
     else {
         console.log(emoteAtual.name);
         alert("Errou!");
         tentativas++;
+        showAcertos.innerHTML = "Acertos: ".concat(acertos);
         showTentativas.innerHTML = "Tentativas: ".concat(tentativas);
         if (tentativas === 3) {
             alert("Game Over!");
-            tentativas = 0;
-            acertos = 0;
             clear(container);
             getEmotesGame(inputChannel.value);
         }
