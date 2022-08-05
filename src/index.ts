@@ -1,5 +1,3 @@
-//código mais scuffed que esse impossível
-
 const container: HTMLElement = document.getElementById("app")!;
 const loading: HTMLElement = document.getElementById("loading")!;
 const showAcertos: HTMLElement = document.getElementById("acertos")!;
@@ -30,7 +28,6 @@ inputChannel.addEventListener("change", (): void => {
 	clear(container);
 	emotesList.length = 0;
 	getEmotesGame(inputChannel.value);
-
 });
 
 inputEmote.addEventListener("input", onInputChange);
@@ -93,7 +90,7 @@ interface Emote {
 	image: string;
 }
 
-interface GameRound{
+interface GameRound {
 	emotes: Emote[];
 	acertos: number;
 	tentativas: number;
@@ -131,7 +128,7 @@ const getEmotesGame = async (channel: string): Promise<void> => {
 	console.log(channel);
 	tentativas = 0;
 	acertos = 0;
-	showTentativas.innerHTML = `Tentativas: ${tentativas}`
+	showTentativas.innerHTML = `Tentativas: ${tentativas}`;
 	showAcertos.innerHTML = `Acertos: ${acertos}`;
 	try {
 		const data: Response = await fetch(
@@ -161,10 +158,9 @@ const getEmotesGame = async (channel: string): Promise<void> => {
 	} catch (error) {
 		alert("Canal não encontrado");
 	}
-	
 };
 
-//Remove emote acertado do array de emotes 
+//Remove emote acertado do array de emotes
 //Dá outro emote da lista para a variavel emoteAtual
 //limpa o output do emote anterior
 //exibe o novo emote

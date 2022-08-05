@@ -1,5 +1,4 @@
 "use strict";
-//código mais scuffed que esse impossível
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -170,7 +169,7 @@ var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0
         }
     });
 }); };
-//Remove emote acertado do array de emotes 
+//Remove emote acertado do array de emotes
 //Dá outro emote da lista para a variavel emoteAtual
 //limpa o output do emote anterior
 //exibe o novo emote
