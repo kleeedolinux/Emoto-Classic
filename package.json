@@ -2,7 +2,7 @@
   "name": "emoto-prototipo",
   "version": "0.5.0",
   "description": "Inclui os emotes da Twitch, BTTV, 7TV e FFZ\r Usa a API tEmotes ->https://adiq.stoplight.io/docs/temotes/YXBpOjMyNjU2ODIx-t-emotes-api",
-  "main": "public/scripts/dist/index.js",
+  "main": "server.js",
   "scripts": {
     "start": "tsc && node public/scripts/dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
