@@ -7,9 +7,10 @@
 }
 
 body {
-	background: #333;
+	background: rgb(27, 26, 26);
 	line-height: 1.5;
 	font-family: "Roboto", sans-serif;
+	color: #69e3f6;
 }
 
 main {
@@ -20,15 +21,16 @@ main {
 
 main > h1 {
 	text-align: center;
-	color: #5fd7d3;
-	font-size: 3rem;
+	color: #69e3f6;
+	font-size: 4rem;
 	margin-top: auto;
 	text-transform: uppercase;
+	margin-bottom: -3rem;
 }
 
 h3 {
 	text-align: center;
-	color: #76a9af;
+	color: #69e3f6;
 	font-size: 1rem;
 	margin-bottom: 1rem;
 	text-transform: uppercase;
@@ -36,6 +38,14 @@ h3 {
 
 a {
 	text-decoration: none;
+}
+
+#peepoThink {
+	display: flex;
+	margin: auto;
+	align-self: center;
+	padding-top: -1rem;
+	box-shadow: #000;
 }
 
 #app {
@@ -61,8 +71,7 @@ a {
 #channel {
 	display: inline-block;
 	border: 0;
-	border-bottom: 2px solid #444;
-	background-color: #7bc3ce;
+	background-color: #69e3f6;
 	border-radius: 2px;
 	padding: 0.5rem;
 	color: #fff;
@@ -76,15 +85,27 @@ a {
 #emoteTry {
 	width: 100%;
 	border: 0;
-	border-bottom: 2px solid #444;
-	background-color: #7bc3ce;
+	background-color: #69ccf6;
 	border-radius: 2px;
 	padding: 0.5rem;
+	margin-bottom: 0.5rem;
 	color: #fff;
 	font-size: 1rem;
 	font-weight: bold;
 	outline: none;
 	cursor: pointer;
+	display: none;
+}
+
+#blur {
+	font-size: 40px;
+	color: transparent;
+	text-shadow: 0 0 8px #000;
+}
+
+#btnConfirmar {
+	position: relative;
+	display: none;
 }
 
 .autocomplete-wrapper {
@@ -121,22 +142,19 @@ a {
 
 .card {
 	width: 12rem auto;
-	background: #444;
+	background: rgb(29, 29, 29);
 	color: #39a8e4;
 	padding: 1rem;
 	border-radius: 10px;
-	border-top: 0.5px solid #7bc3ce;
-	border-bottom: 0.5px solid #7bc3ce;
+	border-top: 1px solid #69e3f6;
+	border-bottom: 1px solid #69e3f6;
+	border-left: 1px solid #69e3f6;
+	border-right: 1px solid #69e3f6;
 	text-align: center;
 	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 	position: relative;
 	overflow: hidden;
-	cursor: pointer;
-	transition: 0.1s ease-in-out all;
-}
-
-.card:hover {
-	transform: scale(1.05);
+	cursor: unset;
 }
 
 .card--name {
@@ -148,6 +166,30 @@ a {
 }
 
 .card--image {
+	width: auto;
+	display: block;
+	margin: auto;
+	filter: blur(15px);
+	-webkit-filter: blur(15px);
+}
+
+.card--image2 {
+	width: auto;
+	display: block;
+	margin: auto;
+	filter: blur(10px);
+	-webkit-filter: blur(10px);
+}
+
+.card--image3 {
+	width: auto;
+	display: block;
+	margin: auto;
+	filter: blur(5px);
+	-webkit-filter: blur(5px);
+}
+
+.card--image4 {
 	width: auto;
 	display: block;
 	margin: auto;
@@ -186,4 +228,44 @@ input[type="submit"] {
 	/*when navigating through the items using the arrow keys:*/
 	background-color: DodgerBlue !important;
 	color: #ffffff;
+}
+
+.footer-socials {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	cursor: unset;
+}
+
+/* Style all font awesome icons */
+.fa {
+	padding: 20px;
+	width: 50px;
+	text-align: center;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+/* Add a hover effect if you want */
+.fa:hover {
+	opacity: 0.7;
+}
+
+/* Set a specific color for each brand */
+
+.twitch {
+	color: rgb(128, 55, 148);
+	cursor: pointer;
+}
+
+.twitter {
+	color: #55acee;
+	cursor: pointer;
+}
+
+.YouTube {
+	color: #bb0000;
+	cursor: pointer;
 }

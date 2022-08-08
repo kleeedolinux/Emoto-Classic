@@ -2,8 +2,11 @@ const container: HTMLElement = document.getElementById("app")!;
 const loading: HTMLElement = document.getElementById("loading")!;
 const showAcertos: HTMLElement = document.getElementById("acertos")!;
 const showTentativas: HTMLElement = document.getElementById("tentativas")!;
+const btnConfirmarEmote: HTMLElement = document.getElementById("btnConfirmar")!;
 const autocompleteWrapper: HTMLElement =
 	document.getElementById("autocomplete")!;
+
+document.addEventListener("contextmenu", (event) => event.preventDefault());
 
 const emotesList: Emote[] = [];
 const emoteNames: string[] = [];
@@ -27,6 +30,8 @@ inputChannel.addEventListener("change", (): void => {
 	showAcertos.innerHTML = `Acertos: ${acertos}`;
 	clear(container);
 	emotesList.length = 0;
+	showLoading(inputChannel.value);
+	showEmoteTry();
 	getEmotesGame(inputChannel.value);
 });
 
@@ -83,6 +88,11 @@ function onEmoteButtonClick(e: Event): void {
 	inputEmote.value = buttonElement.innerHTML;
 
 	removeAutocompleteDropdown();
+}
+
+function showEmoteTry(): void {
+	inputEmote.style.display = "inline-block";
+	btnConfirmarEmote.style.display = "inline-block";
 }
 
 interface Emote {
@@ -154,6 +164,7 @@ const getEmotesGame = async (channel: string): Promise<void> => {
 		});
 		getEmotenames(emotesList);
 		emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
+		clear(container);
 		showEmoteGame(emoteAtual);
 	} catch (error) {
 		alert("Canal não encontrado");
@@ -170,7 +181,6 @@ const continueGame = (emotesList: Emote[]): void => {
 	emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
 	clear(container);
 	inputEmote.value = "";
-	console.log(emotesList);
 	showEmoteGame(emoteAtual);
 };
 
@@ -188,7 +198,19 @@ const gameplay = (): void => {
 		tentativas++;
 		showAcertos.innerHTML = `Acertos: ${acertos}`;
 		showTentativas.innerHTML = `Tentativas: ${tentativas}`;
+		if (tentativas === 1) {
+			clear(container);
+			showEmoteGame2(emoteAtual);
+		}
+		if (tentativas === 2) {
+			clear(container);
+			showEmoteGame3(emoteAtual);
+		}
 		if (tentativas === 3) {
+			clear(container);
+			showEmoteGame4(emoteAtual);
+		}
+		if (tentativas === 4) {
 			alert("Game Over!");
 			clear(container);
 			getEmotesGame(inputChannel.value);
@@ -237,7 +259,9 @@ const gameplay = (): void => {
 const showEmote = (emote: Emote): void => {
 	let output: string = `
     <a class="card">
-        <img class="card--image" src=${emote.image} alt=${emote.name} />
+		<div id= "blur">
+		<img class="card--image" src=${emote.image} alt=${emote.name} />
+		</div>
         <h1 class="card--name">${emote.name}</h1>
     </a>
     `;
@@ -247,8 +271,50 @@ const showEmote = (emote: Emote): void => {
 const showEmoteGame = (emote: Emote): void => {
 	let output: string = `
     <a class="card">
-        <img class="card--image" src=${emote.image} alt=${emote.name} />
+		
+		<img class="card--image" src=${emote.image} alt=${emote.name} />
+		
     </a>
+    `;
+	container.innerHTML += output;
+};
+
+const showEmoteGame2 = (emote: Emote): void => {
+	let output: string = `
+    <a class="card">
+		
+		<img class="card--image2" src=${emote.image} alt=${emote.name} />
+		
+    </a>
+    `;
+	container.innerHTML += output;
+};
+
+const showEmoteGame3 = (emote: Emote): void => {
+	let output: string = `
+    <a class="card">
+		
+		<img class="card--image3" src=${emote.image} alt=${emote.name} />
+		
+    </a>
+    `;
+	container.innerHTML += output;
+};
+
+const showEmoteGame4 = (emote: Emote): void => {
+	let output: string = `
+    <a class="card">
+		
+		<img class="card--image4" src=${emote.image} alt=${emote.name} />
+		
+    </a>
+    `;
+	container.innerHTML += output;
+};
+
+const showLoading = (channel: string): void => {
+	let output: string = `
+    <p> Carregando Emotes de ${channel}...</p>
     `;
 	container.innerHTML += output;
 };
@@ -257,7 +323,6 @@ const getEmotenames = (emote: Emote[]): void => {
 	emote.forEach((emote: Emote) => {
 		emoteNames.push(emote.name);
 	});
-	console.log(emoteNames);
 };
 
 const clear = (container: HTMLElement): void => {

@@ -4,3 +4,4 @@ app.use(express.static(__dirname + '/public')); //__dir and not _dir
 var port = 8080; // you can use any port
 app.listen(port);
 console.log('server on' + port);
+console.log('Acesse o App em: http://localhost:8080');

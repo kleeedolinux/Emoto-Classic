@@ -4,12 +4,15 @@
   "description": "Inclui os emotes da Twitch, BTTV, 7TV e FFZ\r Usa a API tEmotes ->https://adiq.stoplight.io/docs/temotes/YXBpOjMyNjU2ODIx-t-emotes-api",
   "main": "server.js",
   "scripts": {
-    "start": "tsc && node public/scripts/dist/index.js",
+    "server": "node server.js",
+    "start": "concurrently \"npm run watch\" \"npm run server\"",
+    "watch": "tsc -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "GrifoEXE",
   "license": "ISC",
   "dependencies": {
+    "concurrently": "^7.3.0",
     "express": "^4.18.1"
   },
   "devDependencies": {

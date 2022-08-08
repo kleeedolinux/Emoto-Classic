@@ -3,13 +3,21 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="stylesheet" href="style.css" />
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+		/>
 		<title>Emoto</title>
 	</head>
 	<body>
 		<main>
 			<h1>Emoto</h1>
+			<img
+				id="peepoThink"
+				src="https://cdn.betterttv.net/emote/622e75da06fd6a9f5be701a6/3x"
+			/>
 			<h3>o quão bem você conhece seu chat?</h3>
-			<!-- <img id = "TypeScriptIcon" src="https://cdn-icons-png.flaticon.com/512/5968/5968381.png"> -->
+
 			<input
 				id="channel"
 				placeholder="Insira um canal da Twitch"
@@ -18,18 +26,35 @@
 			/>
 			<div id="loading"></div>
 			<div id="app"></div>
+
 			<div id="autocomplete" class="autocomplete-wrapper">
 				<input
 					id="emoteTry"
-					placeholder="Insira o nome do emote acima"
+					placeholder="Insira o nome do emote"
 					type="text"
 					autocomplete="off"
 				/>
 			</div>
-			<button onclick="gameplay()">Confirmar</button>
+			<button id="btnConfirmar" onclick="gameplay()">Confirmar</button>
 			<h3 id="acertos"></h3>
 			<h3 id="tentativas"></h3>
 		</main>
 		<script src="scripts/dist/index.js"></script>
 	</body>
+	<footer class="footer-socials">
+		<div class="buttons">
+			<a class="twitter" href="https://www.twitter.com/grifoexe" target="_blank"
+				><i class="fa fa-twitter"></i
+			></a>
+			<a
+				class="youtube"
+				href="https://www.youtube.com/c/grifoexe"
+				target="_blank"
+				><i class="fa fa-youtube-play"></i
+			></a>
+			<a class="twitch" href="https://www.twitch.tv/grifoexe" target="_blank"
+				><i class="fa fa-twitch"></i
+			></a>
+		</div>
+	</footer>
 </html>

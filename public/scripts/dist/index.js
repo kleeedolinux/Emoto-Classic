@@ -39,7 +39,9 @@ var container = document.getElementById("app");
 var loading = document.getElementById("loading");
 var showAcertos = document.getElementById("acertos");
 var showTentativas = document.getElementById("tentativas");
+var btnConfirmarEmote = document.getElementById("btnConfirmar");
 var autocompleteWrapper = document.getElementById("autocomplete");
+document.addEventListener("contextmenu", function (event) { return event.preventDefault(); });
 var emotesList = [];
 var emoteNames = [];
 var tentativas = 0;
@@ -54,6 +56,8 @@ inputChannel.addEventListener("change", function () {
     showAcertos.innerHTML = "Acertos: ".concat(acertos);
     clear(container);
     emotesList.length = 0;
+    showLoading(inputChannel.value);
+    showEmoteTry();
     getEmotesGame(inputChannel.value);
 });
 inputEmote.addEventListener("input", onInputChange);
@@ -97,6 +101,10 @@ function onEmoteButtonClick(e) {
     var buttonElement = e.target;
     inputEmote.value = buttonElement.innerHTML;
     removeAutocompleteDropdown();
+}
+function showEmoteTry() {
+    inputEmote.style.display = "inline-block";
+    btnConfirmarEmote.style.display = "inline-block";
 }
 //Código que eu usei pra mostrar todos os emotes de um canal específico
 // const getEmotesShow = async (channel: string): Promise<void> => {
@@ -159,6 +167,7 @@ var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0
                 });
                 getEmotenames(emotesList);
                 emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
+                clear(container);
                 showEmoteGame(emoteAtual);
                 return [3 /*break*/, 5];
             case 4:
@@ -179,7 +188,6 @@ var continueGame = function (emotesList) {
     emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
     clear(container);
     inputEmote.value = "";
-    console.log(emotesList);
     showEmoteGame(emoteAtual);
 };
 var gameplay = function () {
@@ -197,7 +205,19 @@ var gameplay = function () {
         tentativas++;
         showAcertos.innerHTML = "Acertos: ".concat(acertos);
         showTentativas.innerHTML = "Tentativas: ".concat(tentativas);
+        if (tentativas === 1) {
+            clear(container);
+            showEmoteGame2(emoteAtual);
+        }
+        if (tentativas === 2) {
+            clear(container);
+            showEmoteGame3(emoteAtual);
+        }
         if (tentativas === 3) {
+            clear(container);
+            showEmoteGame4(emoteAtual);
+        }
+        if (tentativas === 4) {
             alert("Game Over!");
             clear(container);
             getEmotesGame(inputChannel.value);
@@ -242,18 +262,33 @@ var gameplay = function () {
 // 	// });
 // };
 var showEmote = function (emote) {
-    var output = "\n    <a class=\"card\">\n        <img class=\"card--image\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n        <h1 class=\"card--name\">").concat(emote.name, "</h1>\n    </a>\n    ");
+    var output = "\n    <a class=\"card\">\n\t\t<div id= \"blur\">\n\t\t<img class=\"card--image\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n\t\t</div>\n        <h1 class=\"card--name\">").concat(emote.name, "</h1>\n    </a>\n    ");
     container.innerHTML += output;
 };
 var showEmoteGame = function (emote) {
-    var output = "\n    <a class=\"card\">\n        <img class=\"card--image\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n    </a>\n    ");
+    var output = "\n    <a class=\"card\">\n\t\t\n\t\t<img class=\"card--image\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n\t\t\n    </a>\n    ");
+    container.innerHTML += output;
+};
+var showEmoteGame2 = function (emote) {
+    var output = "\n    <a class=\"card\">\n\t\t\n\t\t<img class=\"card--image2\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n\t\t\n    </a>\n    ");
+    container.innerHTML += output;
+};
+var showEmoteGame3 = function (emote) {
+    var output = "\n    <a class=\"card\">\n\t\t\n\t\t<img class=\"card--image3\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n\t\t\n    </a>\n    ");
+    container.innerHTML += output;
+};
+var showEmoteGame4 = function (emote) {
+    var output = "\n    <a class=\"card\">\n\t\t\n\t\t<img class=\"card--image4\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n\t\t\n    </a>\n    ");
+    container.innerHTML += output;
+};
+var showLoading = function (channel) {
+    var output = "\n    <p> Carregando Emotes de ".concat(channel, "...</p>\n    ");
     container.innerHTML += output;
 };
 var getEmotenames = function (emote) {
     emote.forEach(function (emote) {
         emoteNames.push(emote.name);
     });
-    console.log(emoteNames);
 };
 var clear = function (container) {
     container.innerHTML = "";
