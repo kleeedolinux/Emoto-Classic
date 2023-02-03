@@ -1,51 +1,91 @@
-@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
-
-* {
+html,
+body {
+	font-family: "Segoe UI";
 	margin: 0;
 	padding: 0;
-	box-sizing: border-box;
 }
 
 body {
-	background: rgb(27, 26, 26);
-	line-height: 1.5;
-	font-family: "Roboto", sans-serif;
-	color: #398ce4;;
+	background-image: url(img/3.png);
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-size: cover;
+	width: auto;
+	height: 100%;
+	color: #398ce4;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
 }
 
-main {
-	padding: 1rem;
-	max-width: 1100px;
-	margin: auto;
+::placeholder {
+	/* Chrome, Firefox, Opera, Safari 10.1+ */
+	color: rgb(42, 42, 42);
+	opacity: 1; /* Firefox */
 }
 
-main > h1 {
+:-ms-input-placeholder {
+	/* Internet Explorer 10-11 */
+	color: rgb(42, 42, 42);
+}
+
+.container1 {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+#title {
+	font-weight: 800;
+	text-shadow: 6px 12px 5px black;
 	text-align: center;
-	color: #398ce4;;
+	color: #398ce4;
 	font-size: 4rem;
 	margin-top: auto;
 	text-transform: uppercase;
 	margin-bottom: -3rem;
 }
 
-h3 {
-	text-align: center;
-	color: #398ce4;;
+.peepoThink {
+	display: block;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
+	margin-left: auto;
+	margin-right: auto;
+	filter: drop-shadow(6px 6px 5px black);
+}
+
+#subtitle {
+	font-weight: 600;
+	font-style: italic;
+	text-shadow: 6px 6px 5px black;
+	color: #398ce4;
 	font-size: 1rem;
+	margin-top: auto;
 	margin-bottom: 1rem;
 	text-transform: uppercase;
 }
 
-a {
-	text-decoration: none;
+#channelInput {
+	font-weight: 700;
+	box-shadow: 6px 6px 5px black;
+	width: 100%;
+	border: 0;
+	background-color: #398ce4;
+	border-radius: 2px;
+	padding: 0.5rem;
+	color: #fff;
+	font-size: 1rem;
+	font-weight: bold;
+	text-transform: uppercase;
+	outline: none;
+	cursor: auto;
 }
 
-#peepoThink {
-	display: flex;
-	margin: auto;
-	align-self: center;
-	padding-top: -1rem;
-	box-shadow: #000;
+#channelInput:focus {
+	box-shadow: 0 0 0 1px #fff;
 }
 
 #app {
@@ -64,28 +104,13 @@ a {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
 	grid-gap: 1.5rem;
-	justify-content: center;
-	align-items: center;
-}
-
-#channel {
-	display: inline-block;
-	border: 0;
-	background-color: #398ce4;;
-	border-radius: 2px;
-	padding: 0.5rem;
-	color: #fff;
-	font-size: 1rem;
-	font-weight: bold;
-	text-transform: uppercase;
-	outline: none;
-	cursor: pointer;
 }
 
 #emoteTry {
-	width: 100%;
+	box-shadow: 6px 6px 5px black;
+	width: auto;
 	border: 0;
-	background-color: #398ce4;;
+	background-color: #398ce4;
 	border-radius: 2px;
 	padding: 0.5rem;
 	margin-bottom: 0.5rem;
@@ -93,8 +118,11 @@ a {
 	font-size: 1rem;
 	font-weight: bold;
 	outline: none;
-	cursor: pointer;
 	display: none;
+}
+
+#emoteTry:focus {
+	box-shadow: 0 0 0 1px #fff;
 }
 
 #blur {
@@ -103,44 +131,8 @@ a {
 	text-shadow: 0 0 8px #000;
 }
 
-#btnConfirmar {
-	position: relative;
-	display: none;
-}
-
-.autocomplete-wrapper {
-	display: inline-block;
-	position: relative;
-}
-
-.autocomplete-list {
-	list-style: none;
-	padding: none;
-	margin: unset;
-	position: absolute;
-	width: 100%;
-}
-
-.autocomplete-list button {
-	border: unset;
-	background: #444;
-	color: #ffffff;
-	padding: 0.3rem;
-	cursor: pointer;
-	display: block;
-	width: 100%;
-	text-align: left;
-}
-
-.autocomplete-list li {
-	border: 1px solid #444;
-	border-top: unset;
-}
-.autocomplete-list li:hover {
-	background: #444;
-}
-
 .card {
+	margin-top: -2rem;
 	width: 12rem auto;
 	background: rgb(29, 29, 29);
 	color: #398ce4;
@@ -197,75 +189,24 @@ a {
 
 input[type="text"] {
 	background-color: #f1f1f1;
-	width: 100%;
 }
 input[type="submit"] {
 	background-color: DodgerBlue;
 	color: #fff;
 }
-.autocomplete-items {
-	position: absolute;
-	border: 1px solid #d4d4d4;
-	border-bottom: none;
-	border-top: none;
-	z-index: 99;
-	/*position the autocomplete items to be the same width as the container:*/
-	top: 100%;
-	left: 0;
-	right: 0;
-}
-.autocomplete-items div {
-	padding: 10px;
-	cursor: pointer;
-	background-color: #fff;
-	border-bottom: 1px solid #d4d4d4;
-}
-.autocomplete-items div:hover {
-	/*when hovering an item:*/
-	background-color: #e9e9e9;
-}
-.autocomplete-active {
-	/*when navigating through the items using the arrow keys:*/
-	background-color: DodgerBlue !important;
-	color: #ffffff;
-}
 
-.footer-socials {
-	display: flex;
-	justify-content: center;
+#score {
+	margin-top: -1rem;
 	align-items: center;
-	margin-top: 1rem;
-	margin-bottom: 1rem;
-	cursor: unset;
-}
-
-/* Style all font awesome icons */
-.fa {
-	padding: 20px;
-	width: 50px;
 	text-align: center;
-	text-decoration: none;
-	cursor: pointer;
+	font-size: 1rem;
+	font-weight: bold;
+	text-transform: uppercase;
 }
-
-/* Add a hover effect if you want */
-.fa:hover {
-	opacity: 0.7;
+#tentativas {
+	color: rgb(191, 2, 2);
 }
-
-/* Set a specific color for each brand */
-
-.twitch {
-	color: rgb(128, 55, 148);
-	cursor: pointer;
-}
-
-.twitter {
-	color: #55acee;
-	cursor: pointer;
-}
-
-.YouTube {
-	color: #bb0000;
-	cursor: pointer;
+#acertos {
+	margin-top: -1rem;
+	color: rgb(0, 128, 0);
 }

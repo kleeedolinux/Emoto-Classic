@@ -35,79 +35,36 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var container = document.getElementById("app");
+var app = document.getElementById("app");
 var loading = document.getElementById("loading");
 var showAcertos = document.getElementById("acertos");
 var showTentativas = document.getElementById("tentativas");
-var btnConfirmarEmote = document.getElementById("btnConfirmar");
-var autocompleteWrapper = document.getElementById("autocomplete");
+var score = document.getElementById("score");
+var container2 = document.getElementById("container2");
 document.addEventListener("contextmenu", function (event) { return event.preventDefault(); });
 var emotesList = [];
 var emoteNames = [];
 var tentativas = 0;
 var emoteAtual;
 var acertos = 0;
-var inputChannel = document.getElementById("channel");
+var inputChannel = document.getElementById("channelInput");
 var inputEmote = document.getElementById("emoteTry");
 inputChannel.addEventListener("change", function () {
     tentativas = 0;
     acertos = 0;
-    showTentativas.innerHTML = "Tentativas: ".concat(tentativas);
-    showAcertos.innerHTML = "Acertos: ".concat(acertos);
-    clear(container);
+    clear(app);
     emotesList.length = 0;
     showLoading(inputChannel.value);
-    showEmoteTry();
     getEmotesGame(inputChannel.value);
 });
-inputEmote.addEventListener("input", onInputChange);
 inputEmote.addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
         gameplay();
-        removeAutocompleteDropdown();
     }
 });
-function onInputChange() {
-    removeAutocompleteDropdown();
-    var value = inputEmote.value.toLowerCase();
-    var filteredEmoteNames = [];
-    if (value.length === 0)
-        return;
-    emoteNames.forEach(function (emoteName) {
-        if (emoteName.substring(0, value.length).toLowerCase() === value) {
-            filteredEmoteNames.push(emoteName);
-        }
-    });
-    createAutoCompleteDropdown(filteredEmoteNames);
-}
-function createAutoCompleteDropdown(list) {
-    var listElement = document.createElement("ul");
-    listElement.className = "autocomplete-list";
-    listElement.id = "autocomplete-list";
-    list.forEach(function (emoteName) {
-        var listItem = document.createElement("li");
-        var emoteNameButton = document.createElement("button");
-        emoteNameButton.innerHTML = emoteName;
-        emoteNameButton.addEventListener("click", onEmoteConfirm);
-        listItem.appendChild(emoteNameButton);
-        listElement.appendChild(listItem);
-    });
-    autocompleteWrapper.appendChild(listElement);
-}
-function removeAutocompleteDropdown() {
-    var listElement = document.getElementById("autocomplete-list");
-    if (listElement) {
-        listElement.remove();
-    }
-}
-function onEmoteConfirm(e) {
-    var buttonElement = e.target;
-    inputEmote.value = buttonElement.innerHTML;
-    removeAutocompleteDropdown();
-}
 function showEmoteTry() {
-    inputEmote.style.display = "inline-block";
-    btnConfirmarEmote.style.display = "inline-block";
+    inputEmote.style.display = "block";
+    inputEmote.focus();
 }
 var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0, function () {
     var data, emotes, error_1;
@@ -117,8 +74,6 @@ var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0
                 console.log(channel);
                 tentativas = 0;
                 acertos = 0;
-                showTentativas.innerHTML = "Tentativas: ".concat(tentativas);
-                showAcertos.innerHTML = "Acertos: ".concat(acertos);
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 4, , 5]);
@@ -146,12 +101,21 @@ var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0
                 });
                 getEmotenames(emotesList);
                 emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
-                clear(container);
+                clear(app);
+                clear(loading);
                 showEmoteGame(emoteAtual);
+                showEmoteTry();
+                showTentativas.innerHTML = "Tentativas: ".concat(tentativas);
+                showAcertos.innerHTML = "Acertos: ".concat(acertos);
                 return [3 /*break*/, 5];
             case 4:
                 error_1 = _a.sent();
                 alert("Canal não encontrado");
+                showTentativas.innerHTML = "";
+                showAcertos.innerHTML = "";
+                clear(app);
+                inputEmote.style.display = "none";
+                clear(loading);
                 return [3 /*break*/, 5];
             case 5: return [2 /*return*/];
         }
@@ -165,13 +129,13 @@ var continueGame = function (emotesList) {
     emotesList.splice(emotesList.indexOf(emoteAtual), 1);
     emoteNames.splice(emoteNames.indexOf(emoteAtual.name), 1);
     emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
-    clear(container);
+    clear(app);
     inputEmote.value = "";
     showEmoteGame(emoteAtual);
 };
 var gameplay = function () {
     if (inputEmote.value == emoteAtual.name) {
-        alert("Acertou!");
+        inputEmote.style.boxShadow = "0 0 0 3px rgb(0, 128, 0)";
         acertos++;
         tentativas = 0;
         showAcertos.innerHTML = "Acertos: ".concat(acertos);
@@ -179,53 +143,53 @@ var gameplay = function () {
         continueGame(emotesList);
     }
     else {
+        inputEmote.style.boxShadow = "0 0 0 3px rgba(191, 2, 2)";
         console.log(emoteAtual.name);
-        alert("Errou!");
         tentativas++;
         showAcertos.innerHTML = "Acertos: ".concat(acertos);
         showTentativas.innerHTML = "Tentativas: ".concat(tentativas);
         if (tentativas === 1) {
-            clear(container);
+            clear(app);
             showEmoteGame2(emoteAtual);
         }
         if (tentativas === 2) {
-            clear(container);
+            clear(app);
             showEmoteGame3(emoteAtual);
         }
         if (tentativas === 3) {
-            clear(container);
+            clear(app);
             showEmoteGame4(emoteAtual);
         }
         if (tentativas === 4) {
             alert("Game Over!");
-            clear(container);
+            clear(app);
             getEmotesGame(inputChannel.value);
         }
     }
 };
 var showEmote = function (emote) {
     var output = "\n    <a class=\"card\">\n\t\t<div id= \"blur\">\n\t\t<img class=\"card--image\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n\t\t</div>\n        <h1 class=\"card--name\">").concat(emote.name, "</h1>\n    </a>\n    ");
-    container.innerHTML += output;
+    app.innerHTML += output;
 };
 var showEmoteGame = function (emote) {
     var output = "\n    <a class=\"card\">\n\t\t\n\t\t<img class=\"card--image\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n\t\t\n    </a>\n    ");
-    container.innerHTML += output;
+    app.innerHTML += output;
 };
 var showEmoteGame2 = function (emote) {
     var output = "\n    <a class=\"card\">\n\t\t\n\t\t<img class=\"card--image2\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n\t\t\n    </a>\n    ");
-    container.innerHTML += output;
+    app.innerHTML += output;
 };
 var showEmoteGame3 = function (emote) {
     var output = "\n    <a class=\"card\">\n\t\t\n\t\t<img class=\"card--image3\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n\t\t\n    </a>\n    ");
-    container.innerHTML += output;
+    app.innerHTML += output;
 };
 var showEmoteGame4 = function (emote) {
     var output = "\n    <a class=\"card\">\n\t\t\n\t\t<img class=\"card--image4\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n\t\t\n    </a>\n    ");
-    container.innerHTML += output;
+    app.innerHTML += output;
 };
 var showLoading = function (channel) {
     var output = "\n    <p> Carregando Emotes de ".concat(channel, "...</p>\n    ");
-    container.innerHTML += output;
+    loading.innerHTML += output;
 };
 var getEmotenames = function (emote) {
     emote.forEach(function (emote) {

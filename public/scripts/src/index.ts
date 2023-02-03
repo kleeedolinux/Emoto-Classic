@@ -1,10 +1,9 @@
-const container: HTMLElement = document.getElementById("app")!;
+const app: HTMLElement = document.getElementById("app")!;
 const loading: HTMLElement = document.getElementById("loading")!;
 const showAcertos: HTMLElement = document.getElementById("acertos")!;
 const showTentativas: HTMLElement = document.getElementById("tentativas")!;
-const btnConfirmarEmote: HTMLElement = document.getElementById("btnConfirmar")!;
-const autocompleteWrapper: HTMLElement =
-	document.getElementById("autocomplete")!;
+const score: HTMLElement = document.getElementById("score")!;
+const container2: HTMLElement = document.getElementById("container2")!;
 
 document.addEventListener("contextmenu", (event) => event.preventDefault());
 
@@ -16,7 +15,7 @@ var emoteAtual: Emote;
 var acertos: number = 0;
 
 const inputChannel: HTMLInputElement = document.getElementById(
-	"channel"
+	"channelInput"
 )! as HTMLInputElement;
 
 const inputEmote: HTMLInputElement = document.getElementById(
@@ -26,75 +25,23 @@ const inputEmote: HTMLInputElement = document.getElementById(
 inputChannel.addEventListener("change", (): void => {
 	tentativas = 0;
 	acertos = 0;
-	showTentativas.innerHTML = `Tentativas: ${tentativas}`;
-	showAcertos.innerHTML = `Acertos: ${acertos}`;
-	clear(container);
+	clear(app);
 	emotesList.length = 0;
 	showLoading(inputChannel.value);
-	showEmoteTry();
 	getEmotesGame(inputChannel.value);
 });
 
 inputEmote.addEventListener("keydown", (e: KeyboardEvent) => {
 	if (e.key === "Enter") {
 		gameplay();
-		removeAutocompleteDropdown();
 	}
 });
 
 
-function onInputChange(): void {
-	removeAutocompleteDropdown();
-
-	const value: string = inputEmote.value.toLowerCase();
-
-	const filteredEmoteNames: string[] = [];
-
-	if (value.length === 0) return;
-
-	emoteNames.forEach((emoteName: string) => {
-		if (emoteName.substring(0, value.length).toLowerCase() === value) {
-			filteredEmoteNames.push(emoteName);
-		}
-	});
-	createAutoCompleteDropdown(filteredEmoteNames);
-}
-
-function createAutoCompleteDropdown(list: string[]): void {
-	const listElement = document.createElement("ul");
-	listElement.className = "autocomplete-list";
-	listElement.id = "autocomplete-list";
-
-	list.forEach((emoteName: string) => {
-		const listItem = document.createElement("li")!;
-
-		const emoteNameButton = document.createElement("button");
-		emoteNameButton.innerHTML = emoteName;
-		emoteNameButton.addEventListener("click", onEmoteConfirm);
-		listItem.appendChild(emoteNameButton);
-
-		listElement.appendChild(listItem);
-	});
-	autocompleteWrapper.appendChild(listElement);
-}
-
-function removeAutocompleteDropdown(): void {
-	const listElement = document.getElementById("autocomplete-list")!;
-	if (listElement) {
-		listElement.remove();
-	}
-}
-
-function onEmoteConfirm(e: Event): void {
-	const buttonElement = e.target as HTMLButtonElement;
-	inputEmote.value = buttonElement.innerHTML;
-
-	removeAutocompleteDropdown();
-}
 
 function showEmoteTry(): void {
-	inputEmote.style.display = "inline-block";
-	btnConfirmarEmote.style.display = "inline-block";
+	inputEmote.style.display = "block";
+	inputEmote.focus();
 }
 
 interface Emote {
@@ -113,8 +60,6 @@ const getEmotesGame = async (channel: string): Promise<void> => {
 	console.log(channel);
 	tentativas = 0;
 	acertos = 0;
-	showTentativas.innerHTML = `Tentativas: ${tentativas}`;
-	showAcertos.innerHTML = `Acertos: ${acertos}`;
 	try {
 		const data: Response = await fetch(
 			`https://emotes.adamcy.pl/v1/channel/${channel}/emotes/twitch.7tv.bttv`,
@@ -139,10 +84,19 @@ const getEmotesGame = async (channel: string): Promise<void> => {
 		});
 		getEmotenames(emotesList);
 		emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
-		clear(container);
+		clear(app);
+		clear(loading);
 		showEmoteGame(emoteAtual);
+		showEmoteTry();
+		showTentativas.innerHTML = `Tentativas: ${tentativas}`;
+		showAcertos.innerHTML = `Acertos: ${acertos}`;
 	} catch (error) {
 		alert("Canal não encontrado");
+		showTentativas.innerHTML = ``;
+		showAcertos.innerHTML = ``;
+		clear(app);
+		inputEmote.style.display = "none";
+		clear(loading);
 	}
 };
 
@@ -154,40 +108,40 @@ const continueGame = (emotesList: Emote[]): void => {
 	emotesList.splice(emotesList.indexOf(emoteAtual), 1);
 	emoteNames.splice(emoteNames.indexOf(emoteAtual.name), 1);
 	emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
-	clear(container);
+	clear(app);
 	inputEmote.value = "";
 	showEmoteGame(emoteAtual);
 };
 
 const gameplay = (): void => {
 	if (inputEmote.value == emoteAtual.name) {
-		alert("Acertou!");
+		inputEmote.style.boxShadow = "0 0 0 3px rgb(0, 128, 0)";
 		acertos++;
 		tentativas = 0;
 		showAcertos.innerHTML = `Acertos: ${acertos}`;
 		showTentativas.innerHTML = `Tentativas: ${tentativas}`;
 		continueGame(emotesList);
 	} else {
+		inputEmote.style.boxShadow = "0 0 0 3px rgba(191, 2, 2)";
 		console.log(emoteAtual.name);
-		alert("Errou!");
 		tentativas++;
 		showAcertos.innerHTML = `Acertos: ${acertos}`;
 		showTentativas.innerHTML = `Tentativas: ${tentativas}`;
 		if (tentativas === 1) {
-			clear(container);
+			clear(app);
 			showEmoteGame2(emoteAtual);
 		}
 		if (tentativas === 2) {
-			clear(container);
+			clear(app);
 			showEmoteGame3(emoteAtual);
 		}
 		if (tentativas === 3) {
-			clear(container);
+			clear(app);
 			showEmoteGame4(emoteAtual);
 		}
 		if (tentativas === 4) {
 			alert("Game Over!");
-			clear(container);
+			clear(app);
 			getEmotesGame(inputChannel.value);
 		}
 	}
@@ -203,7 +157,7 @@ const showEmote = (emote: Emote): void => {
         <h1 class="card--name">${emote.name}</h1>
     </a>
     `;
-	container.innerHTML += output;
+	app.innerHTML += output;
 };
 
 const showEmoteGame = (emote: Emote): void => {
@@ -214,7 +168,7 @@ const showEmoteGame = (emote: Emote): void => {
 		
     </a>
     `;
-	container.innerHTML += output;
+	app.innerHTML += output;
 };
 
 const showEmoteGame2 = (emote: Emote): void => {
@@ -225,7 +179,7 @@ const showEmoteGame2 = (emote: Emote): void => {
 		
     </a>
     `;
-	container.innerHTML += output;
+	app.innerHTML += output;
 };
 
 const showEmoteGame3 = (emote: Emote): void => {
@@ -236,7 +190,7 @@ const showEmoteGame3 = (emote: Emote): void => {
 		
     </a>
     `;
-	container.innerHTML += output;
+	app.innerHTML += output;
 };
 
 const showEmoteGame4 = (emote: Emote): void => {
@@ -247,14 +201,14 @@ const showEmoteGame4 = (emote: Emote): void => {
 		
     </a>
     `;
-	container.innerHTML += output;
+	app.innerHTML += output;
 };
 
 const showLoading = (channel: string): void => {
 	let output: string = `
     <p> Carregando Emotes de ${channel}...</p>
     `;
-	container.innerHTML += output;
+	loading.innerHTML += output;
 };
 
 const getEmotenames = (emote: Emote[]): void => {
@@ -264,7 +218,7 @@ const getEmotenames = (emote: Emote[]): void => {
 };
 
 const clear = (container: HTMLElement): void => {
-	container.innerHTML = "";
+	container.innerHTML = ``;
 };
 
 
