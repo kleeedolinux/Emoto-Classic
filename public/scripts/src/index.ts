@@ -35,11 +35,13 @@ inputChannel.addEventListener("change", (): void => {
 	getEmotesGame(inputChannel.value);
 });
 
-inputEmote.addEventListener("input", onInputChange);
+inputEmote.addEventListener("keydown", (e: KeyboardEvent) => {
+	if (e.key === "Enter") {
+		gameplay();
+		removeAutocompleteDropdown();
+	}
+});
 
-// inputEmote.addEventListener("change", (): void => {
-// 	gameplay();
-// });
 
 function onInputChange(): void {
 	removeAutocompleteDropdown();
@@ -68,7 +70,7 @@ function createAutoCompleteDropdown(list: string[]): void {
 
 		const emoteNameButton = document.createElement("button");
 		emoteNameButton.innerHTML = emoteName;
-		emoteNameButton.addEventListener("click", onEmoteButtonClick);
+		emoteNameButton.addEventListener("click", onEmoteConfirm);
 		listItem.appendChild(emoteNameButton);
 
 		listElement.appendChild(listItem);
@@ -83,7 +85,7 @@ function removeAutocompleteDropdown(): void {
 	}
 }
 
-function onEmoteButtonClick(e: Event): void {
+function onEmoteConfirm(e: Event): void {
 	const buttonElement = e.target as HTMLButtonElement;
 	inputEmote.value = buttonElement.innerHTML;
 

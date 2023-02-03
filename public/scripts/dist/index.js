@@ -14,7 +14,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -61,9 +61,12 @@ inputChannel.addEventListener("change", function () {
     getEmotesGame(inputChannel.value);
 });
 inputEmote.addEventListener("input", onInputChange);
-// inputEmote.addEventListener("change", (): void => {
-// 	gameplay();
-// });
+inputEmote.addEventListener("keydown", function (e) {
+    if (e.key === "Enter") {
+        gameplay();
+        removeAutocompleteDropdown();
+    }
+});
 function onInputChange() {
     removeAutocompleteDropdown();
     var value = inputEmote.value.toLowerCase();
@@ -85,7 +88,7 @@ function createAutoCompleteDropdown(list) {
         var listItem = document.createElement("li");
         var emoteNameButton = document.createElement("button");
         emoteNameButton.innerHTML = emoteName;
-        emoteNameButton.addEventListener("click", onEmoteButtonClick);
+        emoteNameButton.addEventListener("click", onEmoteConfirm);
         listItem.appendChild(emoteNameButton);
         listElement.appendChild(listItem);
     });
@@ -97,7 +100,7 @@ function removeAutocompleteDropdown() {
         listElement.remove();
     }
 }
-function onEmoteButtonClick(e) {
+function onEmoteConfirm(e) {
     var buttonElement = e.target;
     inputEmote.value = buttonElement.innerHTML;
     removeAutocompleteDropdown();
@@ -106,30 +109,6 @@ function showEmoteTry() {
     inputEmote.style.display = "inline-block";
     btnConfirmarEmote.style.display = "inline-block";
 }
-//Código que eu usei pra mostrar todos os emotes de um canal específico
-// const getEmotesShow = async (channel: string): Promise<void> => {
-// 	console.log(channel);
-// 	// achar um jeito de otimizar essa parte aqui
-// 	const data: Response = await fetch(
-// 		`https://emotes.adamcy.pl/v1/channel/${channel}/emotes/twitch.7tv.bttv.ffz`,
-// 		{
-// 			method: "GET",
-// 			headers: {
-// 				"Content-Type": "application/json",
-// 			},
-// 		}
-// 	);
-// 	const emotes = await data.json();
-// 	//pega os emotes do canal especificado
-// 	emotes.forEach((emote: any) => {
-// 		//para cada emote, exibir o nome e a imagem no site
-// 		const emoteData: Emote = {
-// 			name: emote.code,
-// 			image: emote.urls[1].url,
-// 		};
-// 		showEmote(emoteData);
-// 	});
-// };
 var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0, function () {
     var data, emotes, error_1;
     return __generator(this, function (_a) {
@@ -224,6 +203,62 @@ var gameplay = function () {
         }
     }
 };
+var showEmote = function (emote) {
+    var output = "\n    <a class=\"card\">\n\t\t<div id= \"blur\">\n\t\t<img class=\"card--image\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n\t\t</div>\n        <h1 class=\"card--name\">").concat(emote.name, "</h1>\n    </a>\n    ");
+    container.innerHTML += output;
+};
+var showEmoteGame = function (emote) {
+    var output = "\n    <a class=\"card\">\n\t\t\n\t\t<img class=\"card--image\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n\t\t\n    </a>\n    ");
+    container.innerHTML += output;
+};
+var showEmoteGame2 = function (emote) {
+    var output = "\n    <a class=\"card\">\n\t\t\n\t\t<img class=\"card--image2\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n\t\t\n    </a>\n    ");
+    container.innerHTML += output;
+};
+var showEmoteGame3 = function (emote) {
+    var output = "\n    <a class=\"card\">\n\t\t\n\t\t<img class=\"card--image3\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n\t\t\n    </a>\n    ");
+    container.innerHTML += output;
+};
+var showEmoteGame4 = function (emote) {
+    var output = "\n    <a class=\"card\">\n\t\t\n\t\t<img class=\"card--image4\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n\t\t\n    </a>\n    ");
+    container.innerHTML += output;
+};
+var showLoading = function (channel) {
+    var output = "\n    <p> Carregando Emotes de ".concat(channel, "...</p>\n    ");
+    container.innerHTML += output;
+};
+var getEmotenames = function (emote) {
+    emote.forEach(function (emote) {
+        emoteNames.push(emote.name);
+    });
+};
+var clear = function (container) {
+    container.innerHTML = "";
+};
+//Código que eu usei pra mostrar todos os emotes de um canal específico
+// const getEmotesShow = async (channel: string): Promise<void> => {
+// 	console.log(channel);
+// 	// achar um jeito de otimizar essa parte aqui
+// 	const data: Response = await fetch(
+// 		`https://emotes.adamcy.pl/v1/channel/${channel}/emotes/twitch.7tv.bttv.ffz`,
+// 		{
+// 			method: "GET",
+// 			headers: {
+// 				"Content-Type": "application/json",
+// 			},
+// 		}
+// 	);
+// 	const emotes = await data.json();
+// 	//pega os emotes do canal especificado
+// 	emotes.forEach((emote: any) => {
+// 		//para cada emote, exibir o nome e a imagem no site
+// 		const emoteData: Emote = {
+// 			name: emote.code,
+// 			image: emote.urls[1].url,
+// 		};
+// 		showEmote(emoteData);
+// 	});
+// };
 //Primeiro protótipo de gameplay (não remove o emote acertado da lista de emotes)
 // const gameplay = (): void => {
 // 	if (inputEmote.value == emoteAtual.name) {
@@ -261,36 +296,4 @@ var gameplay = function () {
 // 	// 	}
 // 	// });
 // };
-var showEmote = function (emote) {
-    var output = "\n    <a class=\"card\">\n\t\t<div id= \"blur\">\n\t\t<img class=\"card--image\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n\t\t</div>\n        <h1 class=\"card--name\">").concat(emote.name, "</h1>\n    </a>\n    ");
-    container.innerHTML += output;
-};
-var showEmoteGame = function (emote) {
-    var output = "\n    <a class=\"card\">\n\t\t\n\t\t<img class=\"card--image\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n\t\t\n    </a>\n    ");
-    container.innerHTML += output;
-};
-var showEmoteGame2 = function (emote) {
-    var output = "\n    <a class=\"card\">\n\t\t\n\t\t<img class=\"card--image2\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n\t\t\n    </a>\n    ");
-    container.innerHTML += output;
-};
-var showEmoteGame3 = function (emote) {
-    var output = "\n    <a class=\"card\">\n\t\t\n\t\t<img class=\"card--image3\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n\t\t\n    </a>\n    ");
-    container.innerHTML += output;
-};
-var showEmoteGame4 = function (emote) {
-    var output = "\n    <a class=\"card\">\n\t\t\n\t\t<img class=\"card--image4\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n\t\t\n    </a>\n    ");
-    container.innerHTML += output;
-};
-var showLoading = function (channel) {
-    var output = "\n    <p> Carregando Emotes de ".concat(channel, "...</p>\n    ");
-    container.innerHTML += output;
-};
-var getEmotenames = function (emote) {
-    emote.forEach(function (emote) {
-        emoteNames.push(emote.name);
-    });
-};
-var clear = function (container) {
-    container.innerHTML = "";
-};
 //# sourceMappingURL=index.js.map

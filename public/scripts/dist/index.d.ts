@@ -14,7 +14,7 @@ declare const inputEmote: HTMLInputElement;
 declare function onInputChange(): void;
 declare function createAutoCompleteDropdown(list: string[]): void;
 declare function removeAutocompleteDropdown(): void;
-declare function onEmoteButtonClick(e: Event): void;
+declare function onEmoteConfirm(e: Event): void;
 declare function showEmoteTry(): void;
 interface Emote {
     name: string;
