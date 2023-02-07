@@ -42,7 +42,15 @@ var showTentativas = document.getElementById("tentativas");
 var score = document.getElementById("score");
 var emoteTryContainer = document.getElementById("emoteTryContainer");
 var invalidChannel = document.getElementById("invalidChannel");
+var title = document.getElementById("title");
 var subtitle = document.getElementById("subtitle");
+var subtitle2 = document.getElementById("subtitle2");
+var peepoThink = document.getElementById("peepoThink");
+var vidas = document.getElementById("vidas");
+var vida1 = document.getElementById("vida1");
+var vida2 = document.getElementById("vida2");
+var vida3 = document.getElementById("vida3");
+var vida4 = document.getElementById("vida4");
 var emotesListAutocomplete = document.getElementById("emotes-list");
 document.addEventListener("contextmenu", function (event) { return event.preventDefault(); });
 var emotesList = [];
@@ -50,18 +58,13 @@ var emoteNames = [];
 var tentativas = 0;
 var emoteAtual;
 var acertos = 0;
+var vidasRestantes = 4;
+var recorde = 0;
 var inputChannel = document.getElementById("channelInput");
 var inputEmote = document.getElementById("emoteTry");
-inputChannel.focus();
 inputChannel.addEventListener("change", function () {
-    clear(invalidChannel);
-    clear(subtitle);
-    tentativas = 0;
-    acertos = 0;
-    clear(app);
-    emotesList.length = 0;
-    showLoading(inputChannel.value);
-    getEmotesGame(inputChannel.value);
+    restartGame();
+    subtitle2.style.display = "none";
 });
 inputEmote.addEventListener("input", function () {
     var filteredList = filterEmotesList(emotesList, inputEmote.value);
@@ -98,6 +101,18 @@ function hideAutocomplete() {
 function showAutocomplete() {
     emotesListAutocomplete.style.display = "block";
 }
+function showPeepo() {
+    peepoThink.style.display = "block";
+}
+function clearPeepo() {
+    peepoThink.style.display = "none";
+}
+function hideVidas() {
+    vidas.style.display = "none";
+}
+function showVidas() {
+    vidas.style.display = "block";
+}
 function loadEmotesList(emotes) {
     if (emotes.length > 0) {
         emotesListAutocomplete.innerHTML = "";
@@ -112,6 +127,19 @@ function filterEmotesList(emotes, inputText) {
     return emotes.filter(function (x) {
         return x.name.toLowerCase().includes(inputText.toLowerCase());
     });
+}
+function restartGame() {
+    clearPeepo();
+    clear(invalidChannel);
+    clear(subtitle);
+    tentativas = 0;
+    acertos = 0;
+    vidasRestantes = 4;
+    clear(app);
+    emotesList.length = 0;
+    showLoading(inputChannel.value);
+    getEmotesGame(inputChannel.value);
+    resetVidas();
 }
 var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0, function () {
     var data, emotes, error_1;
@@ -155,18 +183,19 @@ var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0
                 clear(loading);
                 showEmoteGame(emoteAtual);
                 showEmoteTry();
-                showTentativas.innerHTML = "Tentativas: ".concat(tentativas);
                 showAcertos.innerHTML = "Acertos: ".concat(acertos);
+                showVidas();
                 return [3 /*break*/, 5];
             case 4:
                 error_1 = _a.sent();
+                showPeepo();
                 console.log(error_1);
                 showInvalidChannel(channel);
-                showTentativas.innerHTML = "";
                 showAcertos.innerHTML = "";
                 clear(app);
                 clearEmoteTry();
                 clear(loading);
+                hideVidas();
                 return [3 /*break*/, 5];
             case 5: return [2 /*return*/];
         }
@@ -182,7 +211,9 @@ var continueGame = function (emotesList) {
     emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
     clear(app);
     inputEmote.value = "";
+    inputEmote.focus();
     showEmoteGame(emoteAtual);
+    resetVidas();
 };
 var gameplay = function () {
     if (inputEmote.value == emoteAtual.name) {
@@ -190,34 +221,48 @@ var gameplay = function () {
         acertos++;
         tentativas = 0;
         showAcertos.innerHTML = "Acertos: ".concat(acertos);
-        showTentativas.innerHTML = "Tentativas: ".concat(tentativas);
         continueGame(emotesList);
     }
     else {
         inputEmote.style.boxShadow = "0 0 0 3px rgba(191, 2, 2)";
-        console.log(emoteAtual.name);
         tentativas++;
         showAcertos.innerHTML = "Acertos: ".concat(acertos);
-        showTentativas.innerHTML = "Tentativas: ".concat(tentativas);
         if (tentativas === 1) {
+            shakeInputWrong();
+            vida4.style.color = "grey";
             clear(app);
             showEmoteGame2(emoteAtual);
         }
         if (tentativas === 2) {
+            shakeInputWrong();
+            vida3.style.color = "grey";
             clear(app);
             showEmoteGame3(emoteAtual);
         }
         if (tentativas === 3) {
+            shakeInputWrong();
+            vida2.style.color = "grey";
             clear(app);
             showEmoteGame4(emoteAtual);
         }
         if (tentativas === 4) {
+            shakeInputWrong();
+            vida1.style.color = "grey";
             alert("Game Over!");
             clear(app);
-            getEmotesGame(inputChannel.value);
+            restartGame();
         }
     }
 };
+function shakeInputWrong() {
+    setTimeout(function () {
+        inputEmote.style.animation = "shake 0.2s";
+        inputEmote.style.animationIterationCount = "1";
+    }, 1);
+    setTimeout(function () {
+        inputEmote.style.animation = "none";
+    }, 400);
+}
 var showEmote = function (emote) {
     var output = "\n    <a class=\"card\">\n\t\t<div id= \"blur\">\n\t\t<img class=\"card--image\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n\t\t</div>\n        <h1 class=\"card--name\">").concat(emote.name, "</h1>\n    </a>\n    ");
     app.innerHTML += output;
@@ -239,13 +284,19 @@ var showEmoteGame4 = function (emote) {
     app.innerHTML += output;
 };
 var showLoading = function (channel) {
-    var output = "\n    <p id = \"loadingText\"> Carregando Emotes de twitch.tv/".concat(channel, "...</p>\n\t<img id=\"loadingImg\" src=\"/public/img/loading.gif\"/>\n    ");
+    var output = "\n    <p id = \"loadingText\"> Carregando emotes de twitch.tv/".concat(channel, "...</p>\n\t<img id=\"loadingImg\" src=\"https://cdn.7tv.app/emote/6154d7d86251d7e000db1727/4x.webp\"/>\n    ");
     loading.innerHTML += output;
 };
 var showInvalidChannel = function (channel) {
-    var output = "\n    <p id = \"invalidChannelText\"> Canal ".concat(channel, " n\u00E3o foi encontrado...</p>\n    ");
+    var output = "\n    <p id = \"invalidChannelText\"> O canal ".concat(channel, " n\u00E3o foi encontrado...</p>\n    ");
     invalidChannel.innerHTML += output;
 };
+function resetVidas() {
+    vida1.style.color = "red";
+    vida2.style.color = "red";
+    vida3.style.color = "red";
+    vida4.style.color = "red";
+}
 var getEmotenames = function (emote) {
     emote.forEach(function (emote) {
         emoteNames.push(emote.name);

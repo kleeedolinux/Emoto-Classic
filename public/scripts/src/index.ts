@@ -6,7 +6,15 @@ const score: HTMLElement = document.getElementById("score")!;
 const emoteTryContainer: HTMLElement =
 	document.getElementById("emoteTryContainer")!;
 const invalidChannel: HTMLElement = document.getElementById("invalidChannel")!;
+const title: HTMLElement = document.getElementById("title")!;
 const subtitle: HTMLElement = document.getElementById("subtitle")!;
+const subtitle2: HTMLElement = document.getElementById("subtitle2")!;
+const peepoThink: HTMLElement = document.getElementById("peepoThink")!;
+const vidas: HTMLElement = document.getElementById("vidas")!;
+const vida1: HTMLElement = document.getElementById("vida1")!;
+const vida2: HTMLElement = document.getElementById("vida2")!;
+const vida3: HTMLElement = document.getElementById("vida3")!;
+const vida4: HTMLElement = document.getElementById("vida4")!;
 
 const emotesListAutocomplete: HTMLElement =
 	document.getElementById("emotes-list")!;
@@ -19,6 +27,8 @@ const emoteNames: string[] = [];
 var tentativas: number = 0;
 var emoteAtual: Emote;
 var acertos: number = 0;
+var vidasRestantes: number = 4;
+var recorde = 0;
 
 const inputChannel: HTMLInputElement = document.getElementById(
 	"channelInput"
@@ -28,17 +38,9 @@ const inputEmote: HTMLInputElement = document.getElementById(
 	"emoteTry"
 )! as HTMLInputElement;
 
-inputChannel.focus();
-
 inputChannel.addEventListener("change", (): void => {
-	clear(invalidChannel);
-	clear(subtitle);
-	tentativas = 0;
-	acertos = 0;
-	clear(app);
-	emotesList.length = 0;
-	showLoading(inputChannel.value);
-	getEmotesGame(inputChannel.value);
+	restartGame();
+	subtitle2.style.display = "none";
 });
 
 inputEmote.addEventListener("input", function () {
@@ -82,6 +84,21 @@ function hideAutocomplete(): void {
 function showAutocomplete(): void {
 	emotesListAutocomplete.style.display = "block";
 }
+function showPeepo(): void {
+	peepoThink.style.display = "block";
+}
+
+function clearPeepo(): void {
+	peepoThink.style.display = "none";
+}
+
+function hideVidas(): void {
+	vidas.style.display = "none";
+}
+
+function showVidas(): void {
+	vidas.style.display = "block";
+}
 
 function loadEmotesList(emotes: Emote[]): void {
 	if (emotes.length > 0) {
@@ -110,6 +127,20 @@ interface GameRound {
 	acertos: number;
 	tentativas: number;
 	completo: boolean;
+}
+
+function restartGame(): void {
+	clearPeepo();
+	clear(invalidChannel);
+	clear(subtitle);
+	tentativas = 0;
+	acertos = 0;
+	vidasRestantes = 4;
+	clear(app);
+	emotesList.length = 0;
+	showLoading(inputChannel.value);
+	getEmotesGame(inputChannel.value);
+	resetVidas();
 }
 
 const getEmotesGame = async (channel: string): Promise<void> => {
@@ -146,16 +177,17 @@ const getEmotesGame = async (channel: string): Promise<void> => {
 		clear(loading);
 		showEmoteGame(emoteAtual);
 		showEmoteTry();
-		showTentativas.innerHTML = `Tentativas: ${tentativas}`;
 		showAcertos.innerHTML = `Acertos: ${acertos}`;
+		showVidas();
 	} catch (error) {
+		showPeepo();
 		console.log(error);
 		showInvalidChannel(channel);
-		showTentativas.innerHTML = ``;
 		showAcertos.innerHTML = ``;
 		clear(app);
 		clearEmoteTry();
 		clear(loading);
+		hideVidas();
 	}
 };
 
@@ -169,7 +201,9 @@ const continueGame = (emotesList: Emote[]): void => {
 	emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
 	clear(app);
 	inputEmote.value = "";
+	inputEmote.focus();
 	showEmoteGame(emoteAtual);
+	resetVidas();
 };
 
 const gameplay = (): void => {
@@ -178,33 +212,49 @@ const gameplay = (): void => {
 		acertos++;
 		tentativas = 0;
 		showAcertos.innerHTML = `Acertos: ${acertos}`;
-		showTentativas.innerHTML = `Tentativas: ${tentativas}`;
 		continueGame(emotesList);
 	} else {
 		inputEmote.style.boxShadow = "0 0 0 3px rgba(191, 2, 2)";
-		console.log(emoteAtual.name);
 		tentativas++;
 		showAcertos.innerHTML = `Acertos: ${acertos}`;
-		showTentativas.innerHTML = `Tentativas: ${tentativas}`;
 		if (tentativas === 1) {
+			shakeInputWrong();
+			vida4.style.color = "grey";
 			clear(app);
 			showEmoteGame2(emoteAtual);
 		}
 		if (tentativas === 2) {
+			shakeInputWrong();
+			vida3.style.color = "grey";
 			clear(app);
 			showEmoteGame3(emoteAtual);
 		}
 		if (tentativas === 3) {
+			shakeInputWrong();
+			vida2.style.color = "grey";
 			clear(app);
 			showEmoteGame4(emoteAtual);
 		}
 		if (tentativas === 4) {
+			shakeInputWrong();
+			vida1.style.color = "grey";
 			alert("Game Over!");
 			clear(app);
-			getEmotesGame(inputChannel.value);
+			restartGame();
 		}
 	}
 };
+
+function shakeInputWrong() {
+	setTimeout(() => {
+		inputEmote.style.animation = "shake 0.2s";
+		inputEmote.style.animationIterationCount = "1";
+	}, 1);
+	setTimeout(() => {
+		inputEmote.style.animation = "none";
+	}, 400);
+	
+}
 
 const showEmote = (emote: Emote): void => {
 	let output: string = `
@@ -264,18 +314,25 @@ const showEmoteGame4 = (emote: Emote): void => {
 
 const showLoading = (channel: string): void => {
 	let output: string = `
-    <p id = "loadingText"> Carregando Emotes de twitch.tv/${channel}...</p>
-	<img id="loadingImg" src="/public/img/loading.gif"/>
+    <p id = "loadingText"> Carregando emotes de twitch.tv/${channel}...</p>
+	<img id="loadingImg" src="https://cdn.7tv.app/emote/6154d7d86251d7e000db1727/4x.webp"/>
     `;
 	loading.innerHTML += output;
 };
 
 const showInvalidChannel = (channel: string): void => {
 	let output: string = `
-    <p id = "invalidChannelText"> Canal ${channel} não foi encontrado...</p>
+    <p id = "invalidChannelText"> O canal ${channel} não foi encontrado...</p>
     `;
 	invalidChannel.innerHTML += output;
 };
+
+function resetVidas() {
+	vida1.style.color = "red";
+	vida2.style.color = "red";
+	vida3.style.color = "red";
+	vida4.style.color = "red";
+}
 
 const getEmotenames = (emote: Emote[]): void => {
 	emote.forEach((emote: Emote) => {
