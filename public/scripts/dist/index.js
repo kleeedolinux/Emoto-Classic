@@ -41,6 +41,7 @@ var showAcertos = document.getElementById("acertos");
 var showTentativas = document.getElementById("tentativas");
 var score = document.getElementById("score");
 var container2 = document.getElementById("container2");
+var invalidChannel = document.getElementById("invalidChannel");
 document.addEventListener("contextmenu", function (event) { return event.preventDefault(); });
 var emotesList = [];
 var emoteNames = [];
@@ -101,6 +102,7 @@ var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0
                 });
                 getEmotenames(emotesList);
                 emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
+                clear(invalidChannel);
                 clear(app);
                 clear(loading);
                 showEmoteGame(emoteAtual);
@@ -110,7 +112,7 @@ var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0
                 return [3 /*break*/, 5];
             case 4:
                 error_1 = _a.sent();
-                alert("Canal não encontrado");
+                showInvalidChannel(channel);
                 showTentativas.innerHTML = "";
                 showAcertos.innerHTML = "";
                 clear(app);
@@ -188,8 +190,12 @@ var showEmoteGame4 = function (emote) {
     app.innerHTML += output;
 };
 var showLoading = function (channel) {
-    var output = "\n    <p> Carregando Emotes de ".concat(channel, "...</p>\n    ");
+    var output = "\n    <p id = \"loadingText\"> Carregando Emotes de ".concat(channel, "...</p>\n\t<img id=\"loadingImg\" src=\"/public/img/loading.gif\"/>\n    ");
     loading.innerHTML += output;
+};
+var showInvalidChannel = function (channel) {
+    var output = "\n    <p id = \"invalidChannelText\"> Canal ".concat(channel, " n\u00E3o foi encontrado...</p>\n    ");
+    invalidChannel.innerHTML += output;
 };
 var getEmotenames = function (emote) {
     emote.forEach(function (emote) {

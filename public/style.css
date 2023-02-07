@@ -41,7 +41,6 @@ body {
 	font-weight: 800;
 	text-shadow: 6px 12px 5px black;
 	text-align: center;
-	color: #398ce4;
 	font-size: 4rem;
 	margin-top: auto;
 	text-transform: uppercase;
@@ -61,7 +60,6 @@ body {
 	font-weight: 600;
 	font-style: italic;
 	text-shadow: 6px 6px 5px black;
-	color: #398ce4;
 	font-size: 1rem;
 	margin-top: auto;
 	margin-bottom: 1rem;
@@ -88,22 +86,30 @@ body {
 	box-shadow: 0 0 0 1px #fff;
 }
 
+#invalidChannel {
+	font-weight: 600;
+	color: #ff0000;
+}
+
+#loading {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+#loadingText{
+	font-weight: 600;
+}
+
 #app {
-	margin-top: 1rem;
+	margin-top: 3rem;
 	margin-bottom: 1rem;
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
 	grid-gap: 1.5rem;
 	justify-content: center;
 	align-items: center;
-}
-
-#loading {
-	margin-top: 1rem;
-	margin-bottom: 1rem;
-	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-	grid-gap: 1.5rem;
 }
 
 #emoteTry {
@@ -145,7 +151,6 @@ body {
 	text-align: center;
 	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 	position: relative;
-	overflow: hidden;
 	cursor: unset;
 }
 
@@ -205,8 +210,10 @@ input[type="submit"] {
 }
 #tentativas {
 	color: rgb(191, 2, 2);
+	text-shadow: 6px 6px 5px black;
 }
 #acertos {
 	margin-top: -1rem;
 	color: rgb(0, 128, 0);
+	text-shadow: 6px 6px 5px black;
 }

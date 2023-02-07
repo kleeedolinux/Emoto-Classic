@@ -4,6 +4,7 @@ const showAcertos: HTMLElement = document.getElementById("acertos")!;
 const showTentativas: HTMLElement = document.getElementById("tentativas")!;
 const score: HTMLElement = document.getElementById("score")!;
 const container2: HTMLElement = document.getElementById("container2")!;
+const invalidChannel: HTMLElement = document.getElementById("invalidChannel")!;
 
 document.addEventListener("contextmenu", (event) => event.preventDefault());
 
@@ -23,6 +24,7 @@ const inputEmote: HTMLInputElement = document.getElementById(
 )! as HTMLInputElement;
 
 inputChannel.addEventListener("change", (): void => {
+	clear(invalidChannel)
 	tentativas = 0;
 	acertos = 0;
 	clear(app);
@@ -91,7 +93,7 @@ const getEmotesGame = async (channel: string): Promise<void> => {
 		showTentativas.innerHTML = `Tentativas: ${tentativas}`;
 		showAcertos.innerHTML = `Acertos: ${acertos}`;
 	} catch (error) {
-		alert("Canal não encontrado");
+		showInvalidChannel(channel);
 		showTentativas.innerHTML = ``;
 		showAcertos.innerHTML = ``;
 		clear(app);
@@ -206,9 +208,17 @@ const showEmoteGame4 = (emote: Emote): void => {
 
 const showLoading = (channel: string): void => {
 	let output: string = `
-    <p> Carregando Emotes de ${channel}...</p>
+    <p id = "loadingText"> Carregando Emotes de ${channel}...</p>
+	<img id="loadingImg" src="/public/img/loading.gif"/>
     `;
 	loading.innerHTML += output;
+};
+
+const showInvalidChannel = (channel: string): void => {
+	let output: string = `
+    <p id = "invalidChannelText"> Canal ${channel} não foi encontrado...</p>
+    `;
+	invalidChannel.innerHTML += output;
 };
 
 const getEmotenames = (emote: Emote[]): void => {
