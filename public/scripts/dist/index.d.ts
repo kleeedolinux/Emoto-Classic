@@ -5,6 +5,7 @@ declare const showTentativas: HTMLElement;
 declare const score: HTMLElement;
 declare const container2: HTMLElement;
 declare const invalidChannel: HTMLElement;
+declare const subtitle: HTMLElement;
 declare const emotesList: Emote[];
 declare const emoteNames: string[];
 declare var tentativas: number;

@@ -5,6 +5,7 @@ const showTentativas: HTMLElement = document.getElementById("tentativas")!;
 const score: HTMLElement = document.getElementById("score")!;
 const container2: HTMLElement = document.getElementById("container2")!;
 const invalidChannel: HTMLElement = document.getElementById("invalidChannel")!;
+const subtitle: HTMLElement = document.getElementById("subtitle")!;
 
 document.addEventListener("contextmenu", (event) => event.preventDefault());
 
@@ -25,6 +26,7 @@ const inputEmote: HTMLInputElement = document.getElementById(
 
 inputChannel.addEventListener("change", (): void => {
 	clear(invalidChannel)
+	clear(subtitle)
 	tentativas = 0;
 	acertos = 0;
 	clear(app);
@@ -208,7 +210,7 @@ const showEmoteGame4 = (emote: Emote): void => {
 
 const showLoading = (channel: string): void => {
 	let output: string = `
-    <p id = "loadingText"> Carregando Emotes de ${channel}...</p>
+    <p id = "loadingText"> Carregando Emotes de twitch.tv/${channel}...</p>
 	<img id="loadingImg" src="/public/img/loading.gif"/>
     `;
 	loading.innerHTML += output;

@@ -80,6 +80,7 @@ body {
 	text-transform: uppercase;
 	outline: none;
 	cursor: auto;
+	text-align: center;
 }
 
 #channelInput:focus {
@@ -125,6 +126,7 @@ body {
 	font-weight: bold;
 	outline: none;
 	display: none;
+	text-align: center;
 }
 
 #emoteTry:focus {

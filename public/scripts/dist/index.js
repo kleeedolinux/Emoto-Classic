@@ -42,6 +42,7 @@ var showTentativas = document.getElementById("tentativas");
 var score = document.getElementById("score");
 var container2 = document.getElementById("container2");
 var invalidChannel = document.getElementById("invalidChannel");
+var subtitle = document.getElementById("subtitle");
 document.addEventListener("contextmenu", function (event) { return event.preventDefault(); });
 var emotesList = [];
 var emoteNames = [];
@@ -51,6 +52,8 @@ var acertos = 0;
 var inputChannel = document.getElementById("channelInput");
 var inputEmote = document.getElementById("emoteTry");
 inputChannel.addEventListener("change", function () {
+    clear(invalidChannel);
+    clear(subtitle);
     tentativas = 0;
     acertos = 0;
     clear(app);
@@ -102,7 +105,6 @@ var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0
                 });
                 getEmotenames(emotesList);
                 emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
-                clear(invalidChannel);
                 clear(app);
                 clear(loading);
                 showEmoteGame(emoteAtual);
@@ -190,7 +192,7 @@ var showEmoteGame4 = function (emote) {
     app.innerHTML += output;
 };
 var showLoading = function (channel) {
-    var output = "\n    <p id = \"loadingText\"> Carregando Emotes de ".concat(channel, "...</p>\n\t<img id=\"loadingImg\" src=\"/public/img/loading.gif\"/>\n    ");
+    var output = "\n    <p id = \"loadingText\"> Carregando Emotes de twitch.tv/".concat(channel, "...</p>\n\t<img id=\"loadingImg\" src=\"/public/img/loading.gif\"/>\n    ");
     loading.innerHTML += output;
 };
 var showInvalidChannel = function (channel) {
