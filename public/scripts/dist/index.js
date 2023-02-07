@@ -40,9 +40,10 @@ var loading = document.getElementById("loading");
 var showAcertos = document.getElementById("acertos");
 var showTentativas = document.getElementById("tentativas");
 var score = document.getElementById("score");
-var container2 = document.getElementById("container2");
+var emoteTryContainer = document.getElementById("emoteTryContainer");
 var invalidChannel = document.getElementById("invalidChannel");
 var subtitle = document.getElementById("subtitle");
+var emotesListAutocomplete = document.getElementById("emotes-list");
 document.addEventListener("contextmenu", function (event) { return event.preventDefault(); });
 var emotesList = [];
 var emoteNames = [];
@@ -51,6 +52,7 @@ var emoteAtual;
 var acertos = 0;
 var inputChannel = document.getElementById("channelInput");
 var inputEmote = document.getElementById("emoteTry");
+inputChannel.focus();
 inputChannel.addEventListener("change", function () {
     clear(invalidChannel);
     clear(subtitle);
@@ -61,14 +63,55 @@ inputChannel.addEventListener("change", function () {
     showLoading(inputChannel.value);
     getEmotesGame(inputChannel.value);
 });
+inputEmote.addEventListener("input", function () {
+    var filteredList = filterEmotesList(emotesList, inputEmote.value);
+    loadEmotesList(filteredList);
+    showAutocomplete();
+});
 inputEmote.addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
         gameplay();
+        hideAutocomplete();
+    }
+});
+inputEmote.addEventListener("focusout", function () {
+    hideAutocomplete();
+});
+emotesListAutocomplete.addEventListener("click", function (e) {
+    var target = e.target;
+    if (target.classList.contains("autocomplete-item")) {
+        inputEmote.value = target.innerText;
     }
 });
 function showEmoteTry() {
+    emoteTryContainer.style.display = "block";
     inputEmote.style.display = "block";
+    hideAutocomplete();
     inputEmote.focus();
+}
+function clearEmoteTry() {
+    emoteTryContainer.style.display = "none";
+}
+function hideAutocomplete() {
+    emotesListAutocomplete.style.display = "none";
+}
+function showAutocomplete() {
+    emotesListAutocomplete.style.display = "block";
+}
+function loadEmotesList(emotes) {
+    if (emotes.length > 0) {
+        emotesListAutocomplete.innerHTML = "";
+        var innerElement_1 = "";
+        emotes.forEach(function (emote) {
+            innerElement_1 += "<li class=\"autocomplete-item\">".concat(emote.name, "</li>");
+        });
+        emotesListAutocomplete.innerHTML = innerElement_1;
+    }
+}
+function filterEmotesList(emotes, inputText) {
+    return emotes.filter(function (x) {
+        return x.name.toLowerCase().includes(inputText.toLowerCase());
+    });
 }
 var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0, function () {
     var data, emotes, error_1;
@@ -81,7 +124,9 @@ var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 4, , 5]);
-                return [4 /*yield*/, fetch("https://emotes.adamcy.pl/v1/channel/".concat(channel, "/emotes/twitch.7tv.bttv"), {
+                return [4 /*yield*/, fetch(
+                    //pega os emotes do canal especificado
+                    "https://emotes.adamcy.pl/v1/channel/".concat(channel, "/emotes/twitch.7tv.bttv"), {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json"
@@ -105,6 +150,7 @@ var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0
                 });
                 getEmotenames(emotesList);
                 emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
+                loadEmotesList(emotesList);
                 clear(app);
                 clear(loading);
                 showEmoteGame(emoteAtual);
@@ -114,11 +160,12 @@ var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0
                 return [3 /*break*/, 5];
             case 4:
                 error_1 = _a.sent();
+                console.log(error_1);
                 showInvalidChannel(channel);
                 showTentativas.innerHTML = "";
                 showAcertos.innerHTML = "";
                 clear(app);
-                inputEmote.style.display = "none";
+                clearEmoteTry();
                 clear(loading);
                 return [3 /*break*/, 5];
             case 5: return [2 /*return*/];

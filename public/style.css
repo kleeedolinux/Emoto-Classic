@@ -69,7 +69,7 @@ body {
 #channelInput {
 	font-weight: 700;
 	box-shadow: 6px 6px 5px black;
-	width: 100%;
+	width: 110%;
 	border: 0;
 	background-color: #398ce4;
 	border-radius: 2px;
@@ -99,7 +99,7 @@ body {
 	flex-direction: column;
 }
 
-#loadingText{
+#loadingText {
 	font-weight: 600;
 }
 
@@ -113,6 +113,13 @@ body {
 	align-items: center;
 }
 
+#emoteTryContainer {
+	position: relative;
+	display: none;
+	padding-top: -0.5rem;
+	padding-bottom: 0.5rem;
+}
+
 #emoteTry {
 	box-shadow: 6px 6px 5px black;
 	width: auto;
@@ -120,14 +127,33 @@ body {
 	background-color: #398ce4;
 	border-radius: 2px;
 	padding: 0.5rem;
-	margin-bottom: 0.5rem;
 	color: #fff;
 	font-size: 1rem;
 	font-weight: bold;
 	outline: none;
-	display: none;
 	text-align: center;
 }
+
+.autocomplete-emotes {
+	position:absolute;
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+	left: 0;
+	width: 100%;
+	color: #fff;
+	background-color: rgb(32, 42, 49);
+	font-size: 1rem;
+	max-height: 100px;
+	max-width: 100%;
+	overflow-y: auto;
+}
+
+.autocomplete-emotes li {
+	padding: 8px;
+	cursor: pointer;
+	font-weight: 600;
+}	
 
 #emoteTry:focus {
 	box-shadow: 0 0 0 1px #fff;

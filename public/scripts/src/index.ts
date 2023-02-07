@@ -3,14 +3,15 @@ const loading: HTMLElement = document.getElementById("loading")!;
 const showAcertos: HTMLElement = document.getElementById("acertos")!;
 const showTentativas: HTMLElement = document.getElementById("tentativas")!;
 const score: HTMLElement = document.getElementById("score")!;
-const container2: HTMLElement = document.getElementById("container2")!;
+const emoteTryContainer: HTMLElement =
+	document.getElementById("emoteTryContainer")!;
 const invalidChannel: HTMLElement = document.getElementById("invalidChannel")!;
 const subtitle: HTMLElement = document.getElementById("subtitle")!;
 
+const emotesListAutocomplete: HTMLElement =
+	document.getElementById("emotes-list")!;
+
 document.addEventListener("contextmenu", (event) => event.preventDefault());
-
-
-const autocomplete = new Autocomplete("input", ["apple", "banana", "cherry"]);
 
 const emotesList: Emote[] = [];
 const emoteNames: string[] = [];
@@ -27,9 +28,11 @@ const inputEmote: HTMLInputElement = document.getElementById(
 	"emoteTry"
 )! as HTMLInputElement;
 
+inputChannel.focus();
+
 inputChannel.addEventListener("change", (): void => {
-	clear(invalidChannel)
-	clear(subtitle)
+	clear(invalidChannel);
+	clear(subtitle);
 	tentativas = 0;
 	acertos = 0;
 	clear(app);
@@ -38,17 +41,64 @@ inputChannel.addEventListener("change", (): void => {
 	getEmotesGame(inputChannel.value);
 });
 
+inputEmote.addEventListener("input", function () {
+	const filteredList: Emote[] = filterEmotesList(emotesList, inputEmote.value);
+	loadEmotesList(filteredList);
+	showAutocomplete();
+});
+
 inputEmote.addEventListener("keydown", (e: KeyboardEvent) => {
 	if (e.key === "Enter") {
 		gameplay();
+		hideAutocomplete();
 	}
 });
 
+inputEmote.addEventListener("focusout", () => {
+	hideAutocomplete();
+});
 
+emotesListAutocomplete.addEventListener("click", (e: MouseEvent) => {
+	const target = e.target as HTMLElement;
+	if (target.classList.contains("autocomplete-item")) {
+		inputEmote.value = target.innerText;
+	}
+});
 
 function showEmoteTry(): void {
+	emoteTryContainer.style.display = "block";
 	inputEmote.style.display = "block";
+	hideAutocomplete();
 	inputEmote.focus();
+}
+
+function clearEmoteTry(): void {
+	emoteTryContainer.style.display = "none";
+}
+
+function hideAutocomplete(): void {
+	emotesListAutocomplete.style.display = "none";
+}
+
+function showAutocomplete(): void {
+	emotesListAutocomplete.style.display = "block";
+}
+
+function loadEmotesList(emotes: Emote[]): void {
+	if (emotes.length > 0) {
+		emotesListAutocomplete.innerHTML = "";
+		let innerElement: string = "";
+		emotes.forEach((emote: Emote) => {
+			innerElement += `<li class="autocomplete-item">${emote.name}</li>`;
+		});
+		emotesListAutocomplete.innerHTML = innerElement;
+	}
+}
+
+function filterEmotesList(emotes: Emote[], inputText: string): Emote[] {
+	return emotes.filter((x) =>
+		x.name.toLowerCase().includes(inputText.toLowerCase())
+	);
 }
 
 interface Emote {
@@ -69,6 +119,7 @@ const getEmotesGame = async (channel: string): Promise<void> => {
 	acertos = 0;
 	try {
 		const data: Response = await fetch(
+			//pega os emotes do canal especificado
 			`https://emotes.adamcy.pl/v1/channel/${channel}/emotes/twitch.7tv.bttv`,
 			{
 				method: "GET",
@@ -91,6 +142,7 @@ const getEmotesGame = async (channel: string): Promise<void> => {
 		});
 		getEmotenames(emotesList);
 		emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
+		loadEmotesList(emotesList);
 		clear(app);
 		clear(loading);
 		showEmoteGame(emoteAtual);
@@ -98,11 +150,12 @@ const getEmotesGame = async (channel: string): Promise<void> => {
 		showTentativas.innerHTML = `Tentativas: ${tentativas}`;
 		showAcertos.innerHTML = `Acertos: ${acertos}`;
 	} catch (error) {
+		console.log(error);
 		showInvalidChannel(channel);
 		showTentativas.innerHTML = ``;
 		showAcertos.innerHTML = ``;
 		clear(app);
-		inputEmote.style.display = "none";
+		clearEmoteTry();
 		clear(loading);
 	}
 };
@@ -153,7 +206,6 @@ const gameplay = (): void => {
 		}
 	}
 };
-
 
 const showEmote = (emote: Emote): void => {
 	let output: string = `
@@ -235,7 +287,6 @@ const getEmotenames = (emote: Emote[]): void => {
 const clear = (container: HTMLElement): void => {
 	container.innerHTML = ``;
 };
-
 
 //Código que eu usei pra mostrar todos os emotes de um canal específico
 // const getEmotesShow = async (channel: string): Promise<void> => {
