@@ -9,6 +9,9 @@ const subtitle: HTMLElement = document.getElementById("subtitle")!;
 
 document.addEventListener("contextmenu", (event) => event.preventDefault());
 
+
+const autocomplete = new Autocomplete("input", ["apple", "banana", "cherry"]);
+
 const emotesList: Emote[] = [];
 const emoteNames: string[] = [];
 
