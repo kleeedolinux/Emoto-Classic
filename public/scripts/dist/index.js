@@ -14,7 +14,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (g && (g = 0, op[0] && (_ = 0)), _) try {
+        while (_) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -51,6 +51,7 @@ var vida1 = document.getElementById("vida1");
 var vida2 = document.getElementById("vida2");
 var vida3 = document.getElementById("vida3");
 var vida4 = document.getElementById("vida4");
+var recordeElement = document.getElementById("recorde");
 var emotesListAutocomplete = document.getElementById("emotes-list");
 document.addEventListener("contextmenu", function (event) { return event.preventDefault(); });
 var emotesList = [];
@@ -60,6 +61,11 @@ var emoteAtual;
 var acertos = 0;
 var vidasRestantes = 4;
 var recorde = 0;
+var localRecorde = localStorage.getItem("recorde");
+if (localRecorde) {
+    recordeElement.innerHTML = "Seu Recorde: ".concat(localRecorde);
+    recorde = parseInt(localRecorde);
+}
 var inputChannel = document.getElementById("channelInput");
 var inputEmote = document.getElementById("emoteTry");
 inputChannel.addEventListener("change", function () {
@@ -112,6 +118,12 @@ function hideVidas() {
 }
 function showVidas() {
     vidas.style.display = "block";
+}
+function showRecorde() {
+    recordeElement.style.display = "block";
+}
+function hideRecorde() {
+    recordeElement.style.display = "none";
 }
 function loadEmotesList(emotes) {
     if (emotes.length > 0) {
@@ -179,6 +191,7 @@ var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0
                 getEmotenames(emotesList);
                 emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
                 loadEmotesList(emotesList);
+                hideRecorde();
                 clear(app);
                 clear(loading);
                 showEmoteGame(emoteAtual);
@@ -196,6 +209,7 @@ var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0
                 clearEmoteTry();
                 clear(loading);
                 hideVidas();
+                showRecorde();
                 return [3 /*break*/, 5];
             case 5: return [2 /*return*/];
         }
@@ -216,8 +230,14 @@ var continueGame = function (emotesList) {
     resetVidas();
 };
 var gameplay = function () {
-    if (inputEmote.value == emoteAtual.name) {
-        inputEmote.style.boxShadow = "0 0 0 3px rgb(0, 128, 0)";
+    if (emotesList.length === 0) {
+        alert("meu deus você literalmente acertou tudo. Parabéns... eu acho?");
+        clear(app);
+        restartGame();
+    }
+    else if (inputEmote.value == emoteAtual.name) {
+        inputEmote.setAttribute("placeholder", "Acertou!");
+        inputEmote.style.boxShadow = "0 0 0 3px green";
         acertos++;
         tentativas = 0;
         showAcertos.innerHTML = "Acertos: ".concat(acertos);
@@ -225,42 +245,48 @@ var gameplay = function () {
     }
     else {
         inputEmote.style.boxShadow = "0 0 0 3px rgba(191, 2, 2)";
+        inputEmote.setAttribute("placeholder", "Tente novamente");
+        inputEmote.value = "";
         tentativas++;
         showAcertos.innerHTML = "Acertos: ".concat(acertos);
         if (tentativas === 1) {
-            shakeInputWrong();
+            shakeInputWrong(inputEmote);
             vida4.style.color = "grey";
             clear(app);
             showEmoteGame2(emoteAtual);
         }
         if (tentativas === 2) {
-            shakeInputWrong();
+            shakeInputWrong(inputEmote);
             vida3.style.color = "grey";
             clear(app);
             showEmoteGame3(emoteAtual);
         }
         if (tentativas === 3) {
-            shakeInputWrong();
+            shakeInputWrong(inputEmote);
             vida2.style.color = "grey";
             clear(app);
             showEmoteGame4(emoteAtual);
         }
         if (tentativas === 4) {
-            shakeInputWrong();
+            shakeInputWrong(inputEmote);
             vida1.style.color = "grey";
-            alert("Game Over!");
+            if (acertos > recorde) {
+                recorde = acertos;
+                localStorage.setItem('recorde', recorde.toString());
+            }
+            alert("Game Over! Você acertou " + acertos + " emotes! tente novamente.");
             clear(app);
             restartGame();
         }
     }
 };
-function shakeInputWrong() {
+function shakeInputWrong(input) {
     setTimeout(function () {
-        inputEmote.style.animation = "shake 0.2s";
-        inputEmote.style.animationIterationCount = "1";
+        input.style.animation = "shake 0.2s";
+        input.style.animationIterationCount = "1";
     }, 1);
     setTimeout(function () {
-        inputEmote.style.animation = "none";
+        input.style.animation = "none";
     }, 400);
 }
 var showEmote = function (emote) {

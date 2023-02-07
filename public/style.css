@@ -34,6 +34,8 @@
 	}
 }
 
+
+
 html,
 body {
 	font-family: "Segoe UI";
@@ -315,6 +317,16 @@ input[type="submit"] {
 	text-shadow: 6px 6px 5px black;
 }
 
+#recorde{
+	margin-top: 1rem;
+	align-items: center;
+	text-align: center;
+	font-size: 1.2rem;
+	font-weight: bold;
+	text-transform: uppercase;
+	text-shadow: 6px 6px 5px black;
+}
+
 
 footer{
 	display: block;
@@ -323,8 +335,8 @@ footer{
 	width: 100%;
 	margin-top: 1rem;
 	text-align: center;
-	font-size: 0.8rem;
-	font-weight: 600;
+	font-size: 2.5rem;
+	font-weight: 800;
 }
 
 #twitch {
@@ -333,5 +345,5 @@ footer{
 }
 
 #twitch:hover {
-	color: #398ce4;
+	color: #8339e4;
 }
