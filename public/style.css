@@ -11,7 +11,7 @@ body {
 	background-attachment: fixed;
 	background-size: cover;
 	width: auto;
-	height: auto;
+	height: 100%;
 	color: #398ce4;
 	display: flex;
 	justify-content: center;
