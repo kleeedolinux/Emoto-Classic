@@ -54,14 +54,13 @@ inputEmote.addEventListener("keydown", (e: KeyboardEvent) => {
 	}
 });
 
-inputEmote.addEventListener("focusout", () => {
-	hideAutocomplete();
-});
-
 emotesListAutocomplete.addEventListener("click", (e: MouseEvent) => {
 	const target = e.target as HTMLElement;
 	if (target.classList.contains("autocomplete-item")) {
 		inputEmote.value = target.innerText;
+		console.log(target.innerText);
+		gameplay();
+		hideAutocomplete();
 	}
 });
 
