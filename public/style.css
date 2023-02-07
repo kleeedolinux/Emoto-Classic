@@ -2,7 +2,7 @@ html,
 body {
 	font-family: "Segoe UI";
 	margin: 0;
-	padding-bottom: 20%;
+	padding: 0;
 }
 
 body {
@@ -11,7 +11,7 @@ body {
 	background-attachment: fixed;
 	background-size: cover;
 	width: auto;
-	height: 100%;
+	height: auto;
 	color: #398ce4;
 	display: flex;
 	justify-content: center;
