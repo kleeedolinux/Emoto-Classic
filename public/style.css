@@ -2,7 +2,7 @@ html,
 body {
 	font-family: "Segoe UI";
 	margin: 0;
-	padding: 0;
+	padding-bottom: 20%;
 }
 
 body {
@@ -135,7 +135,7 @@ body {
 }
 
 .autocomplete-emotes {
-	position:absolute;
+	position: absolute;
 	list-style-type: none;
 	padding: 0;
 	margin: 0;
@@ -151,9 +151,12 @@ body {
 
 .autocomplete-emotes li {
 	padding: 8px;
-	cursor: pointer;
 	font-weight: 600;
-}	
+}
+.autocomplete-emotes li:hover{
+	cursor: pointer;
+	background-color: #245992;
+}
 
 #emoteTry:focus {
 	box-shadow: 0 0 0 1px #fff;
