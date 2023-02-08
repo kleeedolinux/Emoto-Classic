@@ -18,6 +18,7 @@ declare const recordeElement: HTMLElement;
 declare const helpBtn: HTMLElement;
 declare const dialog: HTMLDialogElement;
 declare const dialogCloseBtn: HTMLElement;
+declare const titleEmoto: Element;
 declare const emotesListAutocomplete: HTMLElement;
 declare const emotesList: Emote[];
 declare const emoteNames: string[];
@@ -40,6 +41,8 @@ declare function hideVidas(): void;
 declare function showVidas(): void;
 declare function showRecorde(): void;
 declare function hideRecorde(): void;
+declare function showSubtitle2(): void;
+declare function hideSubtitle2(): void;
 declare function loadEmotesList(emotes: Emote[]): void;
 declare function filterEmotesList(emotes: Emote[], inputText: string): Emote[];
 interface Emote {

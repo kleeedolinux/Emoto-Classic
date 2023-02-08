@@ -41,8 +41,17 @@ body {
 	padding: 0;
 }
 
+img {
+	user-drag: none;
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-drag: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
 body {
-	background-image: url(img/3.png) ;
+	background-image: url(img/3.png);
 	background-repeat: no-repeat;
 	background-attachment: fixed;
 	background-size: cover;
@@ -144,7 +153,7 @@ dialog::backdrop {
 	margin-top: auto;
 	text-transform: uppercase;
 	margin-bottom: -0.5rem;
-	cursor: default;
+	cursor: pointer;
 }
 
 .peepoThink {
@@ -172,6 +181,7 @@ dialog::backdrop {
 	text-transform: lowercase;
 }
 #subtitle2 {
+	display: none;
 	font-weight: 600;
 	text-shadow: 6px 6px 5px black;
 	font-size: 1rem;
@@ -211,6 +221,8 @@ dialog::backdrop {
 }
 
 #loading {
+	user-drag: none;
+	user-select: none;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -306,15 +318,9 @@ dialog::backdrop {
 	cursor: unset;
 }
 
-.card--name {
-	text-transform: capitalize;
-	color: #fff;
-	font-size: 1rem;
-	font-weight: 500;
-	text-align: center;
-}
-
 .card--image {
+	user-drag: none;
+	user-select: none;
 	width: auto;
 	display: block;
 	margin: auto;
@@ -323,6 +329,8 @@ dialog::backdrop {
 }
 
 .card--image2 {
+	user-drag: none;
+	user-select: none;
 	width: auto;
 	display: block;
 	margin: auto;
@@ -331,6 +339,8 @@ dialog::backdrop {
 }
 
 .card--image3 {
+	user-drag: none;
+	user-select: none;
 	width: auto;
 	display: block;
 	margin: auto;
@@ -339,6 +349,8 @@ dialog::backdrop {
 }
 
 .card--image4 {
+	user-drag: none;
+	user-select: none;
 	width: auto;
 	display: block;
 	margin: auto;
@@ -395,6 +407,7 @@ input[type="submit"] {
 }
 
 #recorde {
+	padding: 5px;
 	align-items: center;
 	text-align: center;
 	font-size: 1.2rem;
