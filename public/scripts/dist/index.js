@@ -55,6 +55,10 @@ var recordeElement = document.getElementById("recorde");
 var helpBtn = document.getElementById("Help");
 var dialog = document.querySelector("dialog");
 var dialogCloseBtn = document.getElementById("modalCloseButton");
+var titleEmoto = document.querySelector(".title");
+titleEmoto.addEventListener("click", function () {
+    window.location.reload();
+});
 helpBtn.addEventListener("click", function () {
     dialog.showModal();
 });
@@ -82,6 +86,12 @@ inputChannel.addEventListener("change", function () {
     restartGame();
     subtitle2.style.display = "none";
 });
+inputChannel.addEventListener("focus", function () {
+    showSubtitle2();
+});
+inputChannel.addEventListener("blur", function () {
+    hideSubtitle2();
+});
 inputEmote.addEventListener("input", function () {
     var filteredList = filterEmotesList(emotesList, inputEmote.value);
     loadEmotesList(filteredList);
@@ -98,7 +108,7 @@ emotesListAutocomplete.addEventListener("click", function (e) {
     if (target.classList.contains("autocomplete-item")) {
         inputEmote.value = target.innerText;
         console.log(target.innerText);
-        gameplay();
+        inputEmote.focus();
         hideAutocomplete();
     }
 });
@@ -144,6 +154,12 @@ function showRecorde() {
 }
 function hideRecorde() {
     recordeElement.style.display = "none";
+}
+function showSubtitle2() {
+    subtitle2.style.display = "block";
+}
+function hideSubtitle2() {
+    subtitle2.style.display = "none";
 }
 function loadEmotesList(emotes) {
     if (emotes.length > 0) {
@@ -311,11 +327,11 @@ function shakeInputWrong(input) {
     }, 400);
 }
 var showEmote = function (emote) {
-    var output = "\n    <a class=\"card\">\n\t\t<div id= \"blur\">\n\t\t<img class=\"card--image\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n\t\t</div>\n        <h1 class=\"card--name\">").concat(emote.name, "</h1>\n    </a>\n    ");
+    var output = "\n    <a class=\"card\">\n\t\t<div id= \"blur\">\n\t\t<img class=\"card--image\" src=".concat(emote.image, " alt=").concat(emote.name, " \n\t\tstyle = \"user-drag: none; user-select: none;\"/>\n\t\t</div>\n        <h1 class=\"card--name\">").concat(emote.name, "</h1>\n    </a>\n    ");
     app.innerHTML += output;
 };
 var showEmoteGame = function (emote) {
-    var output = "\n    <a class=\"card\">\n\t\t\n\t\t<img class=\"card--image\" src=".concat(emote.image, " alt=").concat(emote.name, " />\n\t\t\n    </a>\n    ");
+    var output = "\n    <a class=\"card\">\n\t\t\n\t\t<img class=\"card--image\" src=".concat(emote.image, " alt=").concat(emote.name, "/>\n\t\t\n    </a>\n    ");
     app.innerHTML += output;
 };
 var showEmoteGame2 = function (emote) {

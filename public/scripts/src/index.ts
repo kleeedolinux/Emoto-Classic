@@ -21,6 +21,12 @@ const dialog = document.querySelector("dialog")!;
 
 const dialogCloseBtn = document.getElementById("modalCloseButton")!;
 
+const titleEmoto = document.querySelector(".title")!;
+
+titleEmoto.addEventListener("click", () => {
+	window.location.reload();
+});
+
 helpBtn.addEventListener("click", () => {
 	dialog.showModal();
 });
@@ -64,6 +70,14 @@ inputChannel.addEventListener("change", (): void => {
 	subtitle2.style.display = "none";
 });
 
+inputChannel.addEventListener("focus", (): void => {
+	showSubtitle2();
+});
+
+inputChannel.addEventListener("blur", (): void => {
+	hideSubtitle2();
+});
+
 inputEmote.addEventListener("input", function () {
 	const filteredList: Emote[] = filterEmotesList(emotesList, inputEmote.value);
 	loadEmotesList(filteredList);
@@ -82,7 +96,7 @@ emotesListAutocomplete.addEventListener("click", (e: MouseEvent) => {
 	if (target.classList.contains("autocomplete-item")) {
 		inputEmote.value = target.innerText;
 		console.log(target.innerText);
-		gameplay();
+		inputEmote.focus();
 		hideAutocomplete();
 	}
 });
@@ -138,6 +152,14 @@ function showRecorde(): void {
 
 function hideRecorde(): void {
 	recordeElement.style.display = "none";
+}
+
+function showSubtitle2(): void {
+	subtitle2.style.display = "block";
+}
+
+function hideSubtitle2(): void {
+	subtitle2.style.display = "none";
 }
 
 function loadEmotesList(emotes: Emote[]): void {
@@ -313,7 +335,8 @@ const showEmote = (emote: Emote): void => {
 	let output: string = `
     <a class="card">
 		<div id= "blur">
-		<img class="card--image" src=${emote.image} alt=${emote.name} />
+		<img class="card--image" src=${emote.image} alt=${emote.name} 
+		style = "user-drag: none; user-select: none;"/>
 		</div>
         <h1 class="card--name">${emote.name}</h1>
     </a>
@@ -325,7 +348,7 @@ const showEmoteGame = (emote: Emote): void => {
 	let output: string = `
     <a class="card">
 		
-		<img class="card--image" src=${emote.image} alt=${emote.name} />
+		<img class="card--image" src=${emote.image} alt=${emote.name}/>
 		
     </a>
     `;
