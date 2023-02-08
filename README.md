@@ -2,7 +2,7 @@
 ## Desenvolvido em TypeScript, HTML e CSS
 ### Jogo sobre adivinhar emotes da Twitch, feito por um nerdola para nerdolas.
 
-#👇 Jogue agora aqui!
+# 👇 Jogue agora aqui!
 https://emoto.discloud.app
 
 Inclui os emotes da Twitch, BTTV, 7TV e FFZ
