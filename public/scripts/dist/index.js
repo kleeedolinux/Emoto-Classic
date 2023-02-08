@@ -14,7 +14,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -52,6 +52,15 @@ var vida2 = document.getElementById("vida2");
 var vida3 = document.getElementById("vida3");
 var vida4 = document.getElementById("vida4");
 var recordeElement = document.getElementById("recorde");
+var helpBtn = document.getElementById("Help");
+var dialog = document.querySelector("dialog");
+var dialogCloseBtn = document.getElementById("modalCloseButton");
+helpBtn.addEventListener("click", function () {
+    dialog.showModal();
+});
+dialogCloseBtn.addEventListener("click", function () {
+    dialog.close();
+});
 var emotesListAutocomplete = document.getElementById("emotes-list");
 document.addEventListener("contextmenu", function (event) { return event.preventDefault(); });
 var emotesList = [];
@@ -59,6 +68,7 @@ var emoteNames = [];
 var tentativas = 0;
 var emoteAtual;
 var acertos = 0;
+var acertosSeguidos = 0;
 var vidasRestantes = 4;
 var recorde = 0;
 var localRecorde = localStorage.getItem("recorde");
@@ -88,6 +98,16 @@ emotesListAutocomplete.addEventListener("click", function (e) {
     if (target.classList.contains("autocomplete-item")) {
         inputEmote.value = target.innerText;
         console.log(target.innerText);
+        gameplay();
+        hideAutocomplete();
+    }
+});
+emotesListAutocomplete.addEventListener("keydown", function (e) {
+    var target = e.target;
+    if (target.classList.contains("autocomplete-item") && e.key === "Enter") {
+        inputEmote.value = target.innerText;
+        console.log(target.innerText);
+        inputEmote.focus();
         gameplay();
         hideAutocomplete();
     }
@@ -130,7 +150,7 @@ function loadEmotesList(emotes) {
         emotesListAutocomplete.innerHTML = "";
         var innerElement_1 = "";
         emotes.forEach(function (emote) {
-            innerElement_1 += "<li class=\"autocomplete-item\">".concat(emote.name, "</li>");
+            innerElement_1 += "<li class=\"autocomplete-item\" tabindex = \"0\">".concat(emote.name, "</li>");
         });
         emotesListAutocomplete.innerHTML = innerElement_1;
     }
@@ -239,6 +259,7 @@ var gameplay = function () {
         inputEmote.setAttribute("placeholder", "Acertou!");
         inputEmote.style.boxShadow = "0 0 0 3px green";
         acertos++;
+        acertosSeguidos++;
         tentativas = 0;
         showAcertos.innerHTML = "Acertos: ".concat(acertos);
         continueGame(emotesList);
@@ -272,7 +293,7 @@ var gameplay = function () {
             vida1.style.color = "grey";
             if (acertos > recorde) {
                 recorde = acertos;
-                localStorage.setItem('recorde', recorde.toString());
+                localStorage.setItem("recorde", recorde.toString());
             }
             alert("Game Over! Você acertou " + acertos + " emotes! tente novamente.");
             clear(app);

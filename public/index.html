@@ -3,22 +3,60 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link rel="stylesheet" href="style.css" />
-		<link rel="icon" type="image/webp" href="img/pogg.webp">
+		<link rel="icon" type="image/webp" href="img/pogg.webp" />
 		<link
 			rel="stylesheet"
 			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
 		/>
-		<title>Emoto - Twitch Game</title>
+		<title>Emoto - Twitch Emote Guessing Game</title>
 	</head>
+	<a tabindex="-1" id="Help" class="fa fa-question-circle"></a>
+	<dialog tabindex="-1" id="helpDialog">
+		<div id="modal">
+			<h1 id="modalTitle">Como jogar</h1>
+			<img
+				class="gaming"
+				id="gaming"
+				src="https://cdn.7tv.app/emote/613e73790969108b67189ed0/4x.webp"
+			/>
+			<p id="modalText">
+				Emoto é um jogo de adivinhação de emotes da Twitch.
+				<br />
+				Depois de inserir o nome do canal que deseja, o jogo irá carregar todos
+				os emotes do canal (incluindo BTTV e 7TV).
+				<br />
+				Depois de carregar, você terá que adivinhar o nome do emote que aparece
+				na tela.
+				<br />
+				Se você acertar, ganha 1 ponto e o emote é removido da lista.
+				<br />
+				Se você errar, perde 1 vida e tem a chance de tentar de novo
+				<br />
+				<br />
+				Se você errar 4 vezes, o jogo acaba e você pode tentar novamente.
+			</p>
+			<a id="modalCloseButton" class="fa fa-close"></a>
+
+			<a
+				target="_blank"
+				tabindex="-1"
+				href="https://github.com/GrifoEXE/Emoto-Prototipo"
+				class="fa fa-github"
+				id="github"
+			></a>
+		</div>
+	</dialog>
+
 	<body>
 		<div class="container1">
 			<h1 id="title">emoto</h1>
+			v0.5
+			<h3 id="subtitle">um jogo sobre adivinhar emotes</h3>
 			<img
 				class="peepoThink"
 				id="peepoThink"
 				src="https://cdn.7tv.app/emote/616b8ee4474b9b7b59a3ad0b/3x.webp"
 			/>
-			<h3 id="subtitle"> um jogo sobre adivinhar emotes</h3>
 		</div>
 
 		<input
@@ -28,7 +66,7 @@
 			autocomplete="off"
 		/>
 		<p id="subtitle2">sério, qualquer um.</p>
-
+		<div id="recorde"></div>
 		<div id="invalidChannel"></div>
 		<div id="loading"></div>
 		<div id="app"></div>
@@ -43,6 +81,7 @@
 			/>
 			<ul class="autocomplete-emotes" id="emotes-list"></ul>
 		</div>
+
 		<div id="score">
 			<div id="vidas">
 				<i class="fa fa-heart" id="vida1"></i>
@@ -53,11 +92,30 @@
 			<h3 id="tentativas"></h3>
 			<h3 id="acertos"></h3>
 		</div>
-		<div id="recorde"></div>
-		<script src="scripts/dist/index.js"></script>
 	</body>
 	<footer>
-		<p>feito por <a id="twitch" target="_blank" href="https://www.twitch.tv/grifoexe">GrifoEXE</a></p>
-		
+		<a id="shoutout"
+			>por
+			<a
+				id="twitch"
+				target="_blank"
+				href="https://www.twitch.tv/grifoexe/about"
+				tabindex="-1"
+				>GrifoEXE</a
+			></a
+		>
+		<a
+			target="_blank"
+			tabindex="-1"
+			href="https://www.youtube.com/@grifoexe_"
+			class="fa fa-youtube-play"
+		></a>
+		<a
+			target="_blank"
+			tabindex="-1"
+			href="https://twitter.com/GrifoEXE"
+			class="fa fa-twitter"
+		></a>
 	</footer>
+	<script src="scripts/dist/index.js"></script>
 </html>

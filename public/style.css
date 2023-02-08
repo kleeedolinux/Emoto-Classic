@@ -34,8 +34,6 @@
 	}
 }
 
-
-
 html,
 body {
 	font-family: "Segoe UI";
@@ -44,17 +42,80 @@ body {
 }
 
 body {
-	background-image: url(img/3.png);
+	background-image: url(img/3.png) ;
 	background-repeat: no-repeat;
 	background-attachment: fixed;
 	background-size: cover;
-	width: auto;
-	height: 100%;
+	width: 100% auto;
+	height: auto;
 	color: #398ce4;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
+	margin-bottom: auto;
+}
+
+#help {
+	display: block;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
+#help:hover {
+	cursor: pointer;
+	color: gray;
+	animation: shake 0.1s;
+}
+
+dialog {
+	background-color: #326caa;
+	border: 0;
+	border-radius: 2px;
+	padding: 0.5rem;
+	color: #fff;
+	font-size: 1rem;
+	font-weight: bold;
+	outline: none;
+	text-align: center;
+	max-width: 50%;
+	max-height: 100%;
+	text-shadow: 6px 6px 5px black;
+}
+
+dialog::backdrop {
+	background-color: rgba(0, 0, 0, 0.6);
+}
+
+#modalText {
+	text-align: center;
+	text-shadow: 6px 2px 6px black;
+}
+
+#modalCloseButton {
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 0.5rem;
+	text-shadow: #000 0 0 5px;
+	font-size: 1.5rem;
+}
+
+#modalCloseButton:hover {
+	cursor: pointer;
+	color: #ff0000;
+	animation: shake 0.2s;
+}
+
+#github {
+	font-size: 3rem;
+}
+
+#github:hover {
+	cursor: pointer;
+	color: gray;
+	animation: shake 0.2s;
 }
 
 ::placeholder {
@@ -83,9 +144,18 @@ body {
 	margin-top: auto;
 	text-transform: uppercase;
 	margin-bottom: -0.5rem;
+	cursor: default;
 }
 
 .peepoThink {
+	display: block;
+	margin-bottom: 1rem;
+	margin-left: auto;
+	margin-right: auto;
+	filter: drop-shadow(6px 6px 5px black);
+}
+
+.gaming {
 	display: block;
 	margin-bottom: 1rem;
 	margin-left: auto;
@@ -112,7 +182,7 @@ body {
 #channelInput {
 	font-weight: 700;
 	box-shadow: 6px 6px 5px black;
-	width: 110%;
+	width: 100%;
 	border: 0;
 	background-color: #398ce4;
 	border-radius: 2px;
@@ -129,6 +199,10 @@ body {
 
 #channelInput:focus {
 	box-shadow: 0 0 0 1px #fff;
+}
+
+#channelInput::placeholder {
+	font-family: "Segoe UI";
 }
 
 #invalidChannel {
@@ -201,6 +275,9 @@ body {
 	cursor: pointer;
 	background-color: #245992;
 }
+.autocomplete-emotes li:focus {
+	background-color: #245992;
+}
 
 #emoteTry:focus {
 	box-shadow: 0 0 0 1px #fff;
@@ -214,7 +291,7 @@ body {
 
 .card {
 	margin-top: -2rem;
-	width: 12rem auto;
+	width: 15rem auto;
 	background: rgb(29, 29, 29);
 	color: #398ce4;
 	padding: 1rem;
@@ -317,8 +394,7 @@ input[type="submit"] {
 	text-shadow: 6px 6px 5px black;
 }
 
-#recorde{
-	margin-top: 1rem;
+#recorde {
 	align-items: center;
 	text-align: center;
 	font-size: 1.2rem;
@@ -327,16 +403,20 @@ input[type="submit"] {
 	text-shadow: 6px 6px 5px black;
 }
 
-
-footer{
-	display: block;
+footer {
 	position: absolute;
 	bottom: 0;
 	width: 100%;
 	margin-top: 1rem;
 	text-align: center;
 	font-size: 2.5rem;
-	font-weight: 800;
+	font-weight: 700;
+	margin-bottom: 10px;
+}
+
+#shoutout {
+	text-decoration: none;
+	margin-top: 1rem;
 }
 
 #twitch {
@@ -346,4 +426,63 @@ footer{
 
 #twitch:hover {
 	color: #8339e4;
+}
+
+#twitch:active {
+	color: #8339e4;
+}
+
+.fa-github {
+	padding: 20px;
+	font-size: 20px;
+	width: 30px;
+	text-align: center;
+	text-decoration: none;
+	border-radius: 50%;
+	color: white;
+}
+
+.fa-twitter {
+	padding: 20px;
+	font-size: 30px;
+	width: 30px;
+	text-align: center;
+	text-decoration: none;
+	border-radius: 50%;
+	color: #398ce4;
+}
+
+.fa-youtube-play {
+	padding: 20px;
+	font-size: 30px;
+	width: 30px;
+	text-align: center;
+	text-decoration: none;
+	border-radius: 50%;
+	color: #398ce4;
+}
+
+.fa-question-circle {
+	padding: 20px;
+	font-size: 2.5rem;
+	font-weight: 700;
+	width: 30px;
+	text-align: center;
+	text-decoration: none;
+	border-radius: 50%;
+	color: #398ce4;
+}
+
+.fa-question-circle:hover {
+	color: white;
+}
+
+.fa-twitter:hover {
+	color: #1da1f2;
+}
+.fa-github:hover {
+	color: black;
+}
+.fa-youtube-play:hover {
+	color: red;
 }

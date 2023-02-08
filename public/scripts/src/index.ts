@@ -16,6 +16,18 @@ const vida2: HTMLElement = document.getElementById("vida2")!;
 const vida3: HTMLElement = document.getElementById("vida3")!;
 const vida4: HTMLElement = document.getElementById("vida4")!;
 const recordeElement: HTMLElement = document.getElementById("recorde")!;
+const helpBtn: HTMLElement = document.getElementById("Help")!;
+const dialog = document.querySelector("dialog")!;
+
+const dialogCloseBtn = document.getElementById("modalCloseButton")!;
+
+helpBtn.addEventListener("click", () => {
+	dialog.showModal();
+});
+
+dialogCloseBtn.addEventListener("click", () => {
+	dialog.close();
+});
 
 const emotesListAutocomplete: HTMLElement =
 	document.getElementById("emotes-list")!;
@@ -28,6 +40,7 @@ const emoteNames: string[] = [];
 var tentativas: number = 0;
 var emoteAtual: Emote;
 var acertos: number = 0;
+var acertosSeguidos: number = 0;
 var vidasRestantes: number = 4;
 var recorde = 0;
 
@@ -69,6 +82,17 @@ emotesListAutocomplete.addEventListener("click", (e: MouseEvent) => {
 	if (target.classList.contains("autocomplete-item")) {
 		inputEmote.value = target.innerText;
 		console.log(target.innerText);
+		gameplay();
+		hideAutocomplete();
+	}
+});
+
+emotesListAutocomplete.addEventListener("keydown", (e: KeyboardEvent) => {
+	const target = e.target as HTMLElement;
+	if (target.classList.contains("autocomplete-item") && e.key === "Enter") {
+		inputEmote.value = target.innerText;
+		console.log(target.innerText);
+		inputEmote.focus();
 		gameplay();
 		hideAutocomplete();
 	}
@@ -121,7 +145,7 @@ function loadEmotesList(emotes: Emote[]): void {
 		emotesListAutocomplete.innerHTML = "";
 		let innerElement: string = "";
 		emotes.forEach((emote: Emote) => {
-			innerElement += `<li class="autocomplete-item">${emote.name}</li>`;
+			innerElement += `<li class="autocomplete-item" tabindex = "0">${emote.name}</li>`;
 		});
 		emotesListAutocomplete.innerHTML = innerElement;
 	}
@@ -225,15 +249,15 @@ const continueGame = (emotesList: Emote[]): void => {
 };
 
 const gameplay = (): void => {
-	if(emotesList.length === 0) {
+	if (emotesList.length === 0) {
 		alert("meu deus você literalmente acertou tudo. Parabéns... eu acho?");
 		clear(app);
 		restartGame();
-	}
-	else if (inputEmote.value == emoteAtual.name) {
+	} else if (inputEmote.value == emoteAtual.name) {
 		inputEmote.setAttribute("placeholder", "Acertou!");
 		inputEmote.style.boxShadow = "0 0 0 3px green";
 		acertos++;
+		acertosSeguidos++;
 		tentativas = 0;
 		showAcertos.innerHTML = `Acertos: ${acertos}`;
 		continueGame(emotesList);
@@ -264,9 +288,9 @@ const gameplay = (): void => {
 		if (tentativas === 4) {
 			shakeInputWrong(inputEmote);
 			vida1.style.color = "grey";
-			if(acertos > recorde){
+			if (acertos > recorde) {
 				recorde = acertos;
-				localStorage.setItem('recorde', recorde.toString());
+				localStorage.setItem("recorde", recorde.toString());
 			}
 			alert("Game Over! Você acertou " + acertos + " emotes! tente novamente.");
 			clear(app);
@@ -275,7 +299,7 @@ const gameplay = (): void => {
 	}
 };
 
-function shakeInputWrong(input:HTMLElement) {
+function shakeInputWrong(input: HTMLElement) {
 	setTimeout(() => {
 		input.style.animation = "shake 0.2s";
 		input.style.animationIterationCount = "1";
@@ -283,7 +307,6 @@ function shakeInputWrong(input:HTMLElement) {
 	setTimeout(() => {
 		input.style.animation = "none";
 	}, 400);
-	
 }
 
 const showEmote = (emote: Emote): void => {
