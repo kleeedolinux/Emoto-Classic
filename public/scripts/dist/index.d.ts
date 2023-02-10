@@ -1,7 +1,6 @@
 declare const app: HTMLElement;
 declare const loading: HTMLElement;
 declare const showAcertos: HTMLElement;
-declare const showTentativas: HTMLElement;
 declare const score: HTMLElement;
 declare const emoteTryContainer: HTMLElement;
 declare const invalidChannel: HTMLElement;
@@ -22,7 +21,6 @@ declare const titleEmoto: Element;
 declare const emotesListAutocomplete: HTMLElement;
 declare const emotesList: Emote[];
 declare const emoteNames: string[];
-declare var tentativas: number;
 declare var emoteAtual: Emote;
 declare var acertos: number;
 declare var acertosSeguidos: number;
@@ -52,13 +50,13 @@ interface Emote {
 interface GameRound {
     emotes: Emote[];
     acertos: number;
-    tentativas: number;
     completo: boolean;
 }
 declare function restartGame(): void;
 declare const getEmotesGame: (channel: string) => Promise<void>;
 declare const continueGame: (emotesList: Emote[]) => void;
 declare const gameplay: () => void;
+declare function checkVidas(vidasRestantes: number): void;
 declare function shakeInputWrong(input: HTMLElement): void;
 declare const showEmote: (emote: Emote) => void;
 declare const showEmoteGame: (emote: Emote) => void;

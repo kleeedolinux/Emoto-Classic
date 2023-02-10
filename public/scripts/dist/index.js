@@ -38,7 +38,6 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var app = document.getElementById("app");
 var loading = document.getElementById("loading");
 var showAcertos = document.getElementById("acertos");
-var showTentativas = document.getElementById("tentativas");
 var score = document.getElementById("score");
 var emoteTryContainer = document.getElementById("emoteTryContainer");
 var invalidChannel = document.getElementById("invalidChannel");
@@ -69,7 +68,6 @@ var emotesListAutocomplete = document.getElementById("emotes-list");
 document.addEventListener("contextmenu", function (event) { return event.preventDefault(); });
 var emotesList = [];
 var emoteNames = [];
-var tentativas = 0;
 var emoteAtual;
 var acertos = 0;
 var acertosSeguidos = 0;
@@ -180,7 +178,6 @@ function restartGame() {
     clearPeepo();
     clear(invalidChannel);
     clear(subtitle);
-    tentativas = 0;
     acertos = 0;
     vidasRestantes = 4;
     clear(app);
@@ -195,7 +192,6 @@ var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0
         switch (_a.label) {
             case 0:
                 console.log(channel);
-                tentativas = 0;
                 acertos = 0;
                 _a.label = 1;
             case 1:
@@ -230,9 +226,9 @@ var getEmotesGame = function (channel) { return __awaiter(void 0, void 0, void 0
                 hideRecorde();
                 clear(app);
                 clear(loading);
-                showEmoteGame(emoteAtual);
+                showEmoteGame4(emoteAtual);
                 showEmoteTry();
-                showAcertos.innerHTML = "Acertos: ".concat(acertos);
+                showAcertos.innerHTML = "".concat(acertos);
                 showVidas();
                 return [3 /*break*/, 5];
             case 4:
@@ -262,61 +258,97 @@ var continueGame = function (emotesList) {
     clear(app);
     inputEmote.value = "";
     inputEmote.focus();
-    showEmoteGame(emoteAtual);
-    resetVidas();
+    showEmoteGame4(emoteAtual);
 };
 var gameplay = function () {
-    if (emotesList.length === 0) {
+    if (emotesList.length === 0) { //vitória
         alert("meu deus você literalmente acertou tudo. Parabéns... eu acho?");
         clear(app);
         restartGame();
     }
-    else if (inputEmote.value == emoteAtual.name) {
-        inputEmote.setAttribute("placeholder", "Acertou!");
-        inputEmote.style.boxShadow = "0 0 0 3px green";
+    else if (inputEmote.value == emoteAtual.name) { //acerto
         acertos++;
         acertosSeguidos++;
-        tentativas = 0;
-        showAcertos.innerHTML = "Acertos: ".concat(acertos);
+        if (acertosSeguidos == 3 && vidasRestantes <= 4) {
+            console.log(acertosSeguidos);
+            if (vidasRestantes == 4) {
+                vidasRestantes = 4;
+            }
+            else {
+                vidasRestantes++;
+            }
+            acertosSeguidos = 0;
+            checkVidas(vidasRestantes);
+        }
+        inputEmote.setAttribute("placeholder", "Acertou!");
+        inputEmote.style.boxShadow = "0 0 0 3px green";
+        showAcertos.innerHTML = "".concat(acertos);
         continueGame(emotesList);
     }
-    else {
+    else { //erro
+        acertosSeguidos = 0;
+        console.log(acertosSeguidos);
+        vidasRestantes--;
+        console.log(vidasRestantes);
+        checkVidas(vidasRestantes);
         inputEmote.style.boxShadow = "0 0 0 3px rgba(191, 2, 2)";
         inputEmote.setAttribute("placeholder", "Tente novamente");
         inputEmote.value = "";
-        tentativas++;
-        showAcertos.innerHTML = "Acertos: ".concat(acertos);
-        if (tentativas === 1) {
+        showAcertos.innerHTML = "".concat(acertos);
+        if (vidasRestantes > 0) {
             shakeInputWrong(inputEmote);
-            vida4.style.color = "grey";
-            clear(app);
-            showEmoteGame2(emoteAtual);
-        }
-        if (tentativas === 2) {
-            shakeInputWrong(inputEmote);
-            vida3.style.color = "grey";
-            clear(app);
-            showEmoteGame3(emoteAtual);
-        }
-        if (tentativas === 3) {
-            shakeInputWrong(inputEmote);
-            vida2.style.color = "grey";
             clear(app);
             showEmoteGame4(emoteAtual);
         }
-        if (tentativas === 4) {
+        else if (vidasRestantes === 0) {
             shakeInputWrong(inputEmote);
-            vida1.style.color = "grey";
             if (acertos > recorde) {
                 recorde = acertos;
                 localStorage.setItem("recorde", recorde.toString());
             }
-            alert("Game Over! Você acertou " + acertos + " emotes! tente novamente.");
+            alert("Game Over! O Emote era '" + emoteAtual.name + "'. Você acertou " + acertos + " emotes! Tente novamente.");
             clear(app);
             restartGame();
         }
     }
 };
+function checkVidas(vidasRestantes) {
+    if (vidasRestantes === 4) {
+        vida1.style.color = "red";
+        vida2.style.color = "red";
+        vida3.style.color = "red";
+        vida4.style.color = "red";
+        console.log("4 vidas");
+    }
+    if (vidasRestantes === 3) {
+        vida1.style.color = "red";
+        vida2.style.color = "red";
+        vida3.style.color = "red";
+        vida4.style.color = "gray";
+        console.log("3 vidas");
+    }
+    else if (vidasRestantes === 2) {
+        vida1.style.color = "red";
+        vida2.style.color = "red";
+        vida3.style.color = "gray";
+        vida4.style.color = "gray";
+        console.log("2 vidas");
+    }
+    else if (vidasRestantes === 1) {
+        vida1.style.color = "red";
+        vida2.style.color = "gray";
+        vida3.style.color = "gray";
+        vida4.style.color = "gray";
+        console.log("1 vida");
+    }
+    else if (vidasRestantes === 0) {
+        vida1.style.color = "gray";
+        vida2.style.color = "gray";
+        vida3.style.color = "gray";
+        vida4.style.color = "gray";
+        console.log("0 vidas");
+    }
+}
 function shakeInputWrong(input) {
     setTimeout(function () {
         input.style.animation = "shake 0.2s";
