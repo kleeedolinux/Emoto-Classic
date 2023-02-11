@@ -1,22 +1,22 @@
 {
-  "name": "emoto-prototipo",
-  "version": "0.7.0",
-  "description": "Inclui os emotes da Twitch, BTTV, 7TV e FFZ\r Usa a API tEmotes ->https://adiq.stoplight.io/docs/temotes/YXBpOjMyNjU2ODIx-t-emotes-api",
-  "main": "server.js",
-  "scripts": {
-    "server": "node server.js",
-    "watch": "tsc -w",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "GrifoEXE",
-  "license": "ISC",
-  "dependencies": {
-    "@types/express": "^4.16.1",
-    "@types/node": "^18.6.1",
-    "concurrently": "^7.3.0",
-    "express": "^4.18.1",
-    "tslint": "^5.12.1",
-    "typescript": "^4.9.5"
-  },
-  "types": "public/script/dist/index.d.ts"
+	"name": "emoto-prototipo",
+	"version": "0.7.0",
+	"description": "Inclui os emotes da Twitch, BTTV, 7TV e FFZ\r Usa a API tEmotes ->https://adiq.stoplight.io/docs/temotes/YXBpOjMyNjU2ODIx-t-emotes-api",
+	"main": "server.js",
+	"scripts": {
+		"server": "node server.js",
+		"watch": "tsc -w",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "GrifoEXE",
+	"license": "ISC",
+	"dependencies": {
+		"@types/express": "^4.16.1",
+		"@types/node": "^18.6.1",
+		"concurrently": "^7.3.0",
+		"express": "^4.18.1",
+		"tslint": "^5.12.1",
+		"typescript": "^4.9.5"
+	},
+	"types": "public/script/dist/index.d.ts"
 }

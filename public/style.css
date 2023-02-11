@@ -239,7 +239,7 @@ dialog::backdrop {
 	text-shadow: 6px 6px 5px black;
 	font-size: 1rem;
 	text-transform: lowercase;
-	color: rgb(169, 48, 255);
+	color: rgb(189, 96, 255);
 }
 
 #channelInput {
@@ -529,7 +529,7 @@ footer {
 	text-transform: uppercase;
 	text-shadow: 6px 6px 5px black;
 	font-family: "Intro Rust";
-	-webkit-text-stroke: 1.5px #000;
+	-webkit-text-stroke: 1px #000;
 	margin-left: auto;
 	margin-right: auto;
 }
@@ -539,7 +539,7 @@ footer {
 	text-transform: uppercase;
 	text-shadow: 6px 6px 5px black;
 	font-family: "Intro Rust";
-	-webkit-text-stroke: 1.5px #000;
+	-webkit-text-stroke: 1px #000;
 }
 
 #autor:hover {
