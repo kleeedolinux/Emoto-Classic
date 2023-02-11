@@ -2,41 +2,73 @@
 	0% {
 		transform: translate(1px, 1px) rotate(0deg);
 	}
+
 	10% {
 		transform: translate(-1px, -2px) rotate(-1deg);
 	}
+
 	20% {
 		transform: translate(-3px, 0px) rotate(1deg);
 	}
+
 	30% {
 		transform: translate(3px, 2px) rotate(0deg);
 	}
+
 	40% {
 		transform: translate(1px, -1px) rotate(1deg);
 	}
+
 	50% {
 		transform: translate(-1px, 2px) rotate(-1deg);
 	}
+
 	60% {
 		transform: translate(-3px, 1px) rotate(0deg);
 	}
+
 	70% {
 		transform: translate(3px, 1px) rotate(-1deg);
 	}
+
 	80% {
 		transform: translate(-1px, -1px) rotate(1deg);
 	}
+
 	90% {
 		transform: translate(1px, 2px) rotate(0deg);
 	}
+
 	100% {
 		transform: translate(1px, -2px) rotate(-1deg);
 	}
 }
 
+@font-face {
+	font-family: "Intro Rust";
+	src: url("fonts/IntroRust-Base.otf") format("opentype");
+}
+
+:root {
+	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+	line-height: 1.5;
+	font-weight: 400;
+
+	color-scheme: light dark;
+
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-webkit-text-size-adjust: 100%;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
 html,
 body {
-	font-family: "Segoe UI";
+	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 	margin: 0;
 	padding: 0;
 }
@@ -51,13 +83,9 @@ img {
 }
 
 body {
-	background-image: url(img/3.png);
-	background-repeat: no-repeat;
-	background-attachment: fixed;
-	background-size: cover;
-	width: 100% auto;
+	width: auto;
 	height: auto;
-	color: #398ce4;
+	color-scheme: light dark;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -65,11 +93,27 @@ body {
 	margin-bottom: auto;
 }
 
+#background-img {
+	background-image: url(./img/Emoto-Background.png);
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: center;
+	background-attachment: fixed;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+	-webkit-filter: opacity(0.5);
+}
+
 #help {
 	display: block;
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
+	-webkit-filter: drop-shadow(6px 6px 5px black);
 }
 
 #help:hover {
@@ -89,7 +133,7 @@ dialog {
 	outline: none;
 	text-align: center;
 	max-width: 50%;
-	max-height: 100%;
+	max-height: 100vh;
 	text-shadow: 6px 6px 5px black;
 }
 
@@ -130,7 +174,8 @@ dialog::backdrop {
 ::placeholder {
 	/* Chrome, Firefox, Opera, Safari 10.1+ */
 	color: rgb(42, 42, 42);
-	opacity: 1; /* Firefox */
+	opacity: 1;
+	/* Firefox */
 }
 
 :-ms-input-placeholder {
@@ -146,14 +191,20 @@ dialog::backdrop {
 }
 
 #title {
-	font-weight: 800;
+	font-family: "Intro Rust";
+	color: white;
+	-webkit-text-stroke: 2px #000;
 	text-shadow: 6px 12px 5px black;
 	text-align: center;
-	font-size: 4rem;
+	font-size: 5rem;
 	margin-top: auto;
 	text-transform: uppercase;
 	margin-bottom: -0.5rem;
 	cursor: pointer;
+}
+
+#title:hover {
+	animation: shake 0.15s;
 }
 
 .peepoThink {
@@ -175,44 +226,50 @@ dialog::backdrop {
 #subtitle {
 	font-weight: 600;
 	text-shadow: 6px 6px 5px black;
-	font-size: 0.8rem;
+	font-size: 0.9rem;
 	margin-top: auto;
 	margin-bottom: 1rem;
-	text-transform: lowercase;
+	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+	filter: drop-shadow(6px 6px 5px black);
 }
+
 #subtitle2 {
 	display: none;
 	font-weight: 600;
 	text-shadow: 6px 6px 5px black;
 	font-size: 1rem;
 	text-transform: lowercase;
-	color: rgb(158, 35, 162);
+	color: rgb(189, 96, 255);
 }
 
 #channelInput {
 	font-weight: 700;
-	box-shadow: 6px 6px 5px black;
+	box-shadow: 0 0 0 2px #000000;
 	width: 100%;
 	border: 0;
-	background-color: #398ce4;
+	background-color: rgb(87, 87, 87);
 	border-radius: 2px;
 	padding: 0.5rem;
 	color: #fff;
 	font-size: 1rem;
 	font-weight: bold;
+	text-shadow: 1px 3px 4px black;
 	text-transform: uppercase;
 	outline: none;
 	cursor: auto;
 	text-align: center;
 	max-width: 300px;
+	filter: drop-shadow(6px 6px 5px black);
 }
 
 #channelInput:focus {
 	box-shadow: 0 0 0 1px #fff;
+	filter: drop-shadow(6px 6px 5px black);
 }
 
 #channelInput::placeholder {
-	font-family: "Segoe UI";
+	text-shadow: none;
+	color: #bcbcbc;
 }
 
 #invalidChannel {
@@ -233,16 +290,6 @@ dialog::backdrop {
 	font-weight: 600;
 }
 
-#app {
-	display: grid;
-	margin-top: 3rem;
-	margin-bottom: 1rem;
-	grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
-	grid-gap: 1.5rem;
-	justify-content: center;
-	align-items: center;
-}
-
 #emoteTryContainer {
 	position: relative;
 	display: none;
@@ -251,17 +298,22 @@ dialog::backdrop {
 }
 
 #emoteTry {
-	box-shadow: 6px 6px 5px black;
-	width: auto;
+	font-weight: 700;
+	box-shadow: 0 0 0 2px #000000;
+	width: 100%;
 	border: 0;
-	background-color: #398ce4;
+	background-color: rgb(87, 87, 87);
 	border-radius: 2px;
 	padding: 0.5rem;
 	color: #fff;
 	font-size: 1rem;
 	font-weight: bold;
+	text-shadow: 1px 3px 4px black;
 	outline: none;
+	cursor: auto;
 	text-align: center;
+	max-width: 300px;
+	filter: drop-shadow(6px 6px 5px black);
 }
 
 .autocomplete-emotes {
@@ -276,17 +328,21 @@ dialog::backdrop {
 	font-size: 1rem;
 	max-height: 100px;
 	max-width: 100%;
+	overflow-x: hidden;
 	overflow-y: auto;
+	z-index: 1;
 }
 
 .autocomplete-emotes li {
 	padding: 8px;
 	font-weight: 600;
 }
+
 .autocomplete-emotes li:hover {
 	cursor: pointer;
 	background-color: #245992;
 }
+
 .autocomplete-emotes li:focus {
 	background-color: #245992;
 }
@@ -295,23 +351,39 @@ dialog::backdrop {
 	box-shadow: 0 0 0 1px #fff;
 }
 
+#emoteTry::placeholder {
+	text-shadow: none;
+	color: #bcbcbc;
+}
+
 #blur {
 	font-size: 40px;
 	color: transparent;
 	text-shadow: 0 0 8px #000;
 }
 
+#app {
+	display: grid;
+	margin-top: 3rem;
+	margin-bottom: 1rem;
+	grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+	grid-gap: 1.5rem;
+	justify-content: center;
+	align-items: center;
+}
+
 .card {
 	margin-top: -2rem;
-	width: 15rem auto;
+	width: auto;
+	height: auto;
 	background: rgb(29, 29, 29);
 	color: #398ce4;
 	padding: 1rem;
 	border-radius: 10px;
-	border-top: 1px solid #398ce4;
-	border-bottom: 1px solid #398ce4;
-	border-left: 1px solid #398ce4;
-	border-right: 1px solid #398ce4;
+	border-top: 1px solid #ffffff;
+	border-bottom: 1px solid #ffffff;
+	border-left: 1px solid #ffffff;
+	border-right: 1px solid #ffffff;
 	text-align: center;
 	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 	position: relative;
@@ -319,9 +391,8 @@ dialog::backdrop {
 }
 
 .card--image {
-	user-drag: none;
-	user-select: none;
-	width: auto;
+	width: 100%;
+	height: 100%;
 	display: block;
 	margin: auto;
 	filter: blur(15px);
@@ -329,8 +400,6 @@ dialog::backdrop {
 }
 
 .card--image2 {
-	user-drag: none;
-	user-select: none;
 	width: auto;
 	display: block;
 	margin: auto;
@@ -339,8 +408,6 @@ dialog::backdrop {
 }
 
 .card--image3 {
-	user-drag: none;
-	user-select: none;
 	width: auto;
 	display: block;
 	margin: auto;
@@ -349,8 +416,6 @@ dialog::backdrop {
 }
 
 .card--image4 {
-	user-drag: none;
-	user-select: none;
 	width: auto;
 	display: block;
 	margin: auto;
@@ -359,6 +424,7 @@ dialog::backdrop {
 input[type="text"] {
 	background-color: #f1f1f1;
 }
+
 input[type="submit"] {
 	background-color: DodgerBlue;
 	color: #fff;
@@ -375,7 +441,6 @@ input[type="submit"] {
 
 #tentativas {
 	color: rgb(191, 2, 2);
-	text-shadow: 6px 6px 5px black;
 }
 
 #vidas {
@@ -385,39 +450,47 @@ input[type="submit"] {
 	font-size: 1rem;
 	font-weight: 600;
 	text-transform: uppercase;
+	filter: drop-shadow(6px 6px 5px black);
 }
 
 #vida1 {
 	color: red;
 }
+
 #vida2 {
 	color: red;
 }
+
 #vida3 {
 	color: red;
 }
+
 #vida4 {
 	color: red;
 }
 
 #acertos {
+	font-family: "Intro Rust";
+	font-size: 2.5rem;
 	margin-top: -1rem;
-	color: rgb(0, 128, 0);
+	color: rgb(1, 182, 1);
 	text-shadow: 6px 6px 5px black;
 }
 
 #recorde {
-	padding: 5px;
+	padding: 8px;
 	align-items: center;
 	text-align: center;
-	font-size: 1.2rem;
-	font-weight: bold;
+	font-size: 1.5rem;
 	text-transform: uppercase;
 	text-shadow: 6px 6px 5px black;
+	font-family: "Intro Rust";
+	-webkit-text-stroke: 1px #000;
+	cursor: default;
 }
 
 footer {
-	position: absolute;
+	position: fixed;
 	bottom: 0;
 	width: 100%;
 	margin-top: 1rem;
@@ -425,24 +498,52 @@ footer {
 	font-size: 2.5rem;
 	font-weight: 700;
 	margin-bottom: 10px;
+	cursor: default;
 }
 
-#shoutout {
-	text-decoration: none;
+#socials-icons {
 	margin-top: 1rem;
+	margin-bottom: -1.5rem;
+	align-items: center;
+	max-width: fit-content;
+	margin-left: auto;
+	margin-right: auto;
+	cursor: default;
 }
 
-#twitch {
-	color: #fff;
-	text-decoration: none;
+#socials-icons img:hover {
+	transform: scale(1.1);
+	transition: 0.1s;
 }
 
-#twitch:hover {
-	color: #8339e4;
+#socials-icons img {
+	margin: 0 1rem;
 }
 
-#twitch:active {
-	color: #8339e4;
+#nome-autor {
+	margin-top: 1rem;
+	align-items: center;
+	text-align: center;
+	font-size: 1.5rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	text-shadow: 6px 6px 5px black;
+	font-family: "Intro Rust";
+	-webkit-text-stroke: 1px #000;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#autor {
+	font-size: 2rem;
+	text-transform: uppercase;
+	text-shadow: 6px 6px 5px black;
+	font-family: "Intro Rust";
+	-webkit-text-stroke: 1px #000;
+}
+
+#autor:hover {
+	color: #398ce4;
 }
 
 .fa-github {
@@ -455,26 +556,6 @@ footer {
 	color: white;
 }
 
-.fa-twitter {
-	padding: 20px;
-	font-size: 30px;
-	width: 30px;
-	text-align: center;
-	text-decoration: none;
-	border-radius: 50%;
-	color: #398ce4;
-}
-
-.fa-youtube-play {
-	padding: 20px;
-	font-size: 30px;
-	width: 30px;
-	text-align: center;
-	text-decoration: none;
-	border-radius: 50%;
-	color: #398ce4;
-}
-
 .fa-question-circle {
 	padding: 20px;
 	font-size: 2.5rem;
@@ -483,19 +564,9 @@ footer {
 	text-align: center;
 	text-decoration: none;
 	border-radius: 50%;
-	color: #398ce4;
+	color: white
 }
 
-.fa-question-circle:hover {
-	color: white;
-}
-
-.fa-twitter:hover {
-	color: #1da1f2;
-}
 .fa-github:hover {
 	color: black;
-}
-.fa-youtube-play:hover {
-	color: red;
 }

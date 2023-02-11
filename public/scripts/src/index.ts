@@ -1,7 +1,6 @@
 const app: HTMLElement = document.getElementById("app")!;
 const loading: HTMLElement = document.getElementById("loading")!;
 const showAcertos: HTMLElement = document.getElementById("acertos")!;
-const showTentativas: HTMLElement = document.getElementById("tentativas")!;
 const score: HTMLElement = document.getElementById("score")!;
 const emoteTryContainer: HTMLElement =
 	document.getElementById("emoteTryContainer")!;
@@ -43,7 +42,6 @@ document.addEventListener("contextmenu", (event) => event.preventDefault());
 const emotesList: Emote[] = [];
 const emoteNames: string[] = [];
 
-var tentativas: number = 0;
 var emoteAtual: Emote;
 var acertos: number = 0;
 var acertosSeguidos: number = 0;
@@ -187,7 +185,6 @@ interface Emote {
 interface GameRound {
 	emotes: Emote[];
 	acertos: number;
-	tentativas: number;
 	completo: boolean;
 }
 
@@ -195,7 +192,6 @@ function restartGame(): void {
 	clearPeepo();
 	clear(invalidChannel);
 	clear(subtitle);
-	tentativas = 0;
 	acertos = 0;
 	vidasRestantes = 4;
 	clear(app);
@@ -207,7 +203,6 @@ function restartGame(): void {
 
 const getEmotesGame = async (channel: string): Promise<void> => {
 	console.log(channel);
-	tentativas = 0;
 	acertos = 0;
 	try {
 		const data: Response = await fetch(
@@ -238,9 +233,9 @@ const getEmotesGame = async (channel: string): Promise<void> => {
 		hideRecorde();
 		clear(app);
 		clear(loading);
-		showEmoteGame(emoteAtual);
+		showEmoteGame4(emoteAtual);
 		showEmoteTry();
-		showAcertos.innerHTML = `Acertos: ${acertos}`;
+		showAcertos.innerHTML = `${acertos}`;
 		showVidas();
 	} catch (error) {
 		showPeepo();
@@ -266,60 +261,97 @@ const continueGame = (emotesList: Emote[]): void => {
 	clear(app);
 	inputEmote.value = "";
 	inputEmote.focus();
-	showEmoteGame(emoteAtual);
-	resetVidas();
+	showEmoteGame4(emoteAtual);
 };
 
 const gameplay = (): void => {
-	if (emotesList.length === 0) {
+	if (emotesList.length === 0) { //vitória
 		alert("meu deus você literalmente acertou tudo. Parabéns... eu acho?");
 		clear(app);
 		restartGame();
-	} else if (inputEmote.value == emoteAtual.name) {
-		inputEmote.setAttribute("placeholder", "Acertou!");
-		inputEmote.style.boxShadow = "0 0 0 3px green";
+	} else if (inputEmote.value == emoteAtual.name) { //acerto
 		acertos++;
 		acertosSeguidos++;
-		tentativas = 0;
-		showAcertos.innerHTML = `Acertos: ${acertos}`;
+		if (acertosSeguidos == 3 && vidasRestantes <= 4) {
+			console.log(acertosSeguidos)
+			if (vidasRestantes == 4) {
+				vidasRestantes = 4;
+			}
+			else {
+				vidasRestantes++;
+			}
+			acertosSeguidos = 0;
+			checkVidas(vidasRestantes);
+		}
+		inputEmote.setAttribute("placeholder", "Acertou!");
+		inputEmote.style.boxShadow = "0 0 0 3px green";
+		showAcertos.innerHTML = `${acertos}`;
 		continueGame(emotesList);
-	} else {
+	} else { //erro
+		acertosSeguidos = 0;
+		console.log(acertosSeguidos)
+		vidasRestantes--
+		console.log(vidasRestantes);
+		checkVidas(vidasRestantes);
 		inputEmote.style.boxShadow = "0 0 0 3px rgba(191, 2, 2)";
 		inputEmote.setAttribute("placeholder", "Tente novamente");
 		inputEmote.value = "";
-		tentativas++;
-		showAcertos.innerHTML = `Acertos: ${acertos}`;
-		if (tentativas === 1) {
+		showAcertos.innerHTML = `${acertos}`;
+		if (vidasRestantes > 0) {
 			shakeInputWrong(inputEmote);
-			vida4.style.color = "grey";
-			clear(app);
-			showEmoteGame2(emoteAtual);
-		}
-		if (tentativas === 2) {
-			shakeInputWrong(inputEmote);
-			vida3.style.color = "grey";
-			clear(app);
-			showEmoteGame3(emoteAtual);
-		}
-		if (tentativas === 3) {
-			shakeInputWrong(inputEmote);
-			vida2.style.color = "grey";
 			clear(app);
 			showEmoteGame4(emoteAtual);
 		}
-		if (tentativas === 4) {
+		else if (vidasRestantes === 0) {
 			shakeInputWrong(inputEmote);
-			vida1.style.color = "grey";
 			if (acertos > recorde) {
 				recorde = acertos;
 				localStorage.setItem("recorde", recorde.toString());
 			}
-			alert("Game Over! Você acertou " + acertos + " emotes! tente novamente.");
+			alert("Game Over! O Emote era '" + emoteAtual.name + "'. Você acertou " + acertos + " emotes! Tente novamente.");
 			clear(app);
 			restartGame();
 		}
 	}
 };
+
+function checkVidas(vidasRestantes: number): void {
+	if (vidasRestantes === 4) {
+		vida1.style.color = "red";
+		vida2.style.color = "red";
+		vida3.style.color = "red";
+		vida4.style.color = "red";
+		console.log("4 vidas");
+	}
+	if (vidasRestantes === 3) {
+		vida1.style.color = "red";
+		vida2.style.color = "red";
+		vida3.style.color = "red";
+		vida4.style.color = "gray";
+		console.log("3 vidas");
+	}
+	else if (vidasRestantes === 2) {
+		vida1.style.color = "red";
+		vida2.style.color = "red";
+		vida3.style.color = "gray";
+		vida4.style.color = "gray";
+		console.log("2 vidas");
+	}
+	else if (vidasRestantes === 1) {
+		vida1.style.color = "red";
+		vida2.style.color = "gray";
+		vida3.style.color = "gray";
+		vida4.style.color = "gray";
+		console.log("1 vida");
+	}
+	else if (vidasRestantes === 0) {
+		vida1.style.color = "gray";
+		vida2.style.color = "gray";
+		vida3.style.color = "gray";
+		vida4.style.color = "gray";
+		console.log("0 vidas");
+	}
+}
 
 function shakeInputWrong(input: HTMLElement) {
 	setTimeout(() => {
