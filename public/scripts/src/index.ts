@@ -272,12 +272,12 @@ const gameplay = (): void => {
 	} else if (inputEmote.value == emoteAtual.name) { //acerto
 		acertos++;
 		acertosSeguidos++;
-		if(acertosSeguidos == 3 && vidasRestantes <= 4){
+		if (acertosSeguidos == 3 && vidasRestantes <= 4) {
 			console.log(acertosSeguidos)
-			if(vidasRestantes == 4){
+			if (vidasRestantes == 4) {
 				vidasRestantes = 4;
 			}
-			else{
+			else {
 				vidasRestantes++;
 			}
 			acertosSeguidos = 0;
@@ -315,7 +315,7 @@ const gameplay = (): void => {
 	}
 };
 
-function checkVidas (vidasRestantes: number): void {
+function checkVidas(vidasRestantes: number): void {
 	if (vidasRestantes === 4) {
 		vida1.style.color = "red";
 		vida2.style.color = "red";
