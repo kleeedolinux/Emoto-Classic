@@ -26,6 +26,7 @@
 			<br />
 			Se você errar, perde 1 vida e tem a chance de tentar de novo
 			<br />
+			Se você acertar 3 emotes seguidos, você ganha +1 vida.
 			<br />
 			Se você errar 4 vezes, o jogo acaba e você pode tentar novamente.
 		</p>
@@ -48,6 +49,7 @@
 	<input type="text" id="channelInput" placeholder="Insira um canal da Twitch" autocomplete="off" />
 	<p id="subtitle2">sério, qualquer um.</p>
 	<div id="recorde"></div>
+	<div id="medalhas"></div>
 	<div id="invalidChannel"></div>
 	<div id="loading"></div>
 	<div id="app"></div>
@@ -79,7 +81,7 @@
 				src="./img/Twitter.png" /></a>
 	</div>
 	<div id="nome-autor">
-		<a>por <a id="autor" target="_blank" href="https://twitch.tv/GrifoEXE/about">@GrifoEXE</a></a>
+		<a>por <a id="autor" tabindex="-1" target="_blank" href="https://twitch.tv/GrifoEXE/about">@GrifoEXE</a></a>
 	</div>
 </footer>
 <script src="scripts/dist/index.js"></script>

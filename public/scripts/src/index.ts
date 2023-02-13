@@ -17,6 +17,7 @@ const vida4: HTMLElement = document.getElementById("vida4")!;
 const recordeElement: HTMLElement = document.getElementById("recorde")!;
 const helpBtn: HTMLElement = document.getElementById("Help")!;
 const dialog = document.querySelector("dialog")!;
+const medalhas: HTMLElement = document.getElementById("medalhas")!;
 
 const dialogCloseBtn = document.getElementById("modalCloseButton")!;
 
@@ -42,6 +43,27 @@ document.addEventListener("contextmenu", (event) => event.preventDefault());
 const emotesList: Emote[] = [];
 const emoteNames: string[] = [];
 
+//cria html codigo pra medalha ganha e salva no local storage
+function addMedalha(channel: string) {
+	if (localStorage.getItem("Medalhas") == null) {
+		localStorage.setItem("Medalhas", `
+		<div id="medalha">
+			<img id="medalhaImg" src="/public/img/Medal.png" alt="medalha">
+			<a id="nomeMedalha" target="_blank" href="https://twitch.tv/${channel}/about">${channel}</a>
+		</div>
+		`)
+		medalhas.innerHTML = localStorage.getItem("Medalhas")!;
+	} else {
+		localStorage.setItem("Medalhas", localStorage.getItem("Medalhas") + `
+		<div id="medalha">
+			<img id="medalhaImg" src="/public/img/Medal.png" alt="medalha">
+			<a id="nomeMedalha" target="_blank" href="https://twitch.tv/${channel}/about">${channel}</a>
+		</div>
+		`)
+		medalhas.innerHTML = localStorage.getItem("Medalhas")!;
+	}
+}
+
 var emoteAtual: Emote;
 var acertos: number = 0;
 var acertosSeguidos: number = 0;
@@ -50,10 +72,16 @@ var recorde = 0;
 
 let localRecorde = localStorage.getItem("recorde");
 
+
 if (localRecorde) {
-	recordeElement.innerHTML = `Seu Recorde: ${localRecorde}`;
+	recordeElement.innerHTML = `Recorde: ${localRecorde}`;
 	recorde = parseInt(localRecorde);
 }
+
+if (localStorage.getItem("Medalhas")) {
+	medalhas.innerHTML = localStorage.getItem("Medalhas")!;
+}
+
 
 const inputChannel: HTMLInputElement = document.getElementById(
 	"channelInput"
@@ -93,7 +121,6 @@ emotesListAutocomplete.addEventListener("click", (e: MouseEvent) => {
 	const target = e.target as HTMLElement;
 	if (target.classList.contains("autocomplete-item")) {
 		inputEmote.value = target.innerText;
-		console.log(target.innerText);
 		inputEmote.focus();
 		hideAutocomplete();
 	}
@@ -103,7 +130,6 @@ emotesListAutocomplete.addEventListener("keydown", (e: KeyboardEvent) => {
 	const target = e.target as HTMLElement;
 	if (target.classList.contains("autocomplete-item") && e.key === "Enter") {
 		inputEmote.value = target.innerText;
-		console.log(target.innerText);
 		inputEmote.focus();
 		gameplay();
 		hideAutocomplete();
@@ -160,6 +186,14 @@ function hideSubtitle2(): void {
 	subtitle2.style.display = "none";
 }
 
+function hideElement(element: HTMLElement): void {
+	element.style.display = "none";
+}
+
+function showElement(element: HTMLElement): void {
+	element.style.display = "block";
+}
+
 function loadEmotesList(emotes: Emote[]): void {
 	if (emotes.length > 0) {
 		emotesListAutocomplete.innerHTML = "";
@@ -198,6 +232,7 @@ function restartGame(): void {
 	emotesList.length = 0;
 	showLoading(inputChannel.value);
 	getEmotesGame(inputChannel.value);
+	hideElement(medalhas);
 	resetVidas();
 }
 
@@ -207,7 +242,7 @@ const getEmotesGame = async (channel: string): Promise<void> => {
 	try {
 		const data: Response = await fetch(
 			//pega os emotes do canal especificado
-			`https://emotes.adamcy.pl/v1/channel/${channel}/emotes/twitch.7tv.bttv`,
+			`https://emotes.adamcy.pl/v1/channel/${channel}/emotes/twitch.7tv.bttv.ffz`,
 			{
 				method: "GET",
 				headers: {
@@ -233,7 +268,7 @@ const getEmotesGame = async (channel: string): Promise<void> => {
 		hideRecorde();
 		clear(app);
 		clear(loading);
-		showEmoteGame4(emoteAtual);
+		showEmoteGame(emoteAtual);
 		showEmoteTry();
 		showAcertos.innerHTML = `${acertos}`;
 		showVidas();
@@ -261,19 +296,29 @@ const continueGame = (emotesList: Emote[]): void => {
 	clear(app);
 	inputEmote.value = "";
 	inputEmote.focus();
-	showEmoteGame4(emoteAtual);
+	showEmoteGame(emoteAtual);
+
 };
 
+const returnToHome = (): void => {
+	showAcertos.innerHTML = ``;
+	acertos = 0;
+	vidasRestantes = 4;
+	clear(app);
+	clearEmoteTry();
+	clear(loading);
+	hideVidas();
+	showRecorde();
+	showPeepo();
+	clear(invalidChannel);
+	showElement(medalhas)
+}
+
 const gameplay = (): void => {
-	if (emotesList.length === 0) { //vitória
-		alert("meu deus você literalmente acertou tudo. Parabéns... eu acho?");
-		clear(app);
-		restartGame();
-	} else if (inputEmote.value == emoteAtual.name) { //acerto
+	if (inputEmote.value == emoteAtual.name) { //acerto
 		acertos++;
 		acertosSeguidos++;
 		if (acertosSeguidos == 3 && vidasRestantes <= 4) {
-			console.log(acertosSeguidos)
 			if (vidasRestantes == 4) {
 				vidasRestantes = 4;
 			}
@@ -286,12 +331,17 @@ const gameplay = (): void => {
 		inputEmote.setAttribute("placeholder", "Acertou!");
 		inputEmote.style.boxShadow = "0 0 0 3px green";
 		showAcertos.innerHTML = `${acertos}`;
-		continueGame(emotesList);
+		if (emotesList.length == 1) { //vitória
+			alert("meu deus você literalmente acertou tudo. Parabéns... eu acho?");
+			(inputChannel.value);
+			returnToHome();
+		}
+		else {
+			continueGame(emotesList);
+		}
 	} else { //erro
 		acertosSeguidos = 0;
-		console.log(acertosSeguidos)
 		vidasRestantes--
-		console.log(vidasRestantes);
 		checkVidas(vidasRestantes);
 		inputEmote.style.boxShadow = "0 0 0 3px rgba(191, 2, 2)";
 		inputEmote.setAttribute("placeholder", "Tente novamente");
@@ -300,7 +350,7 @@ const gameplay = (): void => {
 		if (vidasRestantes > 0) {
 			shakeInputWrong(inputEmote);
 			clear(app);
-			showEmoteGame4(emoteAtual);
+			showEmoteGame(emoteAtual);
 		}
 		else if (vidasRestantes === 0) {
 			shakeInputWrong(inputEmote);
@@ -321,35 +371,30 @@ function checkVidas(vidasRestantes: number): void {
 		vida2.style.color = "red";
 		vida3.style.color = "red";
 		vida4.style.color = "red";
-		console.log("4 vidas");
 	}
 	if (vidasRestantes === 3) {
 		vida1.style.color = "red";
 		vida2.style.color = "red";
 		vida3.style.color = "red";
 		vida4.style.color = "gray";
-		console.log("3 vidas");
 	}
 	else if (vidasRestantes === 2) {
 		vida1.style.color = "red";
 		vida2.style.color = "red";
 		vida3.style.color = "gray";
 		vida4.style.color = "gray";
-		console.log("2 vidas");
 	}
 	else if (vidasRestantes === 1) {
 		vida1.style.color = "red";
 		vida2.style.color = "gray";
 		vida3.style.color = "gray";
 		vida4.style.color = "gray";
-		console.log("1 vida");
 	}
 	else if (vidasRestantes === 0) {
 		vida1.style.color = "gray";
 		vida2.style.color = "gray";
 		vida3.style.color = "gray";
 		vida4.style.color = "gray";
-		console.log("0 vidas");
 	}
 }
 
@@ -367,7 +412,7 @@ const showEmote = (emote: Emote): void => {
 	let output: string = `
     <a class="card">
 		<div id= "blur">
-		<img class="card--image" src=${emote.image} alt=${emote.name} 
+		<img class="card--image" src=${emote.image} alt=${emote.name}
 		style = "user-drag: none; user-select: none;"/>
 		</div>
         <h1 class="card--name">${emote.name}</h1>
@@ -375,46 +420,12 @@ const showEmote = (emote: Emote): void => {
     `;
 	app.innerHTML += output;
 };
-
 const showEmoteGame = (emote: Emote): void => {
 	let output: string = `
     <a class="card">
-		
-		<img class="card--image" src=${emote.image} alt=${emote.name}/>
-		
-    </a>
-    `;
-	app.innerHTML += output;
-};
 
-const showEmoteGame2 = (emote: Emote): void => {
-	let output: string = `
-    <a class="card">
-		
-		<img class="card--image2" src=${emote.image} alt=${emote.name} />
-		
-    </a>
-    `;
-	app.innerHTML += output;
-};
-
-const showEmoteGame3 = (emote: Emote): void => {
-	let output: string = `
-    <a class="card">
-		
-		<img class="card--image3" src=${emote.image} alt=${emote.name} />
-		
-    </a>
-    `;
-	app.innerHTML += output;
-};
-
-const showEmoteGame4 = (emote: Emote): void => {
-	let output: string = `
-    <a class="card">
-		
 		<img class="card--image4" src=${emote.image} alt=${emote.name} />
-		
+
     </a>
     `;
 	app.innerHTML += output;

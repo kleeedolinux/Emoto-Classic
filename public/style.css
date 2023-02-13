@@ -123,7 +123,7 @@ body {
 }
 
 dialog {
-	background-color: #326caa;
+	background-color: #20252b;
 	border: 0;
 	border-radius: 2px;
 	padding: 0.5rem;
@@ -487,6 +487,36 @@ input[type="submit"] {
 	font-family: "Intro Rust";
 	-webkit-text-stroke: 1px #000;
 	cursor: default;
+}
+
+#medalhas{
+	overflow-y: auto;
+}
+
+#medalha {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 1rem;
+}
+
+#medalhaImg{
+	width: 48px;
+	height: 48px;
+}
+
+#nomeMedalha{
+	font-size: 1.5rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	text-shadow: 6px 6px 5px black;
+	font-family: "Intro Rust";
+	-webkit-text-stroke: 1.2px #000;
+}
+
+#nomeMedalha:hover{
+	cursor: pointer;
+	color: #7b39e4;
 }
 
 footer {
