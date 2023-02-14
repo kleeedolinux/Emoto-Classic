@@ -46,7 +46,7 @@
 
 @font-face {
 	font-family: "Intro Rust";
-	src: url("../fonts/IntroRust-Base.otf") format("opentype");
+	src: url("../../fonts/IntroRust-Base.otf") format("opentype");
 }
 
 :root {
@@ -94,7 +94,7 @@ body {
 }
 
 #background-img {
-	background-image: url(../img/Emoto-Background.png);
+	background-image: url(../../img/Emoto-Background.png);
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: center;
@@ -106,6 +106,7 @@ body {
 	height: 100%;
 	z-index: -1;
 	-webkit-filter: opacity(0.5);
+	filter: opacity(0.5);
 }
 
 #help {
@@ -114,6 +115,7 @@ body {
 	align-items: center;
 	flex-direction: column;
 	-webkit-filter: drop-shadow(6px 6px 5px black);
+	filter: drop-shadow(6px 6px 5px black);
 }
 
 #help:hover {
@@ -278,7 +280,6 @@ dialog::backdrop {
 }
 
 #loading {
-	user-drag: none;
 	user-select: none;
 	display: flex;
 	justify-content: center;
