@@ -1,6 +1,6 @@
-import { Autocomplete } from "./UI/autocomplete.js";
-import { Modal } from "./UI/modal.js";
-import { Vidas } from "./vidas.js";
+import { Autocomplete } from "./Autocomplete.js";
+import { Modal } from "./Modal.js";
+import { Vidas } from "./VidasUI.js";
 export declare class UI extends Modal {
     vidas: Vidas;
     titleEmoto: HTMLElement;

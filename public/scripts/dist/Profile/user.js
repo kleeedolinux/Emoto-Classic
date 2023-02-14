@@ -33,4 +33,4 @@ export class User {
         }
     }
 }
-//# sourceMappingURL=user.js.map
+//# sourceMappingURL=User.js.map

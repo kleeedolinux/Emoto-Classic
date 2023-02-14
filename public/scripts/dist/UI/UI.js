@@ -1,5 +1,5 @@
-import { Modal } from "./UI/modal.js";
-import { Vidas } from "./vidas.js";
+import { Modal } from "./Modal.js";
+import { Vidas } from "./VidasUI.js";
 export class UI extends Modal {
     constructor() {
         super();

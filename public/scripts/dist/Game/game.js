@@ -7,8 +7,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { Autocomplete } from "./UI/autocomplete";
-import { UI } from "./UI.js";
+import { Autocomplete } from "../UI/Autocomplete.js";
+import { UI } from "../UI/UI.js";
 export class Game {
     constructor(user) {
         this.showEmoteGame = (emote) => {
@@ -81,6 +81,70 @@ export class Game {
                 this.ui.showElement(this.user.recordeElement);
             }
         });
+        //Remove emote acertado do array de emotes
+        //Dá outro emote da lista para a variavel emoteAtual
+        //limpa o output do emote anterior
+        //exibe o novo emote
+        this.continueGame = (emotesList) => {
+            emotesList.splice(emotesList.indexOf(this.emoteAtual), 1);
+            this.emoteNames.splice(this.emoteNames.indexOf(this.emoteAtual.name), 1);
+            this.emoteAtual = emotesList[Math.floor(Math.random() * emotesList.length)];
+            this.ui.clear(this.ui.app);
+            this.ui.inputEmote.value = "";
+            this.ui.inputEmote.focus();
+            this.showEmoteGame(this.emoteAtual);
+        };
+        this.gameplay = () => {
+            if (this.ui.inputEmote.value == this.emoteAtual.name) { //acerto
+                this.acertos++;
+                this.acertosSeguidos++;
+                if (this.acertosSeguidos == 3 && this.vidasRestantes <= 4) {
+                    if (this.vidasRestantes == 4) {
+                        this.vidasRestantes = 4;
+                    }
+                    else {
+                        this.vidasRestantes++;
+                    }
+                    this.acertosSeguidos = 0;
+                    this.ui.vidas.checkVidas(this.vidasRestantes);
+                }
+                this.ui.inputEmote.setAttribute("placeholder", "Acertou!");
+                this.ui.inputEmote.style.boxShadow = "0 0 0 3px green";
+                this.ui.showAcertos.innerHTML = `${this.acertos}`;
+                if (this.emotesList.length == 1) { //vitória
+                    alert("meu deus você literalmente acertou tudo. Parabéns... eu acho?");
+                    (this.ui.inputChannel.value);
+                    this.returnToHome();
+                }
+                else {
+                    this.continueGame(this.emotesList);
+                }
+            }
+            else { //erro
+                this.acertosSeguidos = 0;
+                this.vidasRestantes--;
+                this.ui.vidas.checkVidas(this.vidasRestantes);
+                this.ui.inputEmote.style.boxShadow = "0 0 0 3px rgba(191, 2, 2)";
+                this.ui.inputEmote.setAttribute("placeholder", "Tente novamente");
+                this.ui.inputEmote.value = "";
+                this.ui.showAcertos.innerHTML = `${this.acertos}`;
+                if (this.vidasRestantes > 0) {
+                    this.ui.shakeInputWrong(this.ui.inputEmote);
+                    this.ui.clear(this.ui.app);
+                    this.showEmoteGame(this.emoteAtual);
+                }
+                else if (this.vidasRestantes === 0) {
+                    this.ui.shakeInputWrong(this.ui.inputEmote);
+                    if (this.acertos > this.user.recorde) {
+                        this.user.recorde = this.acertos;
+                        localStorage.setItem("Recorde", this.user.recorde.toString());
+                    }
+                    alert("Game Over! O Emote era '" + this.emoteAtual.name + "'. Você acertou " + this.acertos + " emotes! Tente novamente.");
+                    this.ui.clear(this.ui.app);
+                    this.restartGame();
+                }
+            }
+        };
         this.channel = "";
         this.emotesList = [];
         this.emoteNames = [];
@@ -121,4 +185,4 @@ export class Game {
         this.ui.vidas.resetVidas();
     }
 }
-//# sourceMappingURL=game.js.map
+//# sourceMappingURL=Game.js.map

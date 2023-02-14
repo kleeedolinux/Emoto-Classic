@@ -36,4 +36,4 @@ autocomplete.emotesListAutocomplete.addEventListener("keydown", (e) => {
         ui.hideElement(autocomplete.emotesListAutocomplete);
     }
 });
-//# sourceMappingURL=index.js.map
+//# sourceMappingURL=Main.js.map

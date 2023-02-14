@@ -1,5 +1,5 @@
-import { Emote } from "./emote";
-import { Game } from "./game";
+import { Emote } from "../Game/Emote.js";
+import { Game } from "../Game/Game.js";
 
 export class Autocomplete{
     emotesListAutocomplete: HTMLElement = document.getElementById("emotes-list")!;

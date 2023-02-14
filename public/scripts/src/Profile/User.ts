@@ -1,12 +1,17 @@
 export class User {
     name: string;
-    recorde: number;
+    recorde: number = localStorage.getItem("Recorde") == null ? 0 : parseInt(localStorage.getItem("Recorde")!);
     medalhas: HTMLElement = document.getElementById("medalhas")!;
     recordeElement: HTMLElement = document.getElementById("recorde")!;
 
-    constructor(name: string, recorde: number) {
+    constructor(name: string) {
         this.name = name;
-        this.recorde = recorde;
+        if (localStorage.getItem("Recorde") !== null) {
+            this.recordeElement.innerHTML = `Recorde: ${this.recorde}`;
+        }
+        if (localStorage.getItem("Medalhas")) {
+            this.medalhas.innerHTML = localStorage.getItem("Medalhas")!;
+        }
     }
 
     //cria html codigo pra medalha ganha e salva no local storage
