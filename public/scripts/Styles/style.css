@@ -109,6 +109,10 @@ body {
 	filter: opacity(0.5);
 }
 
+dialog:not([open]) {
+	display: none;
+}
+
 #help {
 	display: block;
 	justify-content: center;
@@ -127,15 +131,15 @@ body {
 dialog {
 	background-color: #20252b;
 	border: 0;
-	border-radius: 2px;
-	padding: 0.5rem;
+	border-radius: 10px;
+	padding: 1rem;
 	color: #fff;
 	font-size: 1rem;
 	font-weight: bold;
 	outline: none;
 	text-align: center;
-	max-width: 50%;
-	max-height: 100vh;
+	max-width: 100%;
+	max-height: 90vh;
 	text-shadow: 6px 6px 5px black;
 }
 
@@ -143,9 +147,18 @@ dialog::backdrop {
 	background-color: rgba(0, 0, 0, 0.6);
 }
 
+
+#modalHelp {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+
 #modalText {
 	text-align: center;
 	text-shadow: 6px 2px 6px black;
+	font-size: large;
 }
 
 #modalCloseButton {
@@ -171,6 +184,62 @@ dialog::backdrop {
 	cursor: pointer;
 	color: gray;
 	animation: shake 0.2s;
+}
+
+#modalGameOver {
+	display: none;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	width: 60vh;
+	height: 60%;
+}
+
+#modalWin {
+	display: none;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	width: 60vh;
+	height: 60%;
+}
+
+#modalTitleGameOver {
+	font-size: 2.5rem;
+	margin: -1rem;
+	text-align: center;
+	text-shadow: 6px 2px 6px black;
+	color: #ff0000;
+}
+
+#modalAcertos {
+	text-align: center;
+	color: rgb(1, 182, 1);
+	font-weight: bold;
+	font-size: 2.3rem;
+	text-shadow: 6px 2px 6px black;
+	margin: -1rem;
+}
+
+#dialogTryAgainButton {
+	font-weight: bold;
+	bottom: 0;
+	right: 0;
+	margin: 0.8rem;
+	background-color: #656565;;
+	text-shadow: #000 0 0 5px;
+	font-size: 1.3rem;
+	border-radius: 5px;
+	border: 0;
+	padding: 0.4rem;
+}
+
+#dialogTryAgainButton:hover {
+	cursor: pointer;
+	background-color: #245992;
+	transform: scale(1.05);
+	transition: 0.1s;
+	box-shadow: #7b39e4;
 }
 
 ::placeholder {
@@ -206,7 +275,8 @@ dialog::backdrop {
 }
 
 #title:hover {
-	animation: shake 0.15s;
+	transform: scale(1.05);
+	transition: 0.1s;
 }
 
 .peepoThink {
@@ -267,6 +337,8 @@ dialog::backdrop {
 #channelInput:focus {
 	box-shadow: 0 0 0 1px #fff;
 	filter: drop-shadow(6px 6px 5px black);
+	transform: scale(1.05);
+	transition: 0.1s;
 }
 
 #channelInput::placeholder {
@@ -490,7 +562,7 @@ input[type="submit"] {
 	cursor: default;
 }
 
-#medalhas{
+#medalhas {
 	overflow-y: auto;
 }
 
@@ -501,12 +573,12 @@ input[type="submit"] {
 	margin-top: 1rem;
 }
 
-#medalhaImg{
+#medalhaImg {
 	width: 48px;
 	height: 48px;
 }
 
-#nomeMedalha{
+#nomeMedalha {
 	font-size: 1.5rem;
 	font-weight: 600;
 	text-transform: uppercase;
@@ -515,7 +587,7 @@ input[type="submit"] {
 	-webkit-text-stroke: 1.2px #000;
 }
 
-#nomeMedalha:hover{
+#nomeMedalha:hover {
 	cursor: pointer;
 	color: #7b39e4;
 }

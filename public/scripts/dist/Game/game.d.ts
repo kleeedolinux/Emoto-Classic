@@ -20,5 +20,6 @@ export declare class Game {
     restartGame(): void;
     getEmotesGame: (channel: string) => Promise<void>;
     continueGame: (emotesList: Emote[]) => void;
+    updateGameOverModal: () => void;
     gameplay: () => void;
 }

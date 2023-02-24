@@ -94,6 +94,23 @@ export class Game {
             this.ui.inputEmote.focus();
             this.showEmoteGame(this.emoteAtual);
         };
+        this.updateGameOverModal = () => {
+            let text = `
+		<p id="modalText">
+			O Emote era '${this.emoteAtual.name}'
+		</p>
+        <p id="modalText">
+            Você acertou
+		</p>
+        <p id="modalAcertos">
+        ${this.acertos}
+        </p>
+        <p id="modalText">
+            emotes!
+        </p>
+        `;
+            this.ui.modalInfo.modalGameOver.querySelector("#modalGameOverContent").innerHTML = text;
+        };
         //Verifica se o emote digitado é igual ao emote atual e chama a função de continuar o jogo ou perde uma vida
         this.gameplay = () => {
             //Condição de Acerto
@@ -145,9 +162,10 @@ export class Game {
                         this.user.recorde = this.acertos;
                         localStorage.setItem("Recorde", this.user.recorde.toString());
                     }
-                    alert("Game Over! O Emote era '" + this.emoteAtual.name + "'. Você acertou " + this.acertos + " emotes! Tente novamente.");
-                    this.ui.clear(this.ui.app);
-                    this.restartGame();
+                    this.updateGameOverModal();
+                    this.ui.modalInfo.dialog.showModal();
+                    this.ui.showElementFlex(this.ui.modalInfo.modalGameOver);
+                    this.ui.hideElement(this.ui.modalInfo.modalHelp);
                 }
             }
         };
@@ -178,6 +196,8 @@ export class Game {
         });
     }
     restartGame() {
+        this.ui.showElementFlex(this.ui.modalInfo.modalHelp);
+        this.ui.hideElement(this.ui.modalInfo.modalGameOver);
         this.emotesList.length = 0;
         this.acertos = 0;
         this.vidasRestantes = 4;

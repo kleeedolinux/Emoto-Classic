@@ -1,8 +1,11 @@
 import { Autocomplete } from "./Autocomplete.js";
+import { ModalGameOver } from "./ModalGameOver.js";
 import { ModalInfo } from "./ModalInfo.js";
 import { Vidas } from "./VidasUI.js";
-export declare class UI extends ModalInfo {
+export declare class UI {
     vidas: Vidas;
+    modalInfo: ModalInfo;
+    modalGameOver: ModalGameOver;
     titleEmoto: HTMLElement;
     subtitle: HTMLElement;
     peepoThink: HTMLElement;
@@ -18,6 +21,7 @@ export declare class UI extends ModalInfo {
     showEmoteTry(autocomplete: Autocomplete): void;
     hideElement(element: HTMLElement): void;
     showElement(element: HTMLElement): void;
+    showElementFlex(element: HTMLElement): void;
     clear: (container: HTMLElement) => void;
     shakeWrong(element: HTMLElement): void;
     showLoading: (channel: string, loading: HTMLElement) => void;

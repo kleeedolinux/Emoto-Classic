@@ -1,9 +1,11 @@
+import { ModalGameOver } from "./ModalGameOver.js";
 import { ModalInfo } from "./ModalInfo.js";
 import { Vidas } from "./VidasUI.js";
-export class UI extends ModalInfo {
+export class UI {
     constructor() {
-        super();
         this.vidas = new Vidas();
+        this.modalInfo = new ModalInfo();
+        this.modalGameOver = new ModalGameOver();
         this.titleEmoto = document.querySelector(".title");
         this.subtitle = document.getElementById("subtitle");
         this.peepoThink = document.getElementById("peepoThink");
@@ -45,6 +47,9 @@ export class UI extends ModalInfo {
         element.style.display = "none";
     }
     showElement(element) {
+        element.style.display = "block";
+    }
+    showElementFlex(element) {
         element.style.display = "block";
     }
     shakeWrong(element) {

@@ -1,4 +1,5 @@
 <html>
+
 <head>
 	<meta charset="UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.2" />
@@ -8,8 +9,9 @@
 	<title>Emoto - Twitch Emote Guessing Game</title>
 </head>
 <a tabindex="-1" id="Help" class="fa fa-question-circle"></a>
-<dialog tabindex="-1" id="helpDialog">
-	<div id="modal">
+
+<dialog>
+	<div id="modalHelp">
 		<h1 id="modalTitle">Como jogar</h1>
 		<img class="gaming" id="gaming" src="https://cdn.7tv.app/emote/613e73790969108b67189ed0/4x.webp" />
 		<p id="modalText">
@@ -30,9 +32,17 @@
 			Se você errar 4 vezes, o jogo acaba e você pode tentar novamente.
 		</p>
 		<a id="modalCloseButton" class="fa fa-close"></a>
-
-		<a target="_blank" tabindex="-1" href="https://github.com/GrifoEXE/Emoto-Prototipo" class="fa fa-github"
-			id="github"></a>
+		<a target="_blank" href="https://github.com/GrifoEXE/Emoto-Prototipo" class="fa fa-github" id="github"></a>
+	</div>
+	<div id="modalGameOver">
+		<h1 id="modalTitleGameOver">Game Over!</h1>
+		<div id="modalGameOverContent"></div>
+		<button id="dialogTryAgainButton">Tente Novamente</button>
+	</div>
+	<div id="modalWin">
+		<h1 id="modalTitleWin">Você ganhou!</h1>
+		<div id="modalWinContent"></div>
+		<button id="dialogHomeButton">Retornar</button>
 	</div>
 </dialog>
 
@@ -85,4 +95,5 @@
 </footer>
 <script>var exports = {};</script>
 <script type="module" src="./scripts/dist/Main.js"></script>
+
 </html>

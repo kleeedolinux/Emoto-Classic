@@ -16,9 +16,13 @@ ui.inputEmote.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
         game.gameplay();
         ui.hideElement(autocomplete.emotesListAutocomplete);
-        ;
     }
 });
+window.onclick = function (event) {
+    if (event.target == ui.modalInfo.dialog && ui.modalInfo.modalHelp.style.display !== "none") {
+        ui.modalInfo.dialog.close();
+    }
+};
 autocomplete.emotesListAutocomplete.addEventListener("click", (e) => {
     const target = e.target;
     if (target.classList.contains("autocomplete-item")) {
@@ -35,5 +39,9 @@ autocomplete.emotesListAutocomplete.addEventListener("keydown", (e) => {
         game.gameplay();
         ui.hideElement(autocomplete.emotesListAutocomplete);
     }
+});
+ui.modalInfo.dialogTryAgainBtn.addEventListener("click", () => {
+    game.ui.clear(game.ui.app);
+    game.restartGame();
 });
 //# sourceMappingURL=Main.js.map

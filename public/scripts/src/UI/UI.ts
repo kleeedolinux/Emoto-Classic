@@ -1,9 +1,12 @@
 import { Autocomplete } from "./Autocomplete.js";
+import { ModalGameOver } from "./ModalGameOver.js";
 import { ModalInfo } from "./ModalInfo.js";
 import { Vidas } from "./VidasUI.js";
 
-export class UI extends ModalInfo {
+export class UI {
     vidas: Vidas = new Vidas();
+    modalInfo: ModalInfo = new ModalInfo();
+    modalGameOver: ModalGameOver = new ModalGameOver();
 
     titleEmoto: HTMLElement = document.querySelector(".title")!;
     subtitle: HTMLElement = document.getElementById("subtitle")!;
@@ -19,7 +22,6 @@ export class UI extends ModalInfo {
     showAcertos: HTMLElement = document.getElementById("acertos")!;
 
     constructor() {
-        super();
         this.titleEmoto.addEventListener("click", () => {
             window.location.reload();
         });
@@ -37,6 +39,10 @@ export class UI extends ModalInfo {
     }
 
     showElement(element: HTMLElement): void {
+        element.style.display = "block";
+    }
+
+    showElementFlex(element: HTMLElement): void {
         element.style.display = "block";
     }
 
