@@ -1,8 +1,8 @@
 import { Autocomplete } from "./Autocomplete.js";
-import { Modal } from "./Modal.js";
+import { ModalInfo } from "./ModalInfo.js";
 import { Vidas } from "./VidasUI.js";
 
-export class UI extends Modal {
+export class UI extends ModalInfo {
     vidas: Vidas = new Vidas();
 
     titleEmoto: HTMLElement = document.querySelector(".title")!;
@@ -44,13 +44,13 @@ export class UI extends Modal {
         container.innerHTML = ``;
     };
 
-    shakeInputWrong(input: HTMLElement) {
+    shakeWrong(element: HTMLElement) {
         setTimeout(() => {
-            input.style.animation = "shake 0.2s";
-            input.style.animationIterationCount = "1";
+            element.style.animation = "shake 0.2s";
+            element.style.animationIterationCount = "1";
         }, 1);
         setTimeout(() => {
-            input.style.animation = "none";
+            element.style.animation = "none";
         }, 400);
     }
 

@@ -1,6 +1,6 @@
-import { Modal } from "./Modal.js";
+import { ModalInfo } from "./ModalInfo.js";
 import { Vidas } from "./VidasUI.js";
-export class UI extends Modal {
+export class UI extends ModalInfo {
     constructor() {
         super();
         this.vidas = new Vidas();
@@ -47,13 +47,13 @@ export class UI extends Modal {
     showElement(element) {
         element.style.display = "block";
     }
-    shakeInputWrong(input) {
+    shakeWrong(element) {
         setTimeout(() => {
-            input.style.animation = "shake 0.2s";
-            input.style.animationIterationCount = "1";
+            element.style.animation = "shake 0.2s";
+            element.style.animationIterationCount = "1";
         }, 1);
         setTimeout(() => {
-            input.style.animation = "none";
+            element.style.animation = "none";
         }, 400);
     }
 }

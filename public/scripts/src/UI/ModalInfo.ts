@@ -1,4 +1,4 @@
-export class Modal{ 
+export class ModalInfo{ 
     helpBtn: HTMLElement = document.getElementById("Help")!;
     dialog = document.querySelector("dialog")!;
     dialogCloseBtn = document.getElementById("modalCloseButton")!;

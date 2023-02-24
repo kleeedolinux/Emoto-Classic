@@ -94,8 +94,10 @@ export class Game {
             this.ui.inputEmote.focus();
             this.showEmoteGame(this.emoteAtual);
         };
+        //Verifica se o emote digitado é igual ao emote atual e chama a função de continuar o jogo ou perde uma vida
         this.gameplay = () => {
-            if (this.ui.inputEmote.value == this.emoteAtual.name) { //acerto
+            //Condição de Acerto
+            if (this.ui.inputEmote.value == this.emoteAtual.name) {
                 this.acertos++;
                 this.acertosSeguidos++;
                 if (this.acertosSeguidos == 3 && this.vidasRestantes <= 4) {
@@ -111,7 +113,8 @@ export class Game {
                 this.ui.inputEmote.setAttribute("placeholder", "Acertou!");
                 this.ui.inputEmote.style.boxShadow = "0 0 0 3px green";
                 this.ui.showAcertos.innerHTML = `${this.acertos}`;
-                if (this.emotesList.length == 1) { //vitória
+                //Condição de Vitória
+                if (this.emotesList.length == 1) {
                     alert("meu deus você literalmente acertou tudo. Parabéns... eu acho?");
                     (this.ui.inputChannel.value);
                     this.returnToHome();
@@ -119,8 +122,9 @@ export class Game {
                 else {
                     this.continueGame(this.emotesList);
                 }
+                //Condição de ERRO
             }
-            else { //erro
+            else {
                 this.acertosSeguidos = 0;
                 this.vidasRestantes--;
                 this.ui.vidas.checkVidas(this.vidasRestantes);
@@ -129,12 +133,14 @@ export class Game {
                 this.ui.inputEmote.value = "";
                 this.ui.showAcertos.innerHTML = `${this.acertos}`;
                 if (this.vidasRestantes > 0) {
-                    this.ui.shakeInputWrong(this.ui.inputEmote);
+                    this.ui.shakeWrong(this.ui.inputEmote);
+                    this.ui.shakeWrong(this.ui.vidas.vidasUI);
                     this.ui.clear(this.ui.app);
                     this.showEmoteGame(this.emoteAtual);
                 }
+                //Condição de DERROTA
                 else if (this.vidasRestantes === 0) {
-                    this.ui.shakeInputWrong(this.ui.inputEmote);
+                    this.ui.shakeWrong(this.ui.inputEmote);
                     if (this.acertos > this.user.recorde) {
                         this.user.recorde = this.acertos;
                         localStorage.setItem("Recorde", this.user.recorde.toString());

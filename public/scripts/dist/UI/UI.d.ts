@@ -1,7 +1,7 @@
 import { Autocomplete } from "./Autocomplete.js";
-import { Modal } from "./Modal.js";
+import { ModalInfo } from "./ModalInfo.js";
 import { Vidas } from "./VidasUI.js";
-export declare class UI extends Modal {
+export declare class UI extends ModalInfo {
     vidas: Vidas;
     titleEmoto: HTMLElement;
     subtitle: HTMLElement;
@@ -19,7 +19,7 @@ export declare class UI extends Modal {
     hideElement(element: HTMLElement): void;
     showElement(element: HTMLElement): void;
     clear: (container: HTMLElement) => void;
-    shakeInputWrong(input: HTMLElement): void;
+    shakeWrong(element: HTMLElement): void;
     showLoading: (channel: string, loading: HTMLElement) => void;
     showInvalidChannel: (channel: string, invalidChannel: HTMLElement) => void;
 }
