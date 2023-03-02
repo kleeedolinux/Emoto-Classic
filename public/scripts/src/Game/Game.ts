@@ -57,6 +57,7 @@ export class Game {
         </a>
         `;
         this.ui.app.innerHTML += output;
+        console.log(emote.name);//tirar ou comentar essa linha
     };
 
     returnToHome = (): void => {
@@ -169,6 +170,24 @@ export class Game {
         `
         this.ui.modalInfo.modalGameOver.querySelector("#modalGameOverContent")!.innerHTML = text;
     }
+    updateWinModal = (): void => {
+        let text:string = `
+        <p id="modalText">
+        Impossível... 
+        Você acertou todos os
+		</p>
+        <p id="modalAcertos">
+        ${this.acertos}
+        </p>
+        <p id="modalText">
+            emotes!
+        </p>
+        <p id="modalText">
+            Parabéns... eu acho?
+        </p>
+        `
+        this.ui.modalInfo.modalWin.querySelector("#modalWinContent")!.innerHTML = text;
+    }
 
     //Verifica se o emote digitado é igual ao emote atual e chama a função de continuar o jogo ou perde uma vida
     gameplay = (): void => {
@@ -193,8 +212,11 @@ export class Game {
             //Condição de Vitória
             if (this.emotesList.length == 1) {
                 alert("meu deus você literalmente acertou tudo. Parabéns... eu acho?");
-                (this.ui.inputChannel.value);
-                this.returnToHome();
+                this.updateWinModal();
+                this.ui.modalInfo.dialog.showModal();
+                this.ui.showElementFlex(this.ui.modalInfo.modalWin);
+                this.ui.hideElement(this.ui.modalInfo.modalHelp);
+                this.ui.hideElement(this.ui.modalInfo.modalGameOver);
             }
             else {
                 this.continueGame(this.emotesList);
@@ -227,6 +249,7 @@ export class Game {
                 this.ui.modalInfo.dialog.showModal();
                 this.ui.showElementFlex(this.ui.modalInfo.modalGameOver);
                 this.ui.hideElement(this.ui.modalInfo.modalHelp);
+                this.ui.hideElement(this.ui.modalInfo.modalWin);
             }
         }
 

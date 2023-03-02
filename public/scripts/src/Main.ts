@@ -55,3 +55,13 @@ ui.modalInfo.dialogTryAgainBtn.addEventListener("click", () => {
 	game.ui.clear(game.ui.app);
 	game.restartGame();
 });
+
+ui.modalInfo.dialogHomeButtonGameOver.addEventListener("click", () => {
+	window.location.reload();
+	console.log("home")
+});
+
+ui.modalInfo.dialogHomeButtonWin.addEventListener("click", () => {
+	window.location.reload();
+	console.log("home")
+});

@@ -5,7 +5,10 @@ export class ModalInfo {
         this.dialogCloseBtn = document.getElementById("modalCloseButton");
         this.modalHelp = document.getElementById("modalHelp");
         this.modalGameOver = document.getElementById("modalGameOver");
+        this.modalWin = document.getElementById("modalWin");
         this.dialogTryAgainBtn = document.getElementById("dialogTryAgainButton");
+        this.dialogHomeButtonGameOver = document.getElementById("dialogHomeButtonGameOver");
+        this.dialogHomeButtonWin = document.getElementById("dialogHomeButtonWin");
         this.helpBtn.addEventListener("click", () => {
             this.dialog.showModal();
         });

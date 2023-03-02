@@ -4,7 +4,10 @@ export class ModalInfo {
     dialogCloseBtn = document.getElementById("modalCloseButton")!;
     modalHelp = document.getElementById("modalHelp")!;
     modalGameOver = document.getElementById("modalGameOver")!;
+    modalWin = document.getElementById("modalWin")!;
     dialogTryAgainBtn = document.getElementById("dialogTryAgainButton")!;
+    dialogHomeButtonGameOver = document.getElementById("dialogHomeButtonGameOver")!;
+    dialogHomeButtonWin = document.getElementById("dialogHomeButtonWin")!;
 
     constructor() {
         this.helpBtn.addEventListener("click", () => {
