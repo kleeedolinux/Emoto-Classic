@@ -9,6 +9,8 @@ export class ModalInfo {
         this.dialogTryAgainBtn = document.getElementById("dialogTryAgainButton");
         this.dialogHomeButtonGameOver = document.getElementById("dialogHomeButtonGameOver");
         this.dialogHomeButtonWin = document.getElementById("dialogHomeButtonWin");
+        this.dialogTwitterButtonWin = document.getElementById("dialogTwitterButtonWin");
+        this.dialogTwitterButtonGameOver = document.getElementById("dialogTwitterButtonGameOver");
         this.helpBtn.addEventListener("click", () => {
             this.dialog.showModal();
         });

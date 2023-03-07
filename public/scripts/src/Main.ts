@@ -65,3 +65,21 @@ ui.modalInfo.dialogHomeButtonWin.addEventListener("click", () => {
 	window.location.reload();
 	console.log("home")
 });
+
+ui.modalInfo.dialogTwitterButtonWin.addEventListener("click", () => {
+	const url = getURLTweetWin();
+	window.open(url);
+});
+
+ui.modalInfo.dialogTwitterButtonGameOver.addEventListener("click", () => {
+	const url = getURLTweetGameOver();
+	window.open(url);
+});
+
+function getURLTweetGameOver() {
+	return `https://twitter.com/intent/tweet?text=Eu acertei ${game.acertos} Emotes do canal ${game.channel}! Você consegue acertar mais?`+ " Tente agora em emoto.discloud.app !";
+}
+
+function getURLTweetWin() {
+	return `https://twitter.com/intent/tweet?text=Eu acertei TODOS os Emotes do canal ${game.channel}! Você acha que consegue também?`+ " Tente agora em emoto.discloud.app !";
+}

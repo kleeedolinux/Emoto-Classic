@@ -8,5 +8,7 @@ export declare class ModalInfo {
     dialogTryAgainBtn: HTMLElement;
     dialogHomeButtonGameOver: HTMLElement;
     dialogHomeButtonWin: HTMLElement;
+    dialogTwitterButtonWin: HTMLElement;
+    dialogTwitterButtonGameOver: HTMLElement;
     constructor();
 }

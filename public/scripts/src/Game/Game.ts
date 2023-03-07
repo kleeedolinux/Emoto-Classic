@@ -30,6 +30,8 @@ export class Game {
         this.ui.inputChannel.addEventListener("change", (): void => {
             this.restartGame();
             this.ui.hideElement(this.ui.subtitle2)
+            this.channel = this.ui.inputChannel.value;
+            console.log(this.channel);
         });
 
         this.ui.inputChannel.addEventListener("focus", (): void => {
