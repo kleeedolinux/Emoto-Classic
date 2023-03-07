@@ -10,7 +10,6 @@ export class ModalInfo {
     dialogHomeButtonWin = document.getElementById("dialogHomeButtonWin")!;
     dialogTwitterButtonWin = document.getElementById("dialogTwitterButtonWin")!;
     dialogTwitterButtonGameOver = document.getElementById("dialogTwitterButtonGameOver")!;
-    //teste
 
     constructor() {
         this.helpBtn.addEventListener("click", () => {
