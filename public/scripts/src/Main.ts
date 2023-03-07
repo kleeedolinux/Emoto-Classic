@@ -1,6 +1,6 @@
 import { Emote } from "./Game/Emote.js";
 import { Game } from "./Game/Game.js";
-import { Autocomplete } from "./UI/Autocomplete.js";
+import { Autocomplete } from "./UI/Autocomplete.js"
 import { User } from "./Profile/User.js";
 
 document.addEventListener("contextmenu", (event) => event.preventDefault());
