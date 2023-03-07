@@ -59,7 +59,7 @@ export class Game {
         </a>
         `;
         this.ui.app.innerHTML += output;
-        console.log(emote.name);//tirar ou comentar essa linha
+        //console.log(emote.name);//tirar ou comentar essa linha
     };
 
     returnToHome = (): void => {
