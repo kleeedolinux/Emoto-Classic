@@ -46,7 +46,7 @@
 
 @font-face {
 	font-family: "Intro Rust";
-	src: url("../../fonts/IntroRust-Base.otf") format("opentype");
+	src: url("/public/fonts/IntroRust-Base.otf") format("opentype");
 }
 
 :root {
@@ -94,7 +94,7 @@ body {
 }
 
 #background-img {
-	background-image: url(../../img/Emoto-Background.png);
+	background-image: url(/public/img/Emoto-Background.png);
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: center;

@@ -1,4 +1,4 @@
-import { Emote } from "./Game/Emote";
+import { Emote } from "./Game/Emote.js";
 import { Game } from "./Game/Game.js";
 import { Autocomplete } from "./UI/Autocomplete.js";
 import { User } from "./Profile/User.js";
