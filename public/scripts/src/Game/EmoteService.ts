@@ -1,49 +1,91 @@
 import { Emote } from "./Emote";
 
 export class EmoteService {
-    private emoteNameCache: Map<string, {data: string[], timestamp: number}> = new Map();
-    private emoteHtmlCache: Map<string, {data: string, timestamp: number}> = new Map();
-    private fetchCache: Map<string, {data: any[], timestamp: number}> = new Map();
-    private processedEmotesCache: Map<string, {data: Emote[], timestamp: number}> = new Map();
-    private readonly CACHE_TTL = 3600000; 
-    private readonly BATCH_SIZE = 200; 
-
+    private emoteNameCache: Map<string, string[]> = new Map();
+    private emoteHtmlCache: Map<string, string> = new Map();
+    private fetchCache: Map<string, any[]> = new Map();
+    private processedEmotesCache: Map<string, Emote[]> = new Map();
+    private imageCache: Map<string, HTMLImageElement> = new Map();
+    private imageLoadQueue: string[] = [];
+    private isLoadingImage: boolean = false;
+    private maxConcurrentLoads: number = 3;
+    private activeLoads: number = 0;
+    
     getEmoteNames(emotes: Emote[]): string[] {
         const cacheKey = this.getCacheKeyForEmotes(emotes);
-        const cachedItem = this.emoteNameCache.get(cacheKey);
         
-        if (cachedItem && (Date.now() - cachedItem.timestamp < this.CACHE_TTL)) {
-            return cachedItem.data;
+        if (this.emoteNameCache.has(cacheKey)) {
+            return this.emoteNameCache.get(cacheKey)!;
         }
         
         const names = emotes.map(emote => emote.name);
-        this.emoteNameCache.set(cacheKey, {data: names, timestamp: Date.now()});
+        this.emoteNameCache.set(cacheKey, names);
         return names;
     }
     
     getEmoteHtml(emote: Emote): string {
-        const cachedItem = this.emoteHtmlCache.get(emote.name);
-        
-        if (cachedItem && (Date.now() - cachedItem.timestamp < this.CACHE_TTL)) {
-            return cachedItem.data;
+        if (this.emoteHtmlCache.has(emote.name)) {
+            return this.emoteHtmlCache.get(emote.name)!;
         }
         
-        const html = `<a class="card"><img class="card--image4" src=${emote.image} alt=${emote.name} /></a>`;
+        this.preloadImage(emote.image);
         
-        this.emoteHtmlCache.set(emote.name, {data: html, timestamp: Date.now()});
+        const html = `
+        <a class="card">
+            <img class="card--image4" src=${emote.image} alt=${emote.name} />
+        </a>
+        `;
+        
+        this.emoteHtmlCache.set(emote.name, html);
         return html;
     }
     
-    async fetchEmotes(channel: string): Promise<any[]> {
-        const cachedItem = this.fetchCache.get(channel);
+    preloadImage(src: string): void {
+        if (this.imageCache.has(src)) {
+            return;
+        }
         
-        if (cachedItem && (Date.now() - cachedItem.timestamp < this.CACHE_TTL)) {
-            return cachedItem.data;
+        if (!this.imageLoadQueue.includes(src)) {
+            this.imageLoadQueue.push(src);
+            this.processImageQueue();
+        }
+    }
+    
+    processImageQueue(): void {
+        if (this.isLoadingImage || this.imageLoadQueue.length === 0 || this.activeLoads >= this.maxConcurrentLoads) {
+            return;
+        }
+        
+        this.isLoadingImage = true;
+        
+        while (this.imageLoadQueue.length > 0 && this.activeLoads < this.maxConcurrentLoads) {
+            const src = this.imageLoadQueue.shift()!;
+            this.activeLoads++;
+            
+            const img = new Image();
+            img.onload = () => {
+                this.imageCache.set(src, img);
+                this.activeLoads--;
+                this.processImageQueue();
+            };
+            img.onerror = () => {
+                this.activeLoads--;
+                this.processImageQueue();
+            };
+            img.src = src;
+        }
+        
+        this.isLoadingImage = false;
+    }
+    
+    async fetchEmotes(channel: string): Promise<any[]> {
+        if (this.fetchCache.has(channel)) {
+            return this.fetchCache.get(channel)!;
         }
         
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 5000); 
-
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        
         try {
             const response: Response = await fetch(
                 `https://emotes.adamcy.pl/v1/channel/${channel}/emotes/twitch.7tv.bttv`,
@@ -65,7 +107,7 @@ export class EmoteService {
             
             const emotes = await response.json();
             
-            this.fetchCache.set(channel, {data: emotes, timestamp: Date.now()});
+            this.fetchCache.set(channel, emotes);
             return emotes;
         } catch (error) {
             clearTimeout(timeoutId);
@@ -80,29 +122,33 @@ export class EmoteService {
     
     processEmotes(emotes: any[]): Emote[] {
         const cacheKey = this.getCacheKeyForRawEmotes(emotes);
-        const cachedItem = this.processedEmotesCache.get(cacheKey);
         
-        if (cachedItem && (Date.now() - cachedItem.timestamp < this.CACHE_TTL)) {
-            return cachedItem.data;
+        if (this.processedEmotesCache.has(cacheKey)) {
+            return this.processedEmotesCache.get(cacheKey)!;
         }
         
         const emoteCount = emotes.length;
         const result = new Array(emoteCount);
-        const batches = Math.ceil(emoteCount / this.BATCH_SIZE);
+        
+        const batchSize = 100;
+        const batches = Math.ceil(emoteCount / batchSize);
         
         for (let b = 0; b < batches; b++) {
-            const startIdx = b * this.BATCH_SIZE;
-            const endIdx = Math.min(startIdx + this.BATCH_SIZE, emoteCount);
+            const startIdx = b * batchSize;
+            const endIdx = Math.min(startIdx + batchSize, emoteCount);
             
             for (let i = startIdx; i < endIdx; i++) {
+                const imageUrl = emotes[i].urls[2].url;
                 result[i] = {
                     name: emotes[i].code,
-                    image: emotes[i].urls[2].url,
+                    image: imageUrl,
                 };
+                
+                this.preloadImage(imageUrl);
             }
         }
         
-        this.processedEmotesCache.set(cacheKey, {data: result, timestamp: Date.now()});
+        this.processedEmotesCache.set(cacheKey, result);
         return result;
     }
     
@@ -111,23 +157,35 @@ export class EmoteService {
             throw new Error("Cannot get random emote from empty array");
         }
         
-        const randomIndex = (Date.now() ^ (Math.random() * 0xFFFFFFFF)) % emotes.length;
-        return emotes[randomIndex | 0]; 
+        const randomIndex = Math.floor(Math.random() * emotes.length);
+        return emotes[randomIndex];
     }
     
     removeCurrentEmote(emotesList: Emote[], currentEmote: Emote, emoteNames: string[]): void {
-        const currentIndex = emotesList.indexOf(currentEmote);
-        if (currentIndex !== -1) {
-            const lastElement = emotesList[emotesList.length - 1];
-            emotesList[currentIndex] = lastElement;
-            emotesList.pop();
-        }
-        
-        const nameIndex = emoteNames.indexOf(currentEmote.name);
-        if (nameIndex !== -1) {
-            const lastElement = emoteNames[emoteNames.length - 1];
-            emoteNames[nameIndex] = lastElement;
-            emoteNames.pop();
+        if (emotesList.length > 1000) {
+            const currentIndex = emotesList.indexOf(currentEmote);
+            if (currentIndex !== -1) {
+                const lastElement = emotesList[emotesList.length - 1];
+                emotesList[currentIndex] = lastElement;
+                emotesList.pop();
+            }
+            
+            const nameIndex = emoteNames.indexOf(currentEmote.name);
+            if (nameIndex !== -1) {
+                const lastElement = emoteNames[emoteNames.length - 1];
+                emoteNames[nameIndex] = lastElement;
+                emoteNames.pop();
+            }
+        } else {
+            const currentIndex = emotesList.indexOf(currentEmote);
+            if (currentIndex !== -1) {
+                emotesList.splice(currentIndex, 1);
+            }
+            
+            const nameIndex = emoteNames.indexOf(currentEmote.name);
+            if (nameIndex !== -1) {
+                emoteNames.splice(nameIndex, 1);
+            }
         }
         
         this.emoteNameCache.delete(this.getCacheKeyForEmotes(emotesList));
@@ -138,34 +196,10 @@ export class EmoteService {
         this.emoteHtmlCache.clear();
         this.fetchCache.clear();
         this.processedEmotesCache.clear();
-    }
-    
-    pruneExpiredCache(): void {
-        const now = Date.now();
-        
-        for (const [key, value] of this.emoteNameCache.entries()) {
-            if (now - value.timestamp > this.CACHE_TTL) {
-                this.emoteNameCache.delete(key);
-            }
-        }
-        
-        for (const [key, value] of this.emoteHtmlCache.entries()) {
-            if (now - value.timestamp > this.CACHE_TTL) {
-                this.emoteHtmlCache.delete(key);
-            }
-        }
-        
-        for (const [key, value] of this.fetchCache.entries()) {
-            if (now - value.timestamp > this.CACHE_TTL) {
-                this.fetchCache.delete(key);
-            }
-        }
-        
-        for (const [key, value] of this.processedEmotesCache.entries()) {
-            if (now - value.timestamp > this.CACHE_TTL) {
-                this.processedEmotesCache.delete(key);
-            }
-        }
+        this.imageCache.clear();
+        this.imageLoadQueue = [];
+        this.activeLoads = 0;
+        this.isLoadingImage = false;
     }
     
     private getCacheKeyForEmotes(emotes: Emote[]): string {
