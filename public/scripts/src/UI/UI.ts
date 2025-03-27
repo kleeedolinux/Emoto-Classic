@@ -8,6 +8,7 @@ export class UI {
     modalInfo: ModalInfo = new ModalInfo();
     modalGameOver: ModalGameOver = new ModalGameOver();
 
+    // Cache DOM elements
     titleEmoto: HTMLElement = document.querySelector(".title")!;
     subtitle: HTMLElement = document.getElementById("subtitle")!;
     peepoThink: HTMLElement = document.getElementById("peepoThink")!;
@@ -21,6 +22,9 @@ export class UI {
     inputEmote: HTMLInputElement = document.getElementById("emoteTry")! as HTMLInputElement;
     showAcertos: HTMLElement = document.getElementById("acertos")!;
 
+    private elementCache: Map<HTMLElement, string> = new Map();
+    private animationFrame: number | null = null;
+
     constructor() {
         this.titleEmoto.addEventListener("click", () => {
             window.location.reload();
@@ -28,51 +32,77 @@ export class UI {
     }
 
     showEmoteTry(autocomplete: Autocomplete): void {
-        this.emoteTryContainer.style.display = "block";
-        this.inputEmote.style.display = "block";
+        // Batch style changes
+        this.updateElementVisibility(this.emoteTryContainer, "block");
+        this.updateElementVisibility(this.inputEmote, "block");
         this.hideElement(autocomplete.emotesListAutocomplete);
-        this.inputEmote.focus();
+        
+        // Focus after visibility changes
+        requestAnimationFrame(() => {
+            this.inputEmote.focus();
+        });
     }
 
     hideElement(element: HTMLElement): void {
-        element.style.display = "none";
+        this.updateElementVisibility(element, "none");
     }
 
     showElement(element: HTMLElement): void {
-        element.style.display = "block";
+        this.updateElementVisibility(element, "block");
     }
 
     showElementFlex(element: HTMLElement): void {
-        element.style.display = "block";
+        this.updateElementVisibility(element, "flex");
+    }
+
+    private updateElementVisibility(element: HTMLElement, displayValue: string): void {
+        // Only update if the display value has changed
+        if (this.elementCache.get(element) !== displayValue) {
+            element.style.display = displayValue;
+            this.elementCache.set(element, displayValue);
+        }
     }
 
     clear = (container: HTMLElement): void => {
-        container.innerHTML = ``;
+        if (container.innerHTML !== "") {
+            container.innerHTML = "";
+        }
     };
 
-    shakeWrong(element: HTMLElement) {
-        setTimeout(() => {
+    shakeWrong(element: HTMLElement): void {
+        // Cancel any existing animation frame
+        if (this.animationFrame !== null) {
+            cancelAnimationFrame(this.animationFrame);
+        }
+        
+        // Apply animation using requestAnimationFrame
+        this.animationFrame = requestAnimationFrame(() => {
+            // Force browser to process layout before changing animation
+            void element.offsetWidth;
+            
             element.style.animation = "shake 0.2s";
             element.style.animationIterationCount = "1";
-        }, 1);
-        setTimeout(() => {
-            element.style.animation = "none";
-        }, 400);
+            
+            // Clean up animation after it completes
+            setTimeout(() => {
+                element.style.animation = "none";
+                this.animationFrame = null;
+            }, 400);
+        });
     }
 
     showLoading = (channel: string, loading: HTMLElement): void => {
-        let output: string = `
+        const output = `
         <p id = "loadingText"> Carregando emotes de twitch.tv/${channel}...</p>
         <img id="loadingImg" src="https://cdn.7tv.app/emote/6154d7d86251d7e000db1727/4x.webp"/>
         `;
-        loading.innerHTML += output;
+        loading.innerHTML = output;
     };
 
     showInvalidChannel = (channel: string, invalidChannel: HTMLElement): void => {
-        let output: string = `
+        const output = `
         <p id = "invalidChannelText"> O canal ${channel} não foi encontrado...</p>
         `;
-        invalidChannel.innerHTML += output;
+        invalidChannel.innerHTML = output;
     };
-
 }

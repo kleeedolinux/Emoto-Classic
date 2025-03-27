@@ -4,44 +4,37 @@ export class Vidas {
     vida2: HTMLElement = document.getElementById("vida2")!;
     vida3: HTMLElement = document.getElementById("vida3")!;
     vida4: HTMLElement = document.getElementById("vida4")!;
+    
+    private vidasElements: HTMLElement[];
+    private readonly RED = "red";
+    private readonly GRAY = "gray";
+    private lastVidasState: number = 4;
+    
+    constructor() {
+        this.vidasElements = [this.vida1, this.vida2, this.vida3, this.vida4];
+    }
 
     checkVidas(vidasRestantes: number): void {
-        if (vidasRestantes === 4) {
-            this.vida1.style.color = "red";
-            this.vida2.style.color = "red";
-            this.vida3.style.color = "red";
-            this.vida4.style.color = "red";
+        if (vidasRestantes === this.lastVidasState) {
+            return;
         }
-        if (vidasRestantes === 3) {
-            this.vida1.style.color = "red";
-            this.vida2.style.color = "red";
-            this.vida3.style.color = "red";
-            this.vida4.style.color = "gray";
-        }
-        else if (vidasRestantes === 2) {
-            this.vida1.style.color = "red";
-            this.vida2.style.color = "red";
-            this.vida3.style.color = "gray";
-            this.vida4.style.color = "gray";
-        }
-        else if (vidasRestantes === 1) {
-            this.vida1.style.color = "red";
-            this.vida2.style.color = "gray";
-            this.vida3.style.color = "gray";
-            this.vida4.style.color = "gray";
-        }
-        else if (vidasRestantes === 0) {
-            this.vida1.style.color = "gray";
-            this.vida2.style.color = "gray";
-            this.vida3.style.color = "gray";
-            this.vida4.style.color = "gray";
+        
+        this.lastVidasState = vidasRestantes;
+        
+        for (let i = 0; i < this.vidasElements.length; i++) {
+            this.vidasElements[i].style.color = i < vidasRestantes ? this.RED : this.GRAY;
         }
     }
 
-    resetVidas() {
-        this.vida1.style.color = "red";
-        this.vida2.style.color = "red";
-        this.vida3.style.color = "red";
-        this.vida4.style.color = "red";
+    resetVidas(): void {
+        if (this.lastVidasState === 4) {
+            return;
+        }
+        
+        this.lastVidasState = 4;
+        
+        for (const element of this.vidasElements) {
+            element.style.color = this.RED;
+        }
     }
 }
