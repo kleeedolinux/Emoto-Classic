@@ -94,7 +94,7 @@ export class UI {
     showLoading = (channel: string, loading: HTMLElement): void => {
         const output = `
         <p id = "loadingText"> Carregando emotes de twitch.tv/${channel}...</p>
-        <img id="loadingImg" src="https://cdn.7tv.app/emote/6154d7d86251d7e000db1727/4x.webp"/>
+        <img id="loadingImg" src="./img/loading2.webp">
         `;
         loading.innerHTML = output;
     };
