@@ -4,3 +4,4 @@ package-lock.json
 .prettierrc
 discloud.config
 discloud/
+dist/
