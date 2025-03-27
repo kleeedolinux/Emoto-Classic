@@ -1,4 +1,4 @@
-# 🤠 Emoto Refactored by Kleedolinux
+# 🤠 Emoto Remasterized by Kleedolinux
 ## Desenvolvido em TypeScript, HTML e CSS
 ### Jogo sobre adivinhar emotes da Twitch, feito por um nerdola para nerdolas.
 Originalmente feito por @GrifoEXE
