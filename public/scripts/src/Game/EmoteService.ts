@@ -31,7 +31,7 @@ export class EmoteService {
         
         this.preloadImage(emote.image);
         
-        const html = `<a class="card"><img class="card--image4" src=${emote.image} alt=${emote.name} /></a>`;
+        const html = `<a class="card"><img class="card--image4" src=${emote.image} alt="Emoto" /></a>`;
         
         this.emoteHtmlCache.set(emote.name, html);
         return html;
