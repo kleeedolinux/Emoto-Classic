@@ -88,10 +88,11 @@ export class EmoteService {
         
         try {
             const response: Response = await fetch(
-                `https://emotes.adamcy.pl/v1/channel/${channel}/emotes/twitch.7tv.bttv`,
+                `https://emotes.crippled.dev/v1/channel/${channel}/all`,
                 {
                     method: "GET",
                     headers: {
+                        "Accept": "application/json",
                         "Content-Type": "application/json",
                     },
                     signal: controller.signal,
@@ -102,13 +103,33 @@ export class EmoteService {
             clearTimeout(timeoutId);
             
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                const errorMessage = response.status === 429 
+                    ? `Rate limit exceeded. Reset in ${response.headers.get('X-Ratelimit-Reset')} seconds`
+                    : `HTTP error! Status: ${response.status}`;
+                throw new Error(errorMessage);
             }
             
             const emotes = await response.json();
             
-            this.fetchCache.set(channel, emotes);
-            return emotes;
+            if (!Array.isArray(emotes)) {
+                throw new Error('Invalid response format: expected an array of emotes');
+            }
+            
+            const validEmotes = emotes.filter(emote => 
+                emote && 
+                typeof emote.provider === 'number' && 
+                typeof emote.code === 'string' && 
+                Array.isArray(emote.urls) && 
+                emote.urls.length > 0 &&
+                emote.urls.some((url: { url: string }) => url && typeof url.url === 'string')
+            );
+            
+            if (validEmotes.length === 0) {
+                throw new Error(`No valid emotes found for channel: ${channel}`);
+            }
+            
+            this.fetchCache.set(channel, validEmotes);
+            return validEmotes;
         } catch (error) {
             clearTimeout(timeoutId);
             
