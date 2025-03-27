@@ -8,8 +8,9 @@ export class EmoteService {
     private imageCache: Map<string, HTMLImageElement> = new Map();
     private imageLoadQueue: string[] = [];
     private isLoadingImage: boolean = false;
-    private maxConcurrentLoads: number = 3;
+    private maxConcurrentLoads: number = 10;
     private activeLoads: number = 0;
+    private abortControllers: Map<string, AbortController> = new Map();
     
     getEmoteNames(emotes: Emote[]): string[] {
         const cacheKey = this.getCacheKeyForEmotes(emotes);
@@ -30,11 +31,7 @@ export class EmoteService {
         
         this.preloadImage(emote.image);
         
-        const html = `
-        <a class="card">
-            <img class="card--image4" src=${emote.image} alt=${emote.name} />
-        </a>
-        `;
+        const html = `<a class="card"><img class="card--image4" src=${emote.image} alt=${emote.name} /></a>`;
         
         this.emoteHtmlCache.set(emote.name, html);
         return html;
@@ -83,8 +80,13 @@ export class EmoteService {
             return this.fetchCache.get(channel)!;
         }
         
+        if (this.abortControllers.has(channel)) {
+            this.abortControllers.get(channel)!.abort();
+        }
+        
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        this.abortControllers.set(channel, controller);
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
         
         try {
             const response: Response = await fetch(
@@ -115,14 +117,28 @@ export class EmoteService {
                 throw new Error('Invalid response format: expected an array of emotes');
             }
             
-            const validEmotes = emotes.filter(emote => 
-                emote && 
-                typeof emote.provider === 'number' && 
-                typeof emote.code === 'string' && 
-                Array.isArray(emote.urls) && 
-                emote.urls.length > 0 &&
-                emote.urls.some((url: { url: string }) => url && typeof url.url === 'string')
-            );
+            const validEmotes = [];
+            for (let i = 0; i < emotes.length; i++) {
+                const emote = emotes[i];
+                if (emote && 
+                    typeof emote.provider === 'number' && 
+                    typeof emote.code === 'string' && 
+                    Array.isArray(emote.urls) && 
+                    emote.urls.length > 0) {
+                    
+                    let hasValidUrl = false;
+                    for (let j = 0; j < emote.urls.length; j++) {
+                        if (emote.urls[j] && typeof emote.urls[j].url === 'string') {
+                            hasValidUrl = true;
+                            break;
+                        }
+                    }
+                    
+                    if (hasValidUrl) {
+                        validEmotes.push(emote);
+                    }
+                }
+            }
             
             if (validEmotes.length === 0) {
                 throw new Error(`No valid emotes found for channel: ${channel}`);
@@ -138,6 +154,8 @@ export class EmoteService {
             }
             
             throw error;
+        } finally {
+            this.abortControllers.delete(channel);
         }
     }
     
@@ -151,7 +169,7 @@ export class EmoteService {
         const emoteCount = emotes.length;
         const result = new Array(emoteCount);
         
-        const batchSize = 100;
+        const batchSize = 500;
         const batches = Math.ceil(emoteCount / batchSize);
         
         for (let b = 0; b < batches; b++) {
@@ -159,13 +177,16 @@ export class EmoteService {
             const endIdx = Math.min(startIdx + batchSize, emoteCount);
             
             for (let i = startIdx; i < endIdx; i++) {
-                const imageUrl = emotes[i].urls[2].url;
+                const emote = emotes[i];
+                const imageUrl = emote.urls[Math.min(2, emote.urls.length - 1)].url;
                 result[i] = {
-                    name: emotes[i].code,
+                    name: emote.code,
                     image: imageUrl,
                 };
                 
-                this.preloadImage(imageUrl);
+                if (i < 100) {
+                    this.preloadImage(imageUrl);
+                }
             }
         }
         
@@ -183,30 +204,18 @@ export class EmoteService {
     }
     
     removeCurrentEmote(emotesList: Emote[], currentEmote: Emote, emoteNames: string[]): void {
-        if (emotesList.length > 1000) {
-            const currentIndex = emotesList.indexOf(currentEmote);
-            if (currentIndex !== -1) {
-                const lastElement = emotesList[emotesList.length - 1];
-                emotesList[currentIndex] = lastElement;
-                emotesList.pop();
-            }
-            
-            const nameIndex = emoteNames.indexOf(currentEmote.name);
-            if (nameIndex !== -1) {
-                const lastElement = emoteNames[emoteNames.length - 1];
-                emoteNames[nameIndex] = lastElement;
-                emoteNames.pop();
-            }
-        } else {
-            const currentIndex = emotesList.indexOf(currentEmote);
-            if (currentIndex !== -1) {
-                emotesList.splice(currentIndex, 1);
-            }
-            
-            const nameIndex = emoteNames.indexOf(currentEmote.name);
-            if (nameIndex !== -1) {
-                emoteNames.splice(nameIndex, 1);
-            }
+        const currentIndex = emotesList.indexOf(currentEmote);
+        if (currentIndex !== -1) {
+            const lastElement = emotesList[emotesList.length - 1];
+            emotesList[currentIndex] = lastElement;
+            emotesList.pop();
+        }
+        
+        const nameIndex = emoteNames.indexOf(currentEmote.name);
+        if (nameIndex !== -1) {
+            const lastElement = emoteNames[emoteNames.length - 1];
+            emoteNames[nameIndex] = lastElement;
+            emoteNames.pop();
         }
         
         this.emoteNameCache.delete(this.getCacheKeyForEmotes(emotesList));
@@ -221,6 +230,11 @@ export class EmoteService {
         this.imageLoadQueue = [];
         this.activeLoads = 0;
         this.isLoadingImage = false;
+        
+        for (const controller of this.abortControllers.values()) {
+            controller.abort();
+        }
+        this.abortControllers.clear();
     }
     
     private getCacheKeyForEmotes(emotes: Emote[]): string {
