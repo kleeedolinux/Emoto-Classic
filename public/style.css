@@ -71,17 +71,6 @@ body {
 	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 	margin: 0;
 	padding: 0;
-}
-
-img {
-	user-select: none;
-	-moz-user-select: none;
-	-webkit-user-drag: none;
-	-webkit-user-select: none;
-	-ms-user-select: none;
-}
-
-body {
 	width: auto;
 	height: auto;
 	color-scheme: light dark;
@@ -90,6 +79,15 @@ body {
 	align-items: center;
 	flex-direction: column;
 	margin-bottom: auto;
+	padding-bottom: 180px;
+}
+
+img {
+	user-select: none;
+	-moz-user-select: none;
+	-webkit-user-drag: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
 }
 
 #background-img {
@@ -698,23 +696,31 @@ input[type="submit"] {
 footer {
 	position: fixed;
 	bottom: 0;
+	left: 0;
 	width: 100%;
 	margin-top: 1rem;
 	text-align: center;
 	font-size: 2.5rem;
 	font-weight: 700;
-	margin-bottom: 10px;
+	margin-bottom: 0;
 	cursor: default;
+	background-color: rgba(0, 0, 0, 0.7);
+	backdrop-filter: blur(5px);
+	z-index: 10;
+	padding: 5px 0;
 }
 
 #socials-icons {
-	margin-top: 1rem;
-	margin-bottom: -1.5rem;
+	margin-top: 0.5rem;
+	margin-bottom: -0.75rem;
 	align-items: center;
 	max-width: fit-content;
 	margin-left: auto;
 	margin-right: auto;
 	cursor: default;
+	display: flex;
+	justify-content: center;
+	flex-wrap: wrap;
 }
 
 #socials-icons img:hover {
@@ -724,10 +730,12 @@ footer {
 
 #socials-icons img {
 	margin: 0 1rem;
+	max-height: 32px;
+	width: auto;
 }
 
 #nome-autor {
-	margin-top: 1rem;
+	margin-top: 0.5rem;
 	align-items: center;
 	text-align: center;
 	font-size: 1.5rem;
@@ -753,6 +761,47 @@ footer {
 	transition: 0.1s;
 }
 
+#refactor-credits {
+	margin-top: 0.5rem;
+	align-items: center;
+	text-align: center;
+	font-size: 1.2rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	text-shadow: 6px 6px 5px black;
+	font-family: "Intro Rust";
+	-webkit-text-stroke: 1px #000;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#refactor-author {
+	font-size: 1.5rem;
+	text-transform: uppercase;
+	text-shadow: 6px 6px 5px black;
+	font-family: "Intro Rust";
+	-webkit-text-stroke: 1px #000;
+	color: #7b39e4;
+}
+
+#refactor-author:hover {
+	color: #398ce4;
+	transition: 0.1s;
+	transform: scale(1.05);
+}
+
+#fork-github {
+	font-size: 1.8rem;
+	margin-left: 0.5rem;
+	vertical-align: middle;
+	color: white;
+}
+
+#fork-github:hover {
+	color: #7b39e4;
+	animation: shake 0.2s;
+}
+
 .fa-github {
 	padding: 20px;
 	font-size: 20px;
@@ -776,4 +825,63 @@ footer {
 
 .fa-github:hover {
 	color: black;
+}
+
+/* Update responsive padding fixes */
+@media (max-width: 768px) {
+    body {
+        padding: 0 10px 180px 10px;
+    }
+    
+    footer {
+        padding: 8px 0;
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+    
+    #vidas {
+        margin-bottom: 20px;
+    }
+    
+    #score {
+        margin-bottom: 30px;
+    }
+    
+    #emoteTryContainer, #channelInput {
+        width: 90%;
+    }
+    
+    #app {
+        width: 90%;
+        margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 0 5px 220px 5px;
+    }
+    
+    #title {
+        padding: 0 5px;
+    }
+    
+    #vidas {
+        margin-bottom: 30px;
+    }
+    
+    #score {
+        margin-bottom: 40px;
+    }
+    
+    footer {
+        font-size: 2rem;
+    }
+    
+    #socials-icons img {
+        margin: 0 0.5rem;
+    }
+    
+    .card {
+        padding: 10px;
+    }
 }
