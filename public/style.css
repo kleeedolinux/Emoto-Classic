@@ -360,19 +360,25 @@ dialog::backdrop {
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
+	width: 100%;
+	max-width: 100%;
+	text-align: center;
+	margin: 0 auto;
 }
 
 #title {
+	display: block;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	font-size: 4rem;
+	font-weight: 800;
+	margin-top: 0.5rem;
+	margin-bottom: 0.5rem;
+	text-shadow: 6px 6px 5px black;
 	font-family: "Intro Rust";
-	color: white;
-	-webkit-text-stroke: 2px #000;
-	text-shadow: 6px 12px 5px black;
-	text-align: center;
-	font-size: 5rem;
-	margin-top: auto;
-	text-transform: uppercase;
-	margin-bottom: -0.5rem;
-	cursor: pointer;
+	letter-spacing: 0.2rem;
+	transition: all 0.2s ease-in-out;
 }
 
 #title:hover {
@@ -380,11 +386,16 @@ dialog::backdrop {
 	transition: 0.1s;
 }
 
-.peepoThink {
+#peepoThink {
 	display: block;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	width: 96px;
+	height: 96px;
+	margin-top: 0.5rem;
 	margin-bottom: 1rem;
-	margin-left: auto;
-	margin-right: auto;
+	-webkit-filter: drop-shadow(6px 6px 5px black);
 	filter: drop-shadow(6px 6px 5px black);
 }
 
@@ -397,13 +408,18 @@ dialog::backdrop {
 }
 
 #subtitle {
-	font-weight: 600;
+	display: block;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	text-align: center;
+	font-size: 1.5rem;
 	text-shadow: 6px 6px 5px black;
-	font-size: 0.9rem;
-	margin-top: auto;
-	margin-bottom: 1rem;
-	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-	filter: drop-shadow(6px 6px 5px black);
+	margin-top: -1.5rem;
+	margin-left: auto;
+	margin-right: auto;
+	width: 100%;
+	max-width: 500px;
 }
 
 #subtitle2 {
@@ -413,6 +429,21 @@ dialog::backdrop {
 	font-size: 1rem;
 	text-transform: lowercase;
 	color: rgb(189, 96, 255);
+}
+
+#version {
+	display: block;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	font-size: 1rem;
+	font-weight: bold;
+	color: #7b39e4;
+	text-shadow: 2px 2px 3px black;
+	margin-top: -1rem;
+	margin-bottom: 1rem;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 #channelInput {
@@ -710,31 +741,40 @@ input[type="submit"] {
 footer {
 	position: fixed;
 	bottom: 0;
-	left: 0;
 	width: 100%;
-	margin-top: 1rem;
-	text-align: center;
-	font-size: 2.5rem;
-	font-weight: 700;
-	margin-bottom: 0;
-	cursor: default;
-	background-color: rgba(0, 0, 0, 0.7);
-	backdrop-filter: blur(5px);
-	z-index: 10;
-	padding: 5px 0;
+	background-color: rgba(0, 0, 0, 0.6);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 0.7rem 0;
+	z-index: 100;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	box-shadow: 0px -4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.footer-content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	max-width: 1200px;
+	gap: 0.3rem;
 }
 
 #socials-icons {
-	margin-top: 0.5rem;
-	margin-bottom: -0.75rem;
-	align-items: center;
-	max-width: fit-content;
-	margin-left: auto;
-	margin-right: auto;
-	cursor: default;
 	display: flex;
+	flex-direction: row;
+	align-items: center;
 	justify-content: center;
-	flex-wrap: wrap;
+	margin-top: 0.2rem;
+	gap: 1rem;
+	filter: drop-shadow(2px 2px 2px black);
+	-webkit-filter: drop-shadow(2px 2px 2px black);
 }
 
 #socials-icons img:hover {
@@ -743,27 +783,51 @@ footer {
 }
 
 #socials-icons img {
-	margin: 0 1rem;
-	max-height: 32px;
+	margin: 0 0.6rem;
+	max-height: 24px;
 	width: auto;
 }
 
-#nome-autor {
-	margin-top: 0.5rem;
+.footer-text-container {
+	display: flex;
+	flex-direction: column;
 	align-items: center;
+	justify-content: center;
 	text-align: center;
-	font-size: 1.5rem;
-	font-weight: 600;
-	text-transform: uppercase;
-	text-shadow: 6px 6px 5px black;
-	font-family: "Intro Rust";
-	-webkit-text-stroke: 1px #000;
-	margin-left: auto;
-	margin-right: auto;
+	width: 100%;
+}
+
+.credits-container {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	width: 100%;
+	margin: 0.2rem auto;
+	gap: 0.6rem;
+}
+
+.separator {
+	font-size: 1.2rem;
+	font-weight: bold;
+	color: #666;
+	margin: 0 0.2rem;
+	text-shadow: 2px 2px 2px black;
+}
+
+#nome-autor {
+	display: inline-block;
+	text-align: center;
+	font-weight: 700;
+	font-size: 1rem;
+	text-shadow: 2px 2px 2px black;
+	filter: drop-shadow(2px 2px 2px black);
+	-webkit-filter: drop-shadow(2px 2px 2px black);
 }
 
 #autor {
-	font-size: 2rem;
+	font-size: 1.6rem;
 	text-transform: uppercase;
 	text-shadow: 6px 6px 5px black;
 	font-family: "Intro Rust";
@@ -776,21 +840,17 @@ footer {
 }
 
 #refactor-credits {
-	margin-top: 0.5rem;
-	align-items: center;
+	display: inline-block;
 	text-align: center;
-	font-size: 1.2rem;
-	font-weight: 600;
-	text-transform: uppercase;
-	text-shadow: 6px 6px 5px black;
-	font-family: "Intro Rust";
-	-webkit-text-stroke: 1px #000;
-	margin-left: auto;
-	margin-right: auto;
+	font-weight: 700;
+	font-size: 0.9rem;
+	text-shadow: 2px 2px 2px black;
+	filter: drop-shadow(2px 2px 2px black);
+	-webkit-filter: drop-shadow(2px 2px 2px black);
 }
 
 #refactor-author {
-	font-size: 1.5rem;
+	font-size: 1.3rem;
 	text-transform: uppercase;
 	text-shadow: 6px 6px 5px black;
 	font-family: "Intro Rust";
@@ -805,8 +865,8 @@ footer {
 }
 
 #fork-github {
-	font-size: 1.8rem;
-	margin-left: 0.5rem;
+	font-size: 1.3rem;
+	margin-left: 0.2rem;
 	vertical-align: middle;
 	color: white;
 }
@@ -844,58 +904,127 @@ footer {
 /* Update responsive padding fixes */
 @media (max-width: 768px) {
     body {
-        padding: 0 10px 180px 10px;
+        padding: 1rem;
+        padding-bottom: 120px;
     }
-    
     footer {
-        padding: 8px 0;
-        background-color: rgba(0, 0, 0, 0.7);
+        padding: 0.6rem 0;
     }
-    
     #vidas {
-        margin-bottom: 20px;
+        gap: 0.5rem;
     }
-    
     #score {
-        margin-bottom: 30px;
+        margin-top: 0.5rem;
     }
-    
     #emoteTryContainer, #channelInput {
         width: 90%;
     }
-    
     #app {
         width: 90%;
-        margin-bottom: 20px;
+        margin: 0 auto;
+    }
+    .card {
+        width: 90%;
+    }
+    #subtitle, #version {
+        max-width: 90%;
     }
 }
 
 @media (max-width: 480px) {
     body {
-        padding: 0 5px 220px 5px;
+        padding: 0.8rem;
+        padding-bottom: 110px;
     }
-    
     #title {
-        padding: 0 5px;
+        font-size: 3rem;
     }
-    
+    #subtitle {
+        font-size: 1.2rem;
+    }
+    #version {
+        font-size: 0.9rem;
+    }
     #vidas {
-        margin-bottom: 30px;
+        gap: 0.3rem;
     }
-    
     #score {
-        margin-bottom: 40px;
+        margin-top: 0.3rem;
     }
-    
     footer {
-        font-size: 2rem;
+        padding: 0.5rem 0;
     }
-    
     #socials-icons img {
-        margin: 0 0.5rem;
+        width: 20px;
+        margin: 0 0.4rem;
+    }
+    #socials-icons {
+        gap: 0.5rem;
+    }
+    .card {
+        width: 85%;
+        padding: 0.8rem;
+    }
+    #channelInput, #emoteTry {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+    }
+    #modalText {
+        font-size: 0.9rem;
+    }
+    #nome-autor {
+        font-size: 0.9rem;
+    }
+    #autor {
+        font-size: 1.4rem;
+    }
+    #refactor-author {
+        font-size: 1.2rem;
+    }
+    #fork-github {
+        font-size: 1.3rem;
+    }
+    .credits-container {
+        flex-wrap: wrap;
+        gap: 0.3rem;
     }
     
-    .card {
-        padding: 10px;
+    .separator {
+        display: none;
+    }
+}
+
+@media (max-width: 360px) {
+    #title {
+        font-size: 2.5rem;
+    }
+    #subtitle {
+        font-size: 1rem;
+    }
+    #version {
+        font-size: 0.8rem;
+    }
+    body {
+        padding: 0.5rem;
+        padding-bottom: 100px;
+    }
+    footer {
+        padding: 0.4rem 0;
+    }
+    #nome-autor, #refactor-credits {
+        font-size: 0.8rem;
+    }
+    #autor {
+        font-size: 1.2rem;
+    }
+    #refactor-author {
+        font-size: 1rem;
+    }
+    #fork-github {
+        font-size: 1.1rem;
+    }
+    #socials-icons img {
+        width: 18px;
+        margin: 0 0.3rem;
     }
 }
