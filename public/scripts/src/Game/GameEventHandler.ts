@@ -27,28 +27,28 @@ export class GameEventHandler {
     }
     
     handleGameplayKeypress(event: KeyboardEvent): void {
-        if (event.key === "Enter") {
+        if (event.key === "Enter" && !event.defaultPrevented) {
             this.game.gameplay();
-            this.game.ui.hideElement(this.game.autocomplete.emotesListAutocomplete);
+            this.game.hideAutocompleteList();
         }
     }
     
     handleAutocompleteClick(event: MouseEvent): void {
         const target = event.target as HTMLElement;
         if (target.classList.contains("autocomplete-item")) {
-            this.game.ui.inputEmote.value = target.innerText;
+            this.game.ui.inputEmote.value = target.dataset.fullName || target.innerText;
             this.game.ui.inputEmote.focus();
-            this.game.ui.hideElement(this.game.autocomplete.emotesListAutocomplete);
+            this.game.hideAutocompleteList();
         }
     }
     
     handleAutocompleteKeydown(event: KeyboardEvent): void {
         const target = event.target as HTMLElement;
         if (target.classList.contains("autocomplete-item") && event.key === "Enter") {
-            this.game.ui.inputEmote.value = target.innerText;
+            this.game.ui.inputEmote.value = target.dataset.fullName || target.innerText;
             this.game.ui.inputEmote.focus();
             this.game.gameplay();
-            this.game.ui.hideElement(this.game.autocomplete.emotesListAutocomplete);
+            this.game.hideAutocompleteList();
         }
     }
     

@@ -500,16 +500,22 @@ dialog::backdrop {
 	color: #fff;
 	background-color: rgb(32, 42, 49);
 	font-size: 1rem;
-	max-height: 100px;
+	max-height: 200px;
 	max-width: 100%;
 	overflow-x: hidden;
 	overflow-y: auto;
 	z-index: 1;
+	border-radius: 0 0 5px 5px;
+	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
 }
 
 .autocomplete-emotes li {
 	padding: 8px;
 	font-weight: 600;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	transition: background-color 0.2s ease;
 }
 
 .autocomplete-emotes li:hover {
@@ -519,6 +525,14 @@ dialog::backdrop {
 
 .autocomplete-emotes li:focus {
 	background-color: #245992;
+	outline: none;
+}
+
+.autocomplete-emotes li.selected {
+	background-color: #245992;
+	color: #ffffff;
+	border-left: 3px solid #ff8c00;
+	padding-left: 5px;
 }
 
 #emoteTry:focus {

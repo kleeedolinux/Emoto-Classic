@@ -17,15 +17,15 @@ ui.inputEmote.addEventListener("input", () => {
 		autocomplete.updateAutocomplete(value);
 		
 		if (autocomplete.emotesListAutocomplete.children.length > 0) {
-			ui.showElement(autocomplete.emotesListAutocomplete);
+			game.showAutocompleteList();
 		}
 	}, 50);
 }, { passive: true });
 
 ui.inputEmote.addEventListener("keydown", (e: KeyboardEvent) => {
-	if (e.key === "Enter") {
+	if (e.key === "Enter" && !e.defaultPrevented) {
 		game.gameplay();
-		ui.hideElement(autocomplete.emotesListAutocomplete);
+		game.hideAutocompleteList();
 	}
 });
 
@@ -41,20 +41,20 @@ window.addEventListener("click", (event) => {
 	
 	// Handle autocomplete item clicks with event delegation
 	if (target.classList?.contains("autocomplete-item")) {
-		ui.inputEmote.value = target.innerText;
+		ui.inputEmote.value = target.dataset.fullName || target.innerText;
 		ui.inputEmote.focus();
-		ui.hideElement(autocomplete.emotesListAutocomplete);
+		game.hideAutocompleteList();
 	}
 }, { passive: true });
 
 // Optimize autocomplete keyboard navigation
-autocomplete.emotesListAutocomplete.addEventListener("keydown", (e: KeyboardEvent) => {
+autocomplete.emotesListAutocomplete.addEventListener("click", (e: MouseEvent) => {
 	const target = e.target as HTMLElement;
-	if (target.classList.contains("autocomplete-item") && e.key === "Enter") {
-		ui.inputEmote.value = target.innerText;
+	if (target.classList.contains("autocomplete-item")) {
+		ui.inputEmote.value = target.dataset.fullName || target.innerText;
 		ui.inputEmote.focus();
 		game.gameplay();
-		ui.hideElement(autocomplete.emotesListAutocomplete);
+		game.hideAutocompleteList();
 	}
 });
 

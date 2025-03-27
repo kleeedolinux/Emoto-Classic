@@ -23,6 +23,7 @@ export class Game {
     private modalManager: ModalManager;
     private gameState: GameState;
     eventHandler: GameEventHandler;
+    private isAutocompleteVisible: boolean = false;
 
     constructor(user: User) {
         this.channel = "";
@@ -48,6 +49,74 @@ export class Game {
         this.ui.inputChannel.addEventListener("change", this.eventHandler.handleChannelChange);
         this.ui.inputChannel.addEventListener("focus", this.eventHandler.handleChannelFocus);
         this.ui.inputChannel.addEventListener("blur", this.eventHandler.handleChannelBlur);
+        
+        this.ui.inputEmote.addEventListener("keydown", this.handleKeyboardNavigation);
+    }
+    
+    handleKeyboardNavigation = (event: KeyboardEvent): void => {
+        if (!this.isAutocompleteVisible) {
+            if (event.key === "ArrowDown" && this.autocomplete.emotesListAutocomplete.children.length > 0) {
+                event.preventDefault();
+                this.showAutocompleteList();
+                this.autocomplete.navigateAutocomplete('down');
+                return;
+            }
+            return;
+        }
+        
+        switch (event.key) {
+            case "ArrowUp":
+                event.preventDefault();
+                this.autocomplete.navigateAutocomplete('up');
+                break;
+            case "ArrowDown":
+                event.preventDefault();
+                this.autocomplete.navigateAutocomplete('down');
+                break;
+            case "Home":
+                if (event.ctrlKey) {
+                    event.preventDefault();
+                    this.autocomplete.navigateAutocomplete('home');
+                }
+                break;
+            case "End":
+                if (event.ctrlKey) {
+                    event.preventDefault();
+                    this.autocomplete.navigateAutocomplete('end');
+                }
+                break;
+            case "Tab":
+                event.preventDefault();
+                if (event.shiftKey) {
+                    this.autocomplete.navigateAutocomplete('up');
+                } else {
+                    this.autocomplete.navigateAutocomplete('down');
+                }
+                break;
+            case "Enter":
+                const selectedValue = this.autocomplete.selectCurrentItem();
+                if (selectedValue) {
+                    event.preventDefault();
+                    this.ui.inputEmote.value = selectedValue;
+                    this.hideAutocompleteList();
+                    this.gameplay();
+                }
+                break;
+            case "Escape":
+                event.preventDefault();
+                this.hideAutocompleteList();
+                break;
+        }
+    }
+    
+    showAutocompleteList(): void {
+        this.ui.showElement(this.autocomplete.emotesListAutocomplete);
+        this.isAutocompleteVisible = true;
+    }
+    
+    hideAutocompleteList(): void {
+        this.ui.hideElement(this.autocomplete.emotesListAutocomplete);
+        this.isAutocompleteVisible = false;
     }
 
     getEmotenames(emotes: Emote[]): void {
