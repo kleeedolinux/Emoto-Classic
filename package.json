@@ -22,7 +22,6 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
-    "@types/react-confetti": "^6.0.0"
+    "tailwindcss": "^4"
   }
 }
