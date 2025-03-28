@@ -5,6 +5,9 @@ import { normalizeString } from './normalizeString';
 
 const API_ENDPOINT = 'https://emotes.crippled.dev/v1/channel';
 const CACHE_EXPIRY = 1000 * 60 * 60; 
+const REQUEST_TIMEOUT = 5000;
+const PRELOAD_BATCH_SIZE = 5;
+
 let emoteCache: Map<string, {
   timestamp: number;
   emotes: Emote[];
@@ -12,6 +15,7 @@ let emoteCache: Map<string, {
 
 let imageCache: Map<string, HTMLImageElement> = new Map();
 let loadingImages: Set<string> = new Set();
+let normalizedNameCache: Map<string, string> = new Map();
 
 export async function fetchEmotes(channel: string): Promise<Emote[]> {
   if (!channel.trim()) {
@@ -24,10 +28,16 @@ export async function fetchEmotes(channel: string): Promise<Emote[]> {
   }
 
   try {
-    const twitchResponse = await fetch(`https://decapi.me/twitch/id/${channel}`);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT);
+
+    const twitchResponse = await fetch(`https://decapi.me/twitch/id/${channel}`, {
+      signal: controller.signal
+    });
     const channelId = await twitchResponse.text();
     
     if (!channelId || channelId.includes('User not found')) {
+      clearTimeout(timeoutId);
       return [];
     }
     
@@ -36,8 +46,11 @@ export async function fetchEmotes(channel: string): Promise<Emote[]> {
         'Accept': 'application/json',
         'Content-Type': 'application/json'
       },
-      cache: 'force-cache'
+      cache: 'force-cache',
+      signal: controller.signal
     });
+
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       throw new Error(`Error fetching emotes: ${response.status} ${response.statusText}`);
@@ -55,7 +68,7 @@ export async function fetchEmotes(channel: string): Promise<Emote[]> {
       emotes: processedEmotes
     });
     
-    preloadImages(processedEmotes.slice(0, 20));
+    batchPreloadImages(processedEmotes.slice(0, 20));
     
     return processedEmotes;
   } catch (error) {
@@ -74,8 +87,8 @@ export function getRandomEmote(emotes: Emote[]): Emote | null {
 export function checkGuess(guess: string, currentEmote: Emote | null): boolean {
   if (!currentEmote) return false;
   
-  const normalizedGuess = normalizeString(guess);
-  const normalizedEmoteName = normalizeString(currentEmote.name);
+  const normalizedGuess = getNormalizedString(guess);
+  const normalizedEmoteName = getNormalizedString(currentEmote.name);
   
   console.log('Comparing:', { 
     original: { guess, emoteName: currentEmote.name },
@@ -83,6 +96,16 @@ export function checkGuess(guess: string, currentEmote: Emote | null): boolean {
   });
   
   return normalizedGuess === normalizedEmoteName;
+}
+
+function getNormalizedString(str: string): string {
+  if (normalizedNameCache.has(str)) {
+    return normalizedNameCache.get(str)!;
+  }
+  
+  const normalized = normalizeString(str);
+  normalizedNameCache.set(str, normalized);
+  return normalized;
 }
 
 export function removeEmote(emotes: Emote[], emoteToRemove: Emote): Emote[] {
@@ -103,8 +126,7 @@ export function shareOnTwitter(score: number, channel: string, isWin: boolean): 
 }
 
 export function getEmoteNames(emotes: Emote[]): string[] {
-  const names = emotes.map(emote => emote.name);
-  return [...new Set(names)];
+  return [...new Set(emotes.map(emote => emote.name))];
 }
 
 function processEmotes(rawEmotes: any[]): Emote[] {
@@ -133,10 +155,19 @@ function processEmotes(rawEmotes: any[]): Emote[] {
     .filter(emote => emote.url !== '');
 }
 
-function preloadImages(emotes: Emote[]): void {
-  for (const emote of emotes) {
-    preloadImage(emote.url);
-  }
+function batchPreloadImages(emotes: Emote[]): void {
+  if (emotes.length === 0) return;
+  
+  const processBatch = (startIndex: number) => {
+    const batch = emotes.slice(startIndex, startIndex + PRELOAD_BATCH_SIZE);
+    batch.forEach(emote => preloadImage(emote.url));
+    
+    if (startIndex + PRELOAD_BATCH_SIZE < emotes.length) {
+      setTimeout(() => processBatch(startIndex + PRELOAD_BATCH_SIZE), 100);
+    }
+  };
+  
+  processBatch(0);
 }
 
 function preloadImage(url: string): void {
@@ -159,4 +190,5 @@ export function clearCache(): void {
   emoteCache.clear();
   imageCache.clear();
   loadingImages.clear();
+  normalizedNameCache.clear();
 } 
