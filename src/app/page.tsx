@@ -18,7 +18,6 @@ import { isFirstTimeUser, markUserAsReturning } from './utils/storageManager';
 
 export default function Home() {
   const emoteInputRef = useRef<EmoteInputHandles>(null);
-  // Track if we've checked first time user status
   const [hasCheckedFirstTime, setHasCheckedFirstTime] = useState(false);
   const [isFirstVisit, setIsFirstVisit] = useState(false);
 
@@ -45,42 +44,34 @@ export default function Home() {
         showConfetti,
         showDamageEffect
       }) => {
-        // Use a separate useEffect to check for first time user
         useEffect(() => {
-          // Only check once
           if (!hasCheckedFirstTime) {
             try {
               const firstTimeUser = isFirstTimeUser();
               setIsFirstVisit(firstTimeUser);
               
               if (firstTimeUser) {
-                // Only open the dialog, don't mark as returning yet
-                // (We'll do that when they close the dialog)
                 setTimeout(() => {
                   openHelpDialog();
-                  // Mark as returning right away to prevent showing again on restart
                   markUserAsReturning();
                 }, 500);
               }
             } catch (error) {
               console.error('Error checking first time user:', error);
-              // Mark as returning to prevent issues on restart
               markUserAsReturning();
             }
             setHasCheckedFirstTime(true);
           }
         }, [openHelpDialog, hasCheckedFirstTime]);
         
-        // Handle help dialog closure for first-time users
         const handleHelpDialogClose = () => {
-          // If this is the first visit, mark the user as returning
           if (isFirstVisit) {
             markUserAsReturning();
             setIsFirstVisit(false);
           }
           closeHelpDialog();
-          document.body.style.pointerEvents = 'auto'; // Ensure pointer events are enabled
-        };
+          document.body.style.pointerEvents = 'auto'; 
+                };
         
         return (
           <main className="main-container">
