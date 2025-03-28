@@ -1,24 +1,28 @@
 {
-	"name": "emoto-fork",
-	"version": "1.0.0",
-	"description": "Inclui os emotes da Twitch, BTTV, 7TV e FFZ\r Usa a API tEmotes ->https://adiq.stoplight.io/docs/temotes/YXBpOjMyNjU2ODIx-t-emotes-api forked fom GrifoEXE",
-	"main": "server.js",
-	"scripts": {
-		"server": "node server.js",
-		"watch": "tsc -w",
-		"vercel-build": "tsc",
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
-	"author": "Kleeedolinux",
-	"license": "MIT",
-	"dependencies": {
-		"@types/express": "^5.0.1",
-		"@types/node": "^18.6.1",
-		"concurrently": "^9.1.2",
-		"express": "^4.18.1",
-		"tslint": "^6.1.3",
-		"typescript": "^4.9.5",
-		"ws": "^8.3.0"
-	},
-	"types": "public/script/dist/index.d.ts"
+  "name": "emoto-remake",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "next": "15.2.4",
+    "react-confetti": "^6.1.0",
+    "react-particles": "^2.12.2",
+    "tsparticles": "^3.8.1"
+  },
+  "devDependencies": {
+    "typescript": "^5",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@tailwindcss/postcss": "^4",
+    "tailwindcss": "^4",
+    "@types/react-confetti": "^6.0.0"
+  }
 }

@@ -1,7 +1,13 @@
-# 🤠 Emoto Remasterized by Kleedolinux
-## Desenvolvido em TypeScript, HTML e CSS
+# 🤠 Emoto Remake by Kleedolinux
+
+## Remake feito em React, Next.js, TypeScript
+### Por Kleedolinux
+### Melhora na performance e na experiência do usuário
+
+## Desenvolvido originalmente em TypeScript, HTML e CSS
 ### Jogo sobre adivinhar emotes da Twitch, feito por um nerdola para nerdolas.
 Originalmente feito por @GrifoEXE
+
 # 👇 Jogue agora aqui!
 
 https://emoto.juliaklee.wtf/
