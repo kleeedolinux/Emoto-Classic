@@ -64,7 +64,7 @@ export default function Footer() {
           </div>
           <div className="separator">|</div>
           <div className="refactorCredits">
-            Remasterized by <a 
+            Remake by <a 
               className="refactorAuthor" 
               tabIndex={-1} 
               target="_blank" 
