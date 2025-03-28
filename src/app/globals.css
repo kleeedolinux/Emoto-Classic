@@ -379,6 +379,7 @@ dialog:not([open])::backdrop {
 .subtitle {
 	display: block;
 	text-align: center;
+	font-family: "Intro Rust";
 	font-size: 1.5rem;
 	text-shadow: 6px 6px 5px black;
 	margin-top: -1.5rem;
