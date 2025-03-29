@@ -20,6 +20,7 @@ const EmoteInput = forwardRef<EmoteInputHandles, EmoteInputProps>(
   ({ onEmoteGuess, emotesList, isVisible }, ref) => {
     const [inputValue, setInputValue] = useState('');
     const [inputStatus, setInputStatus] = useState<'default' | 'correct' | 'incorrect'>('default');
+    
     const {
       state: autocompleteState,
       inputRef,
@@ -34,6 +35,7 @@ const EmoteInput = forwardRef<EmoteInputHandles, EmoteInputProps>(
     useImperativeHandle(ref, () => ({
       showCorrectGuess: () => {
         setInputStatus('correct');
+        
         if (inputRef.current) {
           inputRef.current.placeholder = 'Acertou!';
           inputRef.current.blur();
@@ -49,6 +51,7 @@ const EmoteInput = forwardRef<EmoteInputHandles, EmoteInputProps>(
       },
       showIncorrectGuess: () => {
         setInputStatus('incorrect');
+        
         if (inputRef.current) {
           inputRef.current.className = 'emoteTry';
           

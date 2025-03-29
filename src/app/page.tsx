@@ -12,6 +12,7 @@ import WinDialog from './components/WinDialog';
 import Footer from './components/Footer';
 import GameController from './components/GameController';
 import { shareOnTwitter } from './utils/emoteService';
+import { initSounds } from './utils/soundManager';
 import Confetti from './components/Confetti';
 import DamageEffect from './components/DamageEffect';
 import { isFirstTimeUser, markUserAsReturning } from './utils/storageManager';
@@ -23,6 +24,11 @@ export default function Home() {
   const emoteInputRef = useRef<EmoteInputHandles>(null);
   const [hasCheckedFirstTime, setHasCheckedFirstTime] = useState(false);
   const [isFirstVisit, setIsFirstVisit] = useState(false);
+  
+  // Initialize sounds on component mount
+  useEffect(() => {
+    initSounds();
+  }, []);
 
   return (
     <AchievementNotificationContainer>

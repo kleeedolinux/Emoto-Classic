@@ -5,6 +5,7 @@ import { useGameStateManager } from '../utils/gameStateManager';
 import { useLivesManager } from '../utils/livesManager';
 import { useModalManager } from '../utils/modalManager';
 import { fetchEmotes, checkGuess, getEmoteNames } from '../utils/emoteService';
+import { playSound } from '../utils/soundManager';
 import { Emote, Achievement } from '../types';
 import { EmoteInputHandles } from './EmoteInput';
 import { incrementCorrectGuesses, incrementTotalGames, updateBestScore } from '../utils/achievementManager';
@@ -232,6 +233,8 @@ export default function GameController({ children, onAchievementUnlocked }: Game
         emoteInputRef.current.showCorrectGuess();
       }
       
+      playSound('correct');
+      
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 2000);
       
@@ -268,6 +271,8 @@ export default function GameController({ children, onAchievementUnlocked }: Game
       if (emoteInputRef.current) {
         emoteInputRef.current.showIncorrectGuess();
       }
+      
+      playSound('incorrect');
       
       setShowDamageEffect(false);
       
