@@ -2087,3 +2087,17 @@ dialog:not([open])::backdrop {
   80% { filter: blur(0px); transform: skew(0deg, 0deg); }
   100% { filter: blur(0px); transform: skew(0deg, 0deg); }
 }
+
+@keyframes timer-reset {
+  0% { transform: scale(1.1); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Timer reset animation */
+.timer-wrapper [role="progressbar"] {
+  transition: all 0.3s ease;
+}
+
+.timer-wrapper [role="progressbar"][aria-valuenow="100"] {
+  animation: timer-reset 0.5s ease-out;
+}

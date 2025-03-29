@@ -149,7 +149,10 @@ export default function Home() {
                             <div className={`timer-wrapper ${timeRemaining < 10 ? 'critical' : timeRemaining < 20 ? 'warning' : ''}`}>
                               <CountdownCircleTimer
                                 isPlaying
-                                duration={60}
+                                key={`timer-${timeRemaining}-${timePercentage}`}
+                                duration={timePercentage === 0 ? 60 : 
+                                         timePercentage === 100 ? timeRemaining : 
+                                         Math.round((timeRemaining * 100) / timePercentage)}
                                 initialRemainingTime={timeRemaining}
                                 colors={['#3da35a', '#F7B801', '#A30000']}
                                 colorsTime={[30, 15, 0]}
