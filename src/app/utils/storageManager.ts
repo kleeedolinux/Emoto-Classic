@@ -35,7 +35,6 @@ export function getUserData(): UserGameData {
     
     const parsedData = JSON.parse(storedData);
     
-    // Handle backward compatibility - merge with default data to ensure all fields exist
     return { ...defaultUserData, ...parsedData };
   } catch (error) {
     console.error('Error retrieving user data from localStorage:', error);
@@ -43,7 +42,7 @@ export function getUserData(): UserGameData {
   }
 }
 
-export function saveUserData(data: Partial<UserGameData>): void {
+export function saveUserData(data: Partial<UserGameData>, skipAchievementSync: boolean = false): void {
   if (typeof window === 'undefined') {
     return;
   }
@@ -58,8 +57,7 @@ export function saveUserData(data: Partial<UserGameData>): void {
     const updatedData = { ...currentData, ...data };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedData));
     
-    // Sync record score with achievement manager
-    if (data.recordScore !== undefined && data.recordScore > 0) {
+    if (data.recordScore !== undefined && data.recordScore > 0 && !skipAchievementSync) {
       const achievementData = getAchievementData();
       if (data.recordScore > achievementData.stats.bestScore) {
         saveAchievementData({
@@ -108,11 +106,11 @@ export function getStoredRecordScore(): number {
   return getUserData().recordScore;
 }
 
-export function updateRecordScore(newScore: number): boolean {
+export function updateRecordScore(newScore: number, skipAchievementSync: boolean = false): boolean {
   const userData = getUserData();
   
   if (newScore > userData.recordScore) {
-    saveUserData({ recordScore: newScore });
+    saveUserData({ recordScore: newScore }, skipAchievementSync);
     return true;
   }
   
@@ -151,6 +149,10 @@ export function migrateUserDataToAchievementManager(): void {
           bestScore: userData.recordScore
         }
       });
+      
+      saveUserData({ 
+        recordScore: Math.max(userData.recordScore, achievementData.stats.bestScore) 
+      }, true);
     }
   } catch (error) {
     console.error('Error migrating user data to achievement manager:', error);

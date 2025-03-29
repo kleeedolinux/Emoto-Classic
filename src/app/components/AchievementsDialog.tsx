@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Achievement } from '../types';
 import { useAchievementManager } from '../utils/achievementManager';
+import { getStoredRecordScore } from '../utils/storageManager';
 
 interface AchievementsDialogProps {
   isOpen: boolean;
@@ -22,7 +23,12 @@ export default function AchievementsDialog({ isOpen, onClose }: AchievementsDial
   useEffect(() => {
     if (isOpen) {
       setAchievements(getAllAchievements());
-      setStats(getStats());
+      const achievementStats = getStats();
+      const recordScore = getStoredRecordScore();
+      setStats({
+        ...achievementStats,
+        bestScore: recordScore
+      });
       setIsVisible(true);
     } else {
       setIsVisible(false);

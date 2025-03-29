@@ -1834,3 +1834,67 @@ dialog:not([open])::backdrop {
 	display: flex;
 	flex-direction: column;
 }
+
+.record-score-container {
+	display: flex;
+	justify-content: center;
+	margin-top: 1.5rem;
+}
+
+.record-score-badge {
+	display: flex;
+	align-items: center;
+	background: linear-gradient(135deg, #810277 0%, #a41c9d 50%, #a826d0 100%);
+	padding: 0.6rem 1.2rem;
+	border-radius: 30px;
+	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3), 0 0 15px rgba(204, 71, 216, 0.5);
+	border: 2px solid rgba(255, 255, 255, 0.2);
+	transform: translateY(0);
+	transition: all 0.3s ease;
+	animation: float 3s ease-in-out infinite;
+}
+
+.record-score-badge:hover {
+	transform: translateY(-3px);
+	box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4), 0 0 20px rgba(57, 140, 228, 0.6);
+}
+
+.record-icon {
+	font-size: 1.5rem;
+	margin-right: 0.6rem;
+	filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.7));
+}
+
+.record-text {
+	font-family: var(--font-display);
+	font-size: 1.2rem;
+	font-weight: bold;
+	color: white;
+	text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.record-value {
+	color: #ffdf00;
+	margin-left: 0.3rem;
+	font-size: 1.4rem;
+	text-shadow: 0 0 6px rgba(255, 223, 0, 0.7);
+	animation: pulse 1.5s infinite;
+}
+
+@media (max-width: 768px) {
+	.record-score-badge {
+		padding: 0.5rem 1rem;
+	}
+	
+	.record-icon {
+		font-size: 1.2rem;
+	}
+	
+	.record-text {
+		font-size: 1rem;
+	}
+	
+	.record-value {
+		font-size: 1.2rem;
+	}
+}

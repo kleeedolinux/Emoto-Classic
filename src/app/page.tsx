@@ -124,8 +124,11 @@ export default function Home() {
                         />
                         
                         {recordScore > 0 && (
-                          <div className="recorde">
-                            Recorde: {recordScore}
+                          <div className="record-score-container">
+                            <div className="record-score-badge">
+                              <span className="record-icon">🏆</span>
+                              <span className="record-text">Recorde: <span className="record-value">{recordScore}</span></span>
+                            </div>
                           </div>
                         )}
                       </div>

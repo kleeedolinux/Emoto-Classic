@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { Emote } from '../types';
 import { getRandomEmote } from './emoteService';
 import { getStoredRecordScore, updateRecordScore, addRecentChannel } from './storageManager';
+import { updateBestScore } from './achievementManager';
 
 interface GameStateData {
   channel: string;
@@ -83,6 +84,8 @@ export function useGameStateManager() {
       const updated = updateRecordScore(score);
       if (updated) {
         setGameState(prev => ({ ...prev, recordScore: score }));
+        
+        updateBestScore(score);
       }
       return updated;
     }

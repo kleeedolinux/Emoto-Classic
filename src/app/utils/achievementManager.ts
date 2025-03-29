@@ -217,14 +217,9 @@ export function updateBestScore(score: number): void {
     
     if (typeof window !== 'undefined') {
       try {
-        const storageUserData = localStorage.getItem('emoto_user_data');
-        if (storageUserData) {
-          const userData = JSON.parse(storageUserData);
-          if (!userData.recordScore || score > userData.recordScore) {
-            userData.recordScore = score;
-            localStorage.setItem('emoto_user_data', JSON.stringify(userData));
-          }
-        }
+        import('./storageManager').then(({ updateRecordScore }) => {
+          updateRecordScore(score, true);
+        });
       } catch (error) {
         console.error('Error syncing bestScore with storageManager:', error);
       }

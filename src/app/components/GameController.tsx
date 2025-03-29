@@ -141,10 +141,6 @@ export default function GameController({ children, onAchievementUnlocked }: Game
                   setLastEmote(gameState.currentEmote);
                 }
 
-                const newHighScore = updateRecordIfNeeded();
-                if (newHighScore) {
-                  updateBestScore(gameState.score);
-                }
                 handleOpenGameOverDialog();
                 setIsLifeBeingReduced(false);
                 setTimerExpired(false);
@@ -276,6 +272,11 @@ export default function GameController({ children, onAchievementUnlocked }: Game
       
       incrementScore();
       
+      if (score + 1 > gameState.recordScore) {
+        updateRecordIfNeeded();
+        updateBestScore(score + 1);
+      }
+      
       const unlockedAchievements = incrementCorrectGuesses();
       if (unlockedAchievements.length > 0) {
         unlockedAchievements.forEach(achievement => {
@@ -289,10 +290,6 @@ export default function GameController({ children, onAchievementUnlocked }: Game
       
       if (emotes.length <= 1) {
         removeCurrentEmote();
-        const newHighScore = updateRecordIfNeeded();
-        if (newHighScore) {
-          updateBestScore(score + 1);
-        }
         handleOpenWinDialog();
         return;
       }
@@ -324,10 +321,6 @@ export default function GameController({ children, onAchievementUnlocked }: Game
               setLastEmote(gameState.currentEmote);
             }
 
-            const newHighScore = updateRecordIfNeeded();
-            if (newHighScore) {
-              updateBestScore(score);
-            }
             handleOpenGameOverDialog();
             setIsLifeBeingReduced(false);
             setTimerExpired(false);
