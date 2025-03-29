@@ -91,10 +91,8 @@ export default function Home() {
               };
               
               const applyFilterStyles = () => {
-                if (challengeMode === 'desfocado') {
+                if (challengeMode === 'desfocado' || challengeMode === 'tempodesfocado') {
                   return { filter: 'blur(8px)' };
-                } else if (challengeMode === 'pretoebranco') {
-                  return { filter: 'grayscale(100%)' };
                 }
                 return {};
               };
@@ -127,7 +125,7 @@ export default function Home() {
                       </div>
                     ) : (
                       <div className="game-container">
-                        {challengeMode === 'tempo' && timeRemaining !== null && (
+                        {(challengeMode === 'tempo' || challengeMode === 'tempodesfocado') && timeRemaining !== null && (
                           <div className={`timer ${timeRemaining < 10 ? 'danger' : timeRemaining < 20 ? 'warning' : ''}`}>
                             <div 
                               className="timer-progress" 

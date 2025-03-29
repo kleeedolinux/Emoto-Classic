@@ -58,6 +58,8 @@ export default function GameController({ children, onAchievementUnlocked }: Game
   const [initialTime, setInitialTime] = useState(20);
   const [lastEmote, setLastEmote] = useState<Emote | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const [isLifeBeingReduced, setIsLifeBeingReduced] = useState(false);
+  const [timerExpired, setTimerExpired] = useState(false);
 
   const {
     gameState,
@@ -82,6 +84,7 @@ export default function GameController({ children, onAchievementUnlocked }: Game
     decrementLives,
     incrementLives,
     resetLives,
+    setMaxLives,
   } = useLivesManager();
 
   const {
@@ -97,7 +100,7 @@ export default function GameController({ children, onAchievementUnlocked }: Game
   } = useModalManager();
 
   useEffect(() => {
-    if (gameState.gameActive && challengeMode === 'tempo' && timeRemaining !== null) {
+    if (gameState.gameActive && (challengeMode === 'tempo' || challengeMode === 'tempodesfocado') && timeRemaining !== null) {
       timerRef.current = setInterval(() => {
         setTimeRemaining(prev => {
           if (prev === null || prev <= 1) {
@@ -105,33 +108,40 @@ export default function GameController({ children, onAchievementUnlocked }: Game
               clearInterval(timerRef.current);
             }
             
-            setShowDamageEffect(true);
-            
-            decrementLives();
-            
-            if (livesState.currentLives <= 1) { 
-              if (gameState.currentEmote) {
-                setLastEmote(gameState.currentEmote);
-              }
+            if (!isLifeBeingReduced && !timerExpired) {
+              setTimerExpired(true);
+              setIsLifeBeingReduced(true);
+              setShowDamageEffect(true);
+              
+              if (livesState.currentLives <= 1) { 
+                if (gameState.currentEmote) {
+                  setLastEmote(gameState.currentEmote);
+                }
 
-              const newHighScore = updateRecordIfNeeded();
-              if (newHighScore) {
-                updateBestScore(gameState.score);
+                const newHighScore = updateRecordIfNeeded();
+                if (newHighScore) {
+                  updateBestScore(gameState.score);
+                }
+                openGameOverDialog();
+                setIsLifeBeingReduced(false);
+                setTimerExpired(false);
+                return 0;
               }
-              openGameOverDialog();
-              return 0;
+              
+              decrementLives();
+              
+              setTimeout(() => {
+                setShowDamageEffect(false);
+                setTimeRemaining(initialTime);
+                setIsLifeBeingReduced(false);
+                setTimerExpired(false);
+                
+                if (gameState.emotes.length > 1) {
+                  removeCurrentEmote();
+                  chooseNextEmote();
+                }
+              }, 300);
             }
-            
-            setTimeout(() => {
-              setShowDamageEffect(false);
-              
-              setTimeRemaining(initialTime);
-              
-              if (gameState.emotes.length > 1) {
-                removeCurrentEmote();
-                chooseNextEmote();
-              }
-            }, 300);
             
             return 0;
           }
@@ -143,6 +153,7 @@ export default function GameController({ children, onAchievementUnlocked }: Game
     if (!gameState.gameActive && timerRef.current) {
       clearInterval(timerRef.current);
       setTimeRemaining(null);
+      setTimerExpired(false);
     }
     
     return () => {
@@ -152,7 +163,7 @@ export default function GameController({ children, onAchievementUnlocked }: Game
     };
   }, [gameState.gameActive, challengeMode, timeRemaining, initialTime, updateRecordIfNeeded, 
       gameState.score, openGameOverDialog, decrementLives, livesState.currentLives, 
-      removeCurrentEmote, chooseNextEmote, gameState.emotes.length, gameState.currentEmote]);
+      removeCurrentEmote, chooseNextEmote, gameState.emotes.length, gameState.currentEmote, isLifeBeingReduced, timerExpired]);
 
   const handleAchievementUnlocked = useCallback((achievement: Achievement) => {
     if (onAchievementUnlocked) {
@@ -166,6 +177,8 @@ export default function GameController({ children, onAchievementUnlocked }: Game
       setLoading(true);
       setInvalidChannel(false);
       setChallengeMode(challengeMode);
+      setIsLifeBeingReduced(false);
+      setTimerExpired(false);
       
       const emotes = await fetchEmotes(channel);
       
@@ -177,11 +190,20 @@ export default function GameController({ children, onAchievementUnlocked }: Game
       }
       
       resetLives();
+      
+      if (challengeMode === 'onelife') {
+        setMaxLives(1);
+        resetLives();
+      } else {
+        setMaxLives(4);
+        resetLives();
+      }
+      
       initializeGame(channel, emotes);
       closeGameOverDialog();
       closeWinDialog();
 
-      if (challengeMode === 'tempo') {
+      if (challengeMode === 'tempo' || challengeMode === 'tempodesfocado') {
         const customTimeLimit = timeLimit || 20; 
         setInitialTime(customTimeLimit);
         setTimeRemaining(customTimeLimit);
@@ -196,7 +218,7 @@ export default function GameController({ children, onAchievementUnlocked }: Game
       setLoading(false);
       setInvalidChannel(true);
     }
-  }, [initializeGame, resetLives, closeGameOverDialog, closeWinDialog, setLoading, setInvalidChannel]);
+  }, [initializeGame, resetLives, closeGameOverDialog, closeWinDialog, setLoading, setInvalidChannel, setMaxLives, setIsLifeBeingReduced]);
 
   const handleEmoteGuess = useCallback((guess: string) => {
     const { currentEmote, consecutiveCorrect, emotes, score } = gameState;
@@ -239,7 +261,7 @@ export default function GameController({ children, onAchievementUnlocked }: Game
       removeCurrentEmote();
       chooseNextEmote();
       
-      if (challengeMode === 'tempo' && initialTime > 0) {
+      if ((challengeMode === 'tempo' || challengeMode === 'tempodesfocado') && initialTime > 0) {
         setTimeRemaining(initialTime);
       }
     } else {
@@ -250,29 +272,35 @@ export default function GameController({ children, onAchievementUnlocked }: Game
       setShowDamageEffect(false);
       
       setTimeout(() => {
-        setShowDamageEffect(true);
-        
-        resetConsecutiveCorrect();
-        decrementLives();
-        
-        if (livesState.currentLives <= 1) { 
-          setLastEmote(currentEmote);
+        if (!isLifeBeingReduced && !timerExpired) {
+          setIsLifeBeingReduced(true);
+          setShowDamageEffect(true);
           
-          const newHighScore = updateRecordIfNeeded();
-          if (newHighScore) {
-            updateBestScore(score);
+          resetConsecutiveCorrect();
+          
+          if (livesState.currentLives <= 1) { 
+            setLastEmote(currentEmote);
+            
+            const newHighScore = updateRecordIfNeeded();
+            if (newHighScore) {
+              updateBestScore(score);
+            }
+            openGameOverDialog();
+            setIsLifeBeingReduced(false);
+            return;
           }
-          openGameOverDialog();
-          return;
+          
+          decrementLives();
+          
+          setTimeout(() => {
+            setShowDamageEffect(false);
+            setIsLifeBeingReduced(false);
+            
+            if ((challengeMode === 'tempo' || challengeMode === 'tempodesfocado') && initialTime > 0) {
+              setTimeRemaining(initialTime);
+            }
+          }, 300);
         }
-        
-        setTimeout(() => {
-          setShowDamageEffect(false);
-          
-          if (challengeMode !== 'tempo' && initialTime > 0) {
-            setTimeRemaining(initialTime);
-          }
-        }, 300);
       }, 10);
     }
   }, [
@@ -289,7 +317,9 @@ export default function GameController({ children, onAchievementUnlocked }: Game
     openGameOverDialog,
     handleAchievementUnlocked,
     challengeMode,
-    initialTime
+    initialTime,
+    isLifeBeingReduced,
+    timerExpired
   ]);
 
   useEffect(() => {

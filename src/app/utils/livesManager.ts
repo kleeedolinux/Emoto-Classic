@@ -1,23 +1,38 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 
 export interface LivesState {
   currentLives: number;
   maxLives: number;
 }
 
-export function useLivesManager(maxLives: number = 4) {
+export function useLivesManager(initialMaxLives: number = 4) {
   const [livesState, setLivesState] = useState<LivesState>({
-    currentLives: maxLives,
-    maxLives
+    currentLives: initialMaxLives,
+    maxLives: initialMaxLives
   });
+  
+  const decrementCooldownRef = useRef(false);
+  const cooldownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const decrementLives = useCallback(() => {
+    if (decrementCooldownRef.current) return;
+    
+    decrementCooldownRef.current = true;
+    
     setLivesState(prev => ({
       ...prev,
       currentLives: Math.max(0, prev.currentLives - 1)
     }));
+    
+    if (cooldownTimeoutRef.current) {
+      clearTimeout(cooldownTimeoutRef.current);
+    }
+    
+    cooldownTimeoutRef.current = setTimeout(() => {
+      decrementCooldownRef.current = false;
+    }, 500);
   }, []);
 
   const incrementLives = useCallback(() => {
@@ -28,9 +43,21 @@ export function useLivesManager(maxLives: number = 4) {
   }, []);
 
   const resetLives = useCallback(() => {
+    if (cooldownTimeoutRef.current) {
+      clearTimeout(cooldownTimeoutRef.current);
+    }
+    decrementCooldownRef.current = false;
+    
     setLivesState(prev => ({
       ...prev,
       currentLives: prev.maxLives
+    }));
+  }, []);
+
+  const setMaxLives = useCallback((maxLives: number) => {
+    setLivesState(prev => ({
+      maxLives,
+      currentLives: maxLives
     }));
   }, []);
 
@@ -43,6 +70,7 @@ export function useLivesManager(maxLives: number = 4) {
     decrementLives,
     incrementLives,
     resetLives,
+    setMaxLives,
     isGameOver
   };
 } 

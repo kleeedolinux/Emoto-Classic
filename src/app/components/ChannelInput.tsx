@@ -36,7 +36,7 @@ export default function ChannelInput({
       onChannelSubmit(
         channel.trim(), 
         challengeMode, 
-        challengeMode === 'tempo' ? timeLimit : undefined
+        (challengeMode === 'tempo' || challengeMode === 'tempodesfocado') ? timeLimit : undefined
       );
       setShowChallengeSelector(false);
     }
@@ -142,14 +142,43 @@ export default function ChannelInput({
               <div className="challengeOption">
                 <input 
                   type="radio" 
-                  id="pretoebranco" 
+                  id="tempodesfocado" 
                   name="challenge" 
-                  value="pretoebranco" 
-                  checked={challengeMode === 'pretoebranco'} 
+                  value="tempodesfocado" 
+                  checked={challengeMode === 'tempodesfocado'} 
                   onChange={(e) => setChallengeMode(e.target.value)}
                   disabled={isLoading}
                 />
-                <label htmlFor="pretoebranco">Preto e Branco</label>
+                <label htmlFor="tempodesfocado">Contra o Tempo + Desfocado</label>
+                
+                {challengeMode === 'tempodesfocado' && (
+                  <div className="time-selector">
+                    <input 
+                      type="range" 
+                      min="5" 
+                      max="60" 
+                      step="5"
+                      value={timeLimit}
+                      onChange={(e) => setTimeLimit(Number(e.target.value))}
+                      className="time-range"
+                      disabled={isLoading}
+                    />
+                    <div className="time-display">{timeLimit}s</div>
+                  </div>
+                )}
+              </div>
+              
+              <div className="challengeOption">
+                <input 
+                  type="radio" 
+                  id="onelife" 
+                  name="challenge" 
+                  value="onelife" 
+                  checked={challengeMode === 'onelife'} 
+                  onChange={(e) => setChallengeMode(e.target.value)}
+                  disabled={isLoading}
+                />
+                <label htmlFor="onelife">Uma Vida</label>
               </div>
             </div>
           </div>
