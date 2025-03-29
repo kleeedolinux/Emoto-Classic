@@ -108,7 +108,7 @@ export default function Home() {
               
               const applyFilterStyles = () => {
                 if (challengeMode === 'desfocado' || challengeMode === 'tempodesfocado') {
-                  return { filter: 'blur(8px)' };
+                  return { filter: 'blur(12px)' };
                 }
                 return {};
               };
