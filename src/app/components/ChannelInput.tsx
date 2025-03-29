@@ -155,8 +155,8 @@ export default function ChannelInput({
                   <div className="time-selector">
                     <input 
                       type="range" 
-                      min="5" 
-                      max="60" 
+                      min="10" 
+                      max="320" 
                       step="5"
                       value={timeLimit}
                       onChange={(e) => setTimeLimit(Number(e.target.value))}
