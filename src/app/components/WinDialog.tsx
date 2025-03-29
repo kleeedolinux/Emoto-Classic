@@ -267,7 +267,19 @@ export default function WinDialog({ isOpen, score, onHome, onShare }: WinDialogP
           
           <button 
             className="dialogHomeButton"
-            onClick={onHome}
+            onClick={() => {
+              if (dialogRef.current) {
+                setAnimateIn(false);
+                setTimeout(() => {
+                  if (dialogRef.current) {
+                    dialogRef.current.close();
+                  }
+                  onHome();
+                }, 300);
+              } else {
+                onHome();
+              }
+            }}
           >
             <i className="fa fa-home" aria-hidden="true"></i>
             <span>Home</span>
