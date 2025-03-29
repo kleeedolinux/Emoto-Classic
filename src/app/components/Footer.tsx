@@ -68,7 +68,7 @@ export default function Footer() {
               className="refactorAuthor" 
               tabIndex={-1} 
               target="_blank" 
-              href="https://github.com/kleeedolinux"
+              href="https://juliaklee.wtf"
               rel="noopener noreferrer"
             >
               @kleeedolinux
