@@ -135,18 +135,15 @@ export function getRecentChannels(): string[] {
   return getUserData().recentChannels;
 }
 
-// Achievement functionality - now delegated to achievementManager
 export function getAchievements(): Achievement[] {
   return getAchievementData().achievements;
 }
 
-// Merged functionality for migration
 export function migrateUserDataToAchievementManager(): void {
   try {
     const userData = getUserData();
     const achievementData = getAchievementData();
     
-    // Sync record score if needed
     if (userData.recordScore > achievementData.stats.bestScore) {
       saveAchievementData({
         stats: {
