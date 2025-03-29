@@ -1,5 +1,8 @@
 'use client';
 
+import { getAchievementData, saveAchievementData } from './achievementManager';
+import { Achievement, AchievementData } from '../types';
+
 interface UserGameData {
   recordScore: number;
   hasVisitedBefore: boolean;
@@ -30,7 +33,10 @@ export function getUserData(): UserGameData {
       return defaultUserData;
     }
     
-    return JSON.parse(storedData) as UserGameData;
+    const parsedData = JSON.parse(storedData);
+    
+    // Handle backward compatibility - merge with default data to ensure all fields exist
+    return { ...defaultUserData, ...parsedData };
   } catch (error) {
     console.error('Error retrieving user data from localStorage:', error);
     return defaultUserData;
@@ -51,6 +57,19 @@ export function saveUserData(data: Partial<UserGameData>): void {
     const currentData = getUserData();
     const updatedData = { ...currentData, ...data };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedData));
+    
+    // Sync record score with achievement manager
+    if (data.recordScore !== undefined && data.recordScore > 0) {
+      const achievementData = getAchievementData();
+      if (data.recordScore > achievementData.stats.bestScore) {
+        saveAchievementData({
+          stats: {
+            ...achievementData.stats,
+            bestScore: data.recordScore
+          }
+        });
+      }
+    }
   } catch (error) {
     console.error('Error saving user data to localStorage:', error);
   }
@@ -114,4 +133,29 @@ export function addRecentChannel(channel: string): void {
 
 export function getRecentChannels(): string[] {
   return getUserData().recentChannels;
+}
+
+// Achievement functionality - now delegated to achievementManager
+export function getAchievements(): Achievement[] {
+  return getAchievementData().achievements;
+}
+
+// Merged functionality for migration
+export function migrateUserDataToAchievementManager(): void {
+  try {
+    const userData = getUserData();
+    const achievementData = getAchievementData();
+    
+    // Sync record score if needed
+    if (userData.recordScore > achievementData.stats.bestScore) {
+      saveAchievementData({
+        stats: {
+          ...achievementData.stats,
+          bestScore: userData.recordScore
+        }
+      });
+    }
+  } catch (error) {
+    console.error('Error migrating user data to achievement manager:', error);
+  }
 } 

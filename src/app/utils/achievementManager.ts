@@ -108,7 +108,43 @@ export function getAchievementData(): AchievementData {
       return DEFAULT_ACHIEVEMENT_DATA;
     }
     
-    return JSON.parse(storedData) as AchievementData;
+    const parsedData = JSON.parse(storedData) as AchievementData;
+    
+    const defaultAchievementIds = DEFAULT_ACHIEVEMENTS.map(a => a.id);
+    
+    const existingAchievementIds = parsedData.achievements.map(a => a.id);
+    const achievementsToAdd = DEFAULT_ACHIEVEMENTS
+      .filter(a => !existingAchievementIds.includes(a.id))
+      .map(a => ({ ...a, unlocked: false }));
+    
+    const filteredAchievements = parsedData.achievements
+      .filter(a => defaultAchievementIds.includes(a.id));
+    
+    const needsUpdate = achievementsToAdd.length > 0 || filteredAchievements.length !== parsedData.achievements.length;
+    
+    if (needsUpdate) {
+      const updatedAchievements = [...filteredAchievements, ...achievementsToAdd];
+      
+      const updatedData = {
+        ...parsedData,
+        achievements: updatedAchievements,
+        stats: {
+          ...DEFAULT_ACHIEVEMENT_DATA.stats,
+          ...parsedData.stats
+        }
+      };
+      
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedData));
+      return updatedData;
+    }
+    
+    return {
+      ...parsedData,
+      stats: {
+        ...DEFAULT_ACHIEVEMENT_DATA.stats,
+        ...parsedData.stats
+      }
+    };
   } catch (error) {
     console.error('Error retrieving achievement data from localStorage:', error);
     return DEFAULT_ACHIEVEMENT_DATA;
@@ -178,6 +214,21 @@ export function updateBestScore(score: number): void {
         bestScore: score
       }
     });
+    
+    if (typeof window !== 'undefined') {
+      try {
+        const storageUserData = localStorage.getItem('emoto_user_data');
+        if (storageUserData) {
+          const userData = JSON.parse(storageUserData);
+          if (!userData.recordScore || score > userData.recordScore) {
+            userData.recordScore = score;
+            localStorage.setItem('emoto_user_data', JSON.stringify(userData));
+          }
+        }
+      } catch (error) {
+        console.error('Error syncing bestScore with storageManager:', error);
+      }
+    }
   }
 }
 
