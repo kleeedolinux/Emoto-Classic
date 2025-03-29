@@ -30,7 +30,6 @@ export function useGameStateManager() {
     invalidChannel: false
   });
 
-  // Load record score from storage on component mount
   useEffect(() => {
     const storedRecord = getStoredRecordScore();
     if (storedRecord > 0) {
@@ -128,7 +127,6 @@ export function useGameStateManager() {
   const initializeGame = useCallback((channel: string, emotes: Emote[]) => {
     const randomEmote = getRandomEmote(emotes);
     
-    // Save this channel to recent channels
     addRecentChannel(channel);
     
     setGameState(prev => ({

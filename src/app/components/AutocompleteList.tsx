@@ -42,7 +42,12 @@ export default function AutocompleteList({
           tabIndex={0}
           data-index={index}
         >
-          {item}
+          <div className="emote-item">
+            <span className="emote-text">{item}</span>
+            {index === selectedIndex && (
+              <span className="emote-indicator">→</span>
+            )}
+          </div>
         </li>
       ))}
     </ul>

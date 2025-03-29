@@ -1236,9 +1236,26 @@ dialog:not([open])::backdrop {
 	overflow-y: auto;
 	z-index: 10;
 	border-radius: 0 0 8px 8px;
-	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 0 15px rgba(0, 0, 0, 0.3), 0 0 5px rgba(123, 57, 228, 0.2) inset;
 	transform: translateY(5px);
 	animation: fadeIn 0.3s ease-out;
+	border: 1px solid rgba(123, 57, 228, 0.3);
+	scrollbar-width: thin;
+	scrollbar-color: rgba(123, 57, 228, 0.5) rgba(32, 42, 49, 0.5);
+}
+
+.autocompleteEmotes::-webkit-scrollbar {
+	width: 8px;
+}
+
+.autocompleteEmotes::-webkit-scrollbar-track {
+	background: rgba(32, 42, 49, 0.5);
+	border-radius: 0 8px 8px 0;
+}
+
+.autocompleteEmotes::-webkit-scrollbar-thumb {
+	background-color: rgba(123, 57, 228, 0.5);
+	border-radius: 4px;
 }
 
 @keyframes fadeIn {
@@ -1253,31 +1270,53 @@ dialog:not([open])::backdrop {
 }
 
 .autocompleteEmotes li {
-	padding: 10px;
+	padding: 8px 12px;
 	font-weight: 600;
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	transition: background-color 0.2s ease;
+	transition: all 0.2s ease;
 	cursor: pointer;
+	border-left: 3px solid transparent;
+}
+
+.emote-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.emote-text {
+	flex-grow: 1;
+}
+
+.emote-indicator {
+	margin-left: 10px;
+	color: #ff8c00;
+	font-weight: bold;
+	animation: pulse 1.5s infinite;
 }
 
 .autocompleteEmotes li:hover {
-	background-color: #245992;
+	background-color: rgba(36, 89, 146, 0.8);
 	transform: translateX(5px);
 	transition: transform 0.2s ease;
+	border-left: 3px solid #398ce4;
 }
 
 .autocompleteEmotes li:focus {
-	background-color: #245992;
+	background-color: rgba(36, 89, 146, 0.8);
 	outline: none;
+	border-left: 3px solid #398ce4;
 }
 
 .autocompleteEmotes li.selected {
-	background-color: #245992;
+	background-color: rgba(36, 89, 146, 0.9);
 	color: #ffffff;
 	border-left: 3px solid #ff8c00;
-	padding-left: 7px;
+	padding-left: 9px;
+	font-weight: 700;
+	text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
 }
 
 @keyframes card-glow {
