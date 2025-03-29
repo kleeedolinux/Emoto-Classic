@@ -12,12 +12,31 @@ export interface ModalState {
   helpDialogOpen: boolean;
   gameOverDialogOpen: boolean;
   winDialogOpen: boolean;
+  achievementsDialogOpen: boolean;
 }
 
 export interface AutocompleteState {
   filteredItems: string[];
   selectedIndex: number;
   isVisible: boolean;
+}
+
+export interface Achievement {
+  id: string;
+  title: string;
+  description: string;
+  requirement: number;
+  icon: string;
+  unlocked: boolean;
+}
+
+export interface AchievementData {
+  achievements: Achievement[];
+  stats: {
+    totalCorrectGuesses: number;
+    bestScore: number;
+    totalGames: number;
+  };
 }
 
 export interface GameState {

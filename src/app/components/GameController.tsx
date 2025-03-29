@@ -5,11 +5,13 @@ import { useGameStateManager } from '../utils/gameStateManager';
 import { useLivesManager } from '../utils/livesManager';
 import { useModalManager } from '../utils/modalManager';
 import { fetchEmotes, checkGuess, getEmoteNames } from '../utils/emoteService';
-import { Emote } from '../types';
+import { Emote, Achievement } from '../types';
 import { EmoteInputHandles } from './EmoteInput';
+import { incrementCorrectGuesses, incrementTotalGames, updateBestScore } from '../utils/achievementManager';
 
 interface GameControllerProps {
   children: (props: GameControllerOutput) => React.ReactNode;
+  onAchievementUnlocked?: (achievement: Achievement) => void;
 }
 
 interface GameControllerOutput {
@@ -19,7 +21,12 @@ interface GameControllerOutput {
   gameActive: boolean;
   recordScore: number;
   livesState: { currentLives: number; maxLives: number };
-  modalState: { helpDialogOpen: boolean; gameOverDialogOpen: boolean; winDialogOpen: boolean };
+  modalState: { 
+    helpDialogOpen: boolean; 
+    gameOverDialogOpen: boolean; 
+    winDialogOpen: boolean;
+    achievementsDialogOpen: boolean;
+  };
   isLoading: boolean;
   invalidChannel: boolean;
   handleChannelSubmit: (channel: string) => Promise<void>;
@@ -29,15 +36,19 @@ interface GameControllerOutput {
   handleShare: () => void;
   openHelpDialog: () => void;
   closeHelpDialog: () => void;
+  openAchievementsDialog: () => void;
+  closeAchievementsDialog: () => void;
   currentEmote: Emote | null;
   showConfetti: boolean;
   showDamageEffect: boolean;
+  onAchievementUnlocked: (achievement: Achievement) => void;
 }
 
-export default function GameController({ children }: GameControllerProps) {
+export default function GameController({ children, onAchievementUnlocked }: GameControllerProps) {
   const emoteInputRef = useRef<EmoteInputHandles>(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const [showDamageEffect, setShowDamageEffect] = useState(false);
+  const [newAchievements, setNewAchievements] = useState<Achievement[]>([]);
 
   const {
     gameState,
@@ -67,7 +78,16 @@ export default function GameController({ children }: GameControllerProps) {
     closeGameOverDialog,
     openWinDialog,
     closeWinDialog,
+    openAchievementsDialog,
+    closeAchievementsDialog,
   } = useModalManager();
+
+  const handleAchievementUnlocked = useCallback((achievement: Achievement) => {
+    if (onAchievementUnlocked) {
+      onAchievementUnlocked(achievement);
+    }
+    setNewAchievements(prev => prev.filter(a => a.id !== achievement.id));
+  }, [onAchievementUnlocked]);
 
   const handleChannelSubmit = useCallback(async (channel: string) => {
     try {
@@ -87,6 +107,8 @@ export default function GameController({ children }: GameControllerProps) {
       initializeGame(channel, emotes);
       closeGameOverDialog();
       closeWinDialog();
+
+      incrementTotalGames();
     } catch (error) {
       console.error('Error fetching emotes:', error);
       setLoading(false);
@@ -95,7 +117,7 @@ export default function GameController({ children }: GameControllerProps) {
   }, [initializeGame, resetLives, closeGameOverDialog, closeWinDialog, setLoading, setInvalidChannel]);
 
   const handleEmoteGuess = useCallback((guess: string) => {
-    const { currentEmote, consecutiveCorrect, emotes } = gameState;
+    const { currentEmote, consecutiveCorrect, emotes, score } = gameState;
     
     if (!currentEmote) return;
     
@@ -111,13 +133,23 @@ export default function GameController({ children }: GameControllerProps) {
       
       incrementScore();
       
+      const unlockedAchievements = incrementCorrectGuesses();
+      if (unlockedAchievements.length > 0) {
+        unlockedAchievements.forEach(achievement => {
+          handleAchievementUnlocked(achievement);
+        });
+      }
+      
       if ((consecutiveCorrect + 1) % 3 === 0 && livesState.currentLives < livesState.maxLives) {
         incrementLives();
       }
       
       if (emotes.length <= 1) {
         removeCurrentEmote();
-        updateRecordIfNeeded();
+        const newHighScore = updateRecordIfNeeded();
+        if (newHighScore) {
+          updateBestScore(score + 1);
+        }
         openWinDialog();
         return;
       }
@@ -138,7 +170,10 @@ export default function GameController({ children }: GameControllerProps) {
         decrementLives();
         
         if (livesState.currentLives <= 1) { 
-          updateRecordIfNeeded();
+          const newHighScore = updateRecordIfNeeded();
+          if (newHighScore) {
+            updateBestScore(score);
+          }
           openGameOverDialog();
           return;
         }
@@ -159,7 +194,8 @@ export default function GameController({ children }: GameControllerProps) {
     chooseNextEmote, 
     resetConsecutiveCorrect, 
     decrementLives, 
-    openGameOverDialog
+    openGameOverDialog,
+    handleAchievementUnlocked
   ]);
 
   const handleRetry = useCallback(async () => {
@@ -203,8 +239,11 @@ export default function GameController({ children }: GameControllerProps) {
     handleShare,
     openHelpDialog,
     closeHelpDialog,
+    openAchievementsDialog,
+    closeAchievementsDialog,
     currentEmote: gameState.currentEmote,
     showConfetti,
-    showDamageEffect
+    showDamageEffect,
+    onAchievementUnlocked: handleAchievementUnlocked
   });
 } 

@@ -1,18 +1,14 @@
 'use client';
 
 import { useCallback, useState } from 'react';
-
-export interface ModalState {
-  helpDialogOpen: boolean;
-  gameOverDialogOpen: boolean;
-  winDialogOpen: boolean;
-}
+import { ModalState } from '../types';
 
 export function useModalManager() {
   const [modalState, setModalState] = useState<ModalState>({
     helpDialogOpen: false,
     gameOverDialogOpen: false,
-    winDialogOpen: false
+    winDialogOpen: false,
+    achievementsDialogOpen: false
   });
 
   const openHelpDialog = useCallback(() => {
@@ -39,6 +35,14 @@ export function useModalManager() {
     setModalState(prev => ({ ...prev, winDialogOpen: false }));
   }, []);
 
+  const openAchievementsDialog = useCallback(() => {
+    setModalState(prev => ({ ...prev, achievementsDialogOpen: true }));
+  }, []);
+
+  const closeAchievementsDialog = useCallback(() => {
+    setModalState(prev => ({ ...prev, achievementsDialogOpen: false }));
+  }, []);
+
   return {
     modalState,
     openHelpDialog,
@@ -46,6 +50,8 @@ export function useModalManager() {
     openGameOverDialog,
     closeGameOverDialog,
     openWinDialog,
-    closeWinDialog
+    closeWinDialog,
+    openAchievementsDialog,
+    closeAchievementsDialog
   };
 } 
