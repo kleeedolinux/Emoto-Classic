@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useRef, useState, useEffect, useMemo } from 'react';
 import { useGameStateManager } from '../utils/gameStateManager';
 import { useLivesManager } from '../utils/livesManager';
 import { useModalManager } from '../utils/modalManager';
@@ -29,7 +29,7 @@ interface GameControllerOutput {
   };
   isLoading: boolean;
   invalidChannel: boolean;
-  handleChannelSubmit: (channel: string) => Promise<void>;
+  handleChannelSubmit: (channel: string, challengeMode: string, timeLimit?: number) => Promise<void>;
   handleEmoteGuess: (guess: string) => void;
   handleRetry: () => Promise<void>;
   handleReset: () => void;
@@ -42,6 +42,10 @@ interface GameControllerOutput {
   showConfetti: boolean;
   showDamageEffect: boolean;
   onAchievementUnlocked: (achievement: Achievement) => void;
+  challengeMode: string;
+  timeRemaining: number | null;
+  timePercentage: number;
+  lastEmote: Emote | null;
 }
 
 export default function GameController({ children, onAchievementUnlocked }: GameControllerProps) {
@@ -49,6 +53,11 @@ export default function GameController({ children, onAchievementUnlocked }: Game
   const [showConfetti, setShowConfetti] = useState(false);
   const [showDamageEffect, setShowDamageEffect] = useState(false);
   const [newAchievements, setNewAchievements] = useState<Achievement[]>([]);
+  const [challengeMode, setChallengeMode] = useState('normal');
+  const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
+  const [initialTime, setInitialTime] = useState(20);
+  const [lastEmote, setLastEmote] = useState<Emote | null>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const {
     gameState,
@@ -62,6 +71,11 @@ export default function GameController({ children, onAchievementUnlocked }: Game
     setLoading,
     setInvalidChannel
   } = useGameStateManager();
+
+  const timePercentage = useMemo(() => {
+    if (timeRemaining === null || initialTime === 0) return 0;
+    return (timeRemaining / initialTime) * 100;
+  }, [timeRemaining, initialTime]);
 
   const {
     livesState,
@@ -82,6 +96,64 @@ export default function GameController({ children, onAchievementUnlocked }: Game
     closeAchievementsDialog,
   } = useModalManager();
 
+  useEffect(() => {
+    if (gameState.gameActive && challengeMode === 'tempo' && timeRemaining !== null) {
+      timerRef.current = setInterval(() => {
+        setTimeRemaining(prev => {
+          if (prev === null || prev <= 1) {
+            if (timerRef.current) {
+              clearInterval(timerRef.current);
+            }
+            
+            setShowDamageEffect(true);
+            
+            decrementLives();
+            
+            if (livesState.currentLives <= 1) { 
+              if (gameState.currentEmote) {
+                setLastEmote(gameState.currentEmote);
+              }
+
+              const newHighScore = updateRecordIfNeeded();
+              if (newHighScore) {
+                updateBestScore(gameState.score);
+              }
+              openGameOverDialog();
+              return 0;
+            }
+            
+            setTimeout(() => {
+              setShowDamageEffect(false);
+              
+              setTimeRemaining(initialTime);
+              
+              if (gameState.emotes.length > 1) {
+                removeCurrentEmote();
+                chooseNextEmote();
+              }
+            }, 300);
+            
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    
+    if (!gameState.gameActive && timerRef.current) {
+      clearInterval(timerRef.current);
+      setTimeRemaining(null);
+    }
+    
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [gameState.gameActive, challengeMode, timeRemaining, initialTime, updateRecordIfNeeded, 
+      gameState.score, openGameOverDialog, decrementLives, livesState.currentLives, 
+      removeCurrentEmote, chooseNextEmote, gameState.emotes.length, gameState.currentEmote]);
+
   const handleAchievementUnlocked = useCallback((achievement: Achievement) => {
     if (onAchievementUnlocked) {
       onAchievementUnlocked(achievement);
@@ -89,10 +161,11 @@ export default function GameController({ children, onAchievementUnlocked }: Game
     setNewAchievements(prev => prev.filter(a => a.id !== achievement.id));
   }, [onAchievementUnlocked]);
 
-  const handleChannelSubmit = useCallback(async (channel: string) => {
+  const handleChannelSubmit = useCallback(async (channel: string, challengeMode: string, timeLimit?: number) => {
     try {
       setLoading(true);
       setInvalidChannel(false);
+      setChallengeMode(challengeMode);
       
       const emotes = await fetchEmotes(channel);
       
@@ -107,6 +180,15 @@ export default function GameController({ children, onAchievementUnlocked }: Game
       initializeGame(channel, emotes);
       closeGameOverDialog();
       closeWinDialog();
+
+      if (challengeMode === 'tempo') {
+        const customTimeLimit = timeLimit || 20; 
+        setInitialTime(customTimeLimit);
+        setTimeRemaining(customTimeLimit);
+      } else {
+        setTimeRemaining(null);
+        setInitialTime(0);
+      }
 
       incrementTotalGames();
     } catch (error) {
@@ -156,6 +238,10 @@ export default function GameController({ children, onAchievementUnlocked }: Game
       
       removeCurrentEmote();
       chooseNextEmote();
+      
+      if (challengeMode === 'tempo' && initialTime > 0) {
+        setTimeRemaining(initialTime);
+      }
     } else {
       if (emoteInputRef.current) {
         emoteInputRef.current.showIncorrectGuess();
@@ -170,6 +256,8 @@ export default function GameController({ children, onAchievementUnlocked }: Game
         decrementLives();
         
         if (livesState.currentLives <= 1) { 
+          setLastEmote(currentEmote);
+          
           const newHighScore = updateRecordIfNeeded();
           if (newHighScore) {
             updateBestScore(score);
@@ -180,6 +268,10 @@ export default function GameController({ children, onAchievementUnlocked }: Game
         
         setTimeout(() => {
           setShowDamageEffect(false);
+          
+          if (challengeMode !== 'tempo' && initialTime > 0) {
+            setTimeRemaining(initialTime);
+          }
         }, 300);
       }, 10);
     }
@@ -195,36 +287,20 @@ export default function GameController({ children, onAchievementUnlocked }: Game
     resetConsecutiveCorrect, 
     decrementLives, 
     openGameOverDialog,
-    handleAchievementUnlocked
+    handleAchievementUnlocked,
+    challengeMode,
+    initialTime
   ]);
 
-  const handleRetry = useCallback(async () => {
-    const { channel } = gameState;
-    if (channel) {
-      closeGameOverDialog();
-      document.body.style.pointerEvents = 'auto';
-      await handleChannelSubmit(channel);
+  useEffect(() => {
+    if (!gameState.gameActive) {
+      setLastEmote(null);
     }
-  }, [gameState.channel, handleChannelSubmit, closeGameOverDialog]);
-
-  const handleReset = useCallback(() => {
-    resetGame();
-    resetLives();
-    closeGameOverDialog();
-    closeWinDialog();
-  }, [resetGame, resetLives, closeGameOverDialog, closeWinDialog]);
-
-  const handleShare = useCallback(() => {
-    alert(`Sharing score: ${gameState.score} for channel ${gameState.channel}`);
-  }, [gameState.score, gameState.channel]);
-
-  const emoteNames = gameState.emotes.length > 0 
-    ? getEmoteNames(gameState.emotes) 
-    : [];
+  }, [gameState.gameActive]);
 
   return children({
     channel: gameState.channel,
-    emoteNames,
+    emoteNames: getEmoteNames(gameState.emotes),
     score: gameState.score,
     gameActive: gameState.gameActive,
     recordScore: gameState.recordScore,
@@ -234,9 +310,18 @@ export default function GameController({ children, onAchievementUnlocked }: Game
     invalidChannel: gameState.invalidChannel,
     handleChannelSubmit,
     handleEmoteGuess,
-    handleRetry,
-    handleReset,
-    handleShare,
+    handleRetry: async () => {
+      await handleChannelSubmit(gameState.channel, challengeMode, initialTime);
+    },
+    handleReset: () => {
+      resetGame();
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        setTimeRemaining(null);
+      }
+      setLastEmote(null);
+    },
+    handleShare: () => {},
     openHelpDialog,
     closeHelpDialog,
     openAchievementsDialog,
@@ -244,6 +329,10 @@ export default function GameController({ children, onAchievementUnlocked }: Game
     currentEmote: gameState.currentEmote,
     showConfetti,
     showDamageEffect,
-    onAchievementUnlocked: handleAchievementUnlocked
+    onAchievementUnlocked: handleAchievementUnlocked,
+    challengeMode,
+    timeRemaining,
+    timePercentage,
+    lastEmote
   });
 } 

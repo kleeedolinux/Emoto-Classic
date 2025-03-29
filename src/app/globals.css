@@ -197,7 +197,6 @@ dialog::backdrop {
 	backdrop-filter: blur(3px);
 }
 
-/* This ensures the backdrop is completely removed when the dialog is closed */
 dialog:not([open])::backdrop {
 	display: none;
 	opacity: 0;
@@ -1532,4 +1531,254 @@ dialog:not([open])::backdrop {
 
 .win-dialog::backdrop {
 	animation: backdrop-blur 0.3s forwards;
+}
+
+.challengeSelector {
+	width: 100%;
+	max-width: 500px;
+	margin: 10px auto;
+	background-color: rgba(32, 37, 43, 0.8);
+	border-radius: 12px;
+	padding: 15px;
+	box-shadow: var(--shadow-soft);
+	transition: all 0.3s ease;
+	animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+		transform: translateY(-10px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.challengeTitle {
+	text-align: center;
+	margin: 0 0 15px 0;
+	font-weight: bold;
+	color: var(--color-text);
+	font-size: 1.1rem;
+	text-shadow: var(--shadow-text);
+}
+
+.challengeOptions {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	gap: 12px;
+}
+
+.challengeOption {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	background-color: rgba(123, 57, 228, 0.2);
+	padding: 8px 12px;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+}
+
+.challengeOption:hover {
+	background-color: rgba(123, 57, 228, 0.4);
+	transform: scale(1.05);
+}
+
+.challengeOption input[type="radio"] {
+	appearance: none;
+	-webkit-appearance: none;
+	width: 18px;
+	height: 18px;
+	border: 2px solid var(--color-primary);
+	border-radius: 50%;
+	outline: none;
+	cursor: pointer;
+	position: relative;
+}
+
+.challengeOption input[type="radio"]:checked {
+	background-color: var(--color-primary);
+	box-shadow: 0 0 8px var(--color-primary);
+}
+
+.challengeOption input[type="radio"]:checked::after {
+	content: '';
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background-color: white;
+}
+
+.challengeOption label {
+	cursor: pointer;
+	color: var(--color-text);
+	font-size: 0.95rem;
+	text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+	.challengeOptions {
+		flex-direction: column;
+		align-items: center;
+	}
+	
+	.challengeOption {
+		width: 80%;
+	}
+}
+
+.timer {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto 15px;
+	padding: 8px 18px;
+	background-color: rgba(32, 37, 43, 0.9);
+	border-radius: 12px;
+	position: relative;
+	overflow: hidden;
+}
+
+.timer-progress {
+	position: absolute;
+	left: 0;
+	top: 0;
+	height: 100%;
+	background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+	opacity: 0.4;
+	z-index: 0;
+	transition: width 1s linear;
+}
+
+.timerIcon {
+	font-size: 1.5rem;
+	margin-right: 8px;
+	position: relative;
+	z-index: 1;
+}
+
+.timerValue {
+	font-size: 1.5rem;
+	font-weight: bold;
+	color: var(--color-text);
+	text-shadow: var(--shadow-text);
+	position: relative;
+	z-index: 1;
+}
+
+.timer.warning .timerValue {
+	color: #ffcc00;
+	animation: pulse 1s infinite;
+}
+
+.timer.danger .timerValue {
+	color: #ff3333;
+	animation: pulse 0.5s infinite;
+}
+
+.timer.danger .timer-progress {
+	background: linear-gradient(90deg, #ff3333, #ff6666);
+	opacity: 0.6;
+}
+
+.timer.warning .timer-progress {
+	background: linear-gradient(90deg, #ffcc00, #ffdd66);
+	opacity: 0.6;
+}
+
+.challenge-toggle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 15px auto 5px;
+	padding: 8px 16px;
+	background-color: rgba(123, 57, 228, 0.2);
+	border-radius: 20px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	width: fit-content;
+	gap: 8px;
+	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+	font-weight: 600;
+	color: var(--color-text);
+	text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.5);
+}
+
+.challenge-toggle:hover {
+	background-color: rgba(123, 57, 228, 0.4);
+	transform: translateY(-2px);
+}
+
+.challenge-toggle-icon {
+	font-size: 0.8rem;
+	transition: transform 0.3s ease;
+}
+
+.time-selector {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	align-items: center;
+	margin-top: 8px;
+	padding-top: 8px;
+	border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.time-range {
+	width: 100%;
+	height: 8px;
+	-webkit-appearance: none;
+	appearance: none;
+	background: rgba(57, 140, 228, 0.2);
+	outline: none;
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.time-range::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: var(--color-primary);
+	cursor: pointer;
+	box-shadow: 0 0 8px rgba(123, 57, 228, 0.8);
+	transition: all 0.2s ease;
+}
+
+.time-range::-moz-range-thumb {
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background: var(--color-primary);
+	cursor: pointer;
+	box-shadow: 0 0 8px rgba(123, 57, 228, 0.8);
+	transition: all 0.2s ease;
+	border: none;
+}
+
+.time-range::-webkit-slider-thumb:hover {
+	transform: scale(1.2);
+}
+
+.time-range::-moz-range-thumb:hover {
+	transform: scale(1.2);
+}
+
+.time-display {
+	margin-top: 8px;
+	font-size: 1rem;
+	font-weight: bold;
+	color: var(--color-primary);
+	text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.7);
 }

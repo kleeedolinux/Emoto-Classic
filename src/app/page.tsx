@@ -55,7 +55,11 @@ export default function Home() {
               closeAchievementsDialog,
               currentEmote,
               showConfetti,
-              showDamageEffect
+              showDamageEffect,
+              challengeMode,
+              timeRemaining,
+              timePercentage,
+              lastEmote
             }) => {
               useEffect(() => {
                 if (!hasCheckedFirstTime) {
@@ -86,6 +90,15 @@ export default function Home() {
                 document.body.style.pointerEvents = 'auto'; 
               };
               
+              const applyFilterStyles = () => {
+                if (challengeMode === 'desfocado') {
+                  return { filter: 'blur(8px)' };
+                } else if (challengeMode === 'pretoebranco') {
+                  return { filter: 'grayscale(100%)' };
+                }
+                return {};
+              };
+              
               return (
                 <main className="main-container">
                   <div id="background-img"></div>
@@ -114,10 +127,22 @@ export default function Home() {
                       </div>
                     ) : (
                       <div className="game-container">
+                        {challengeMode === 'tempo' && timeRemaining !== null && (
+                          <div className={`timer ${timeRemaining < 10 ? 'danger' : timeRemaining < 20 ? 'warning' : ''}`}>
+                            <div 
+                              className="timer-progress" 
+                              style={{ width: `${timePercentage}%` }}
+                            ></div>
+                            <div className="timerIcon">⏱️</div>
+                            <div className="timerValue">{timeRemaining}s</div>
+                          </div>
+                        )}
+                        
                         {gameActive && currentEmote && (
                           <div className="app">
                             <EmoteCard 
                               emote={currentEmote}
+                              style={applyFilterStyles()}
                             />
                           </div>
                         )}
@@ -154,6 +179,7 @@ export default function Home() {
                     onTryAgain={handleRetry}
                     onHome={handleReset}
                     onShare={() => shareOnTwitter(score, channel, false)}
+                    lastEmote={lastEmote}
                   />
                   
                   <WinDialog

@@ -6,9 +6,10 @@ import { Emote } from '../types';
 
 interface EmoteCardProps {
   emote: Emote;
+  style?: React.CSSProperties;
 }
 
-export default function EmoteCard({ emote }: EmoteCardProps) {
+export default function EmoteCard({ emote, style = {} }: EmoteCardProps) {
   const [isHovering, setIsHovering] = useState(false);
 
   return (
@@ -24,11 +25,15 @@ export default function EmoteCard({ emote }: EmoteCardProps) {
           alt="Emote"
           width={128}
           height={128}
-          priority
-          unoptimized
+          priority={true}
+          unoptimized={true}
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
           style={{
             transform: isHovering ? 'scale(1.1)' : 'scale(1)',
             transition: 'transform 0.3s ease-in-out',
+            ...style
           }}
         />
       </div>

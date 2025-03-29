@@ -105,7 +105,7 @@ export default function Header({ onHelpClick, onHomeClick, gameActive = false, o
               animationDelay: '1s'
             }}
           >
-            v1.0.0 - Remake
+            v1.1.0 - Challenge Update
           </p>
           {!gameActive && (
             <Image 

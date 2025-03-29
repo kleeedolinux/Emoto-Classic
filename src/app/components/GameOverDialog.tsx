@@ -1,6 +1,8 @@
 'use client';
 
 import { useRef, useEffect, useState } from 'react';
+import { Emote } from '../types';
+import Image from 'next/image';
 
 interface GameOverDialogProps {
   isOpen: boolean;
@@ -8,6 +10,7 @@ interface GameOverDialogProps {
   onTryAgain: () => void;
   onHome: () => void;
   onShare: () => void;
+  lastEmote: Emote | null;
 }
 
 export default function GameOverDialog({ 
@@ -15,7 +18,8 @@ export default function GameOverDialog({
   score, 
   onTryAgain, 
   onHome, 
-  onShare 
+  onShare,
+  lastEmote
 }: GameOverDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [animateIn, setAnimateIn] = useState(false);
@@ -241,6 +245,52 @@ export default function GameOverDialog({
             </p>
           </div>
         </div>
+
+        {lastEmote && (
+          <div className="last-emote-container" style={{
+            marginBottom: '1.5rem',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '0.5rem'
+          }}>
+            <p style={{
+              margin: '0',
+              fontSize: '1rem',
+              color: '#ff6b6b',
+              textShadow: '2px 2px 4px rgba(0,0,0,0.5)'
+            }}>
+              Derrotado pelo emote:
+            </p>
+            
+            <div style={{ 
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem'
+            }}>
+              <Image
+                src={lastEmote.url}
+                alt={lastEmote.name}
+                width={40}
+                height={40}
+                unoptimized
+                style={{
+                  borderRadius: '4px',
+                  boxShadow: '0 0 10px rgba(0,0,0,0.5)'
+                }}
+              />
+              
+              <span style={{
+                fontSize: '1.2rem',
+                fontWeight: 'bold',
+                color: '#ffffff',
+                textShadow: '2px 2px 4px rgba(0,0,0,0.7)'
+              }}>
+                {lastEmote.name}
+              </span>
+            </div>
+          </div>
+        )}
 
         <div 
           className="gameOverActions"

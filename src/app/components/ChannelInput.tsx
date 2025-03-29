@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 
 interface ChannelInputProps {
-  onChannelSubmit: (channel: string) => void;
+  onChannelSubmit: (channel: string, challengeMode: string, timeLimit?: number) => void;
   isLoading: boolean;
   invalidChannel: boolean;
 }
@@ -16,6 +16,9 @@ export default function ChannelInput({
   const [channel, setChannel] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [animateShake, setAnimateShake] = useState(false);
+  const [challengeMode, setChallengeMode] = useState('normal');
+  const [showChallengeSelector, setShowChallengeSelector] = useState(false);
+  const [timeLimit, setTimeLimit] = useState(20);
 
   useEffect(() => {
     if (invalidChannel) {
@@ -30,7 +33,12 @@ export default function ChannelInput({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (channel.trim() && !isLoading) {
-      onChannelSubmit(channel.trim());
+      onChannelSubmit(
+        channel.trim(), 
+        challengeMode, 
+        challengeMode === 'tempo' ? timeLimit : undefined
+      );
+      setShowChallengeSelector(false);
     }
   };
 
@@ -38,6 +46,10 @@ export default function ChannelInput({
     if (e.key === 'Enter') {
       handleSubmit(e);
     }
+  };
+
+  const toggleChallengeSelector = () => {
+    setShowChallengeSelector(prev => !prev);
   };
 
   return (
@@ -63,6 +75,85 @@ export default function ChannelInput({
             transition: 'all 0.3s ease-in-out'
           }}
         />
+        
+        <div className="challenge-toggle" onClick={toggleChallengeSelector}>
+          <span>{showChallengeSelector ? "Esconder" : "Escolha um"} desafio</span>
+          <span className="challenge-toggle-icon">{showChallengeSelector ? "▲" : "▼"}</span>
+        </div>
+        
+        {showChallengeSelector && (
+          <div className="challengeSelector">
+            <div className="challengeOptions">
+              <div className="challengeOption">
+                <input 
+                  type="radio" 
+                  id="normal" 
+                  name="challenge" 
+                  value="normal" 
+                  checked={challengeMode === 'normal'} 
+                  onChange={(e) => setChallengeMode(e.target.value)}
+                  disabled={isLoading}
+                />
+                <label htmlFor="normal">Normal</label>
+              </div>
+              
+              <div className="challengeOption">
+                <input 
+                  type="radio" 
+                  id="tempo" 
+                  name="challenge" 
+                  value="tempo" 
+                  checked={challengeMode === 'tempo'} 
+                  onChange={(e) => setChallengeMode(e.target.value)}
+                  disabled={isLoading}
+                />
+                <label htmlFor="tempo">Contra o Tempo</label>
+                
+                {challengeMode === 'tempo' && (
+                  <div className="time-selector">
+                    <input 
+                      type="range" 
+                      min="5" 
+                      max="60" 
+                      step="5"
+                      value={timeLimit}
+                      onChange={(e) => setTimeLimit(Number(e.target.value))}
+                      className="time-range"
+                      disabled={isLoading}
+                    />
+                    <div className="time-display">{timeLimit}s</div>
+                  </div>
+                )}
+              </div>
+              
+              <div className="challengeOption">
+                <input 
+                  type="radio" 
+                  id="desfocado" 
+                  name="challenge" 
+                  value="desfocado" 
+                  checked={challengeMode === 'desfocado'} 
+                  onChange={(e) => setChallengeMode(e.target.value)}
+                  disabled={isLoading}
+                />
+                <label htmlFor="desfocado">Desfocado</label>
+              </div>
+              
+              <div className="challengeOption">
+                <input 
+                  type="radio" 
+                  id="pretoebranco" 
+                  name="challenge" 
+                  value="pretoebranco" 
+                  checked={challengeMode === 'pretoebranco'} 
+                  onChange={(e) => setChallengeMode(e.target.value)}
+                  disabled={isLoading}
+                />
+                <label htmlFor="pretoebranco">Preto e Branco</label>
+              </div>
+            </div>
+          </div>
+        )}
       </form>
       <p className="subtitle2">sério, qualquer um.</p>
       
