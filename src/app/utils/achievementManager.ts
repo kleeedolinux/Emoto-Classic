@@ -10,7 +10,7 @@ const DEFAULT_ACHIEVEMENTS: Achievement[] = [
     title: 'Metacritic',
     description: 'Passe pelo tutorial',
     requirement: 1,
-    icon: '🎭',
+    icon: '☕',
     unlocked: false
   },
   {
