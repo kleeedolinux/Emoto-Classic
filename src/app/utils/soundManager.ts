@@ -43,6 +43,14 @@ const sounds = {
     preload: true,
     html5: false, 
     format: ['mp3']
+  }),
+  
+  achievement: new Howl({
+    src: ['/sound/achivement.mp3'],
+    volume: 1.0,
+    preload: true,
+    html5: true,
+    format: ['mp3']
   })
 };
 
@@ -80,7 +88,7 @@ export const initSounds = () => {
 /**
  * Simple sound play function
  */
-export const playSound = (type: 'correct' | 'incorrect' | 'alarm'): boolean => {
+export const playSound = (type: 'correct' | 'incorrect' | 'alarm' | 'achievement'): boolean => {
   if (!audioSupported) return false;
   
   if (!soundsInitialized) {
@@ -114,6 +122,10 @@ export const stopAlarmSound = (): void => {
 export const testAlarm = (): void => {
   console.log('Testing alarm sound...');
   playSound('alarm');
+};
+
+export const playAchievementSound = (): boolean => {
+  return playSound('achievement');
 };
 
 export default sounds; 

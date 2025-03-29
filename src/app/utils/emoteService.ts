@@ -7,6 +7,8 @@ const API_ENDPOINT = 'https://emotes.crippled.dev/v1/channel';
 const CACHE_EXPIRY = 1000 * 60 * 60; 
 const REQUEST_TIMEOUT = 5000;
 const PRELOAD_BATCH_SIZE = 5;
+const MAX_CONSECUTIVE_GUESSES = 5;
+const GUESS_COOLDOWN_MS = 1500;
 
 let emoteCache: Map<string, {
   timestamp: number;
@@ -16,6 +18,12 @@ let emoteCache: Map<string, {
 let imageCache: Map<string, HTMLImageElement> = new Map();
 let loadingImages: Set<string> = new Set();
 let normalizedNameCache: Map<string, string> = new Map();
+let lastGuessTime: number = 0;
+let consecutiveGuesses: number = 0;
+
+export interface EmoteWithSecurity extends Emote {
+  securityToken?: string;
+}
 
 export async function fetchEmotes(channel: string): Promise<Emote[]> {
   if (!channel.trim()) {
@@ -84,18 +92,61 @@ export function getRandomEmote(emotes: Emote[]): Emote | null {
   return emotes[randomIndex];
 }
 
-export function checkGuess(guess: string, currentEmote: Emote | null): boolean {
+export function checkGuess(guess: string, currentEmote: EmoteWithSecurity | null, strictMode = true): boolean {
   if (!currentEmote) return false;
+  
+  if (!verifyEmoteIntegrity(currentEmote)) {
+    console.warn('Potential cheating attempt: Emote integrity check failed');
+    return false;
+  }
+  
+  const now = Date.now();
+  
+  if (now - lastGuessTime < GUESS_COOLDOWN_MS) {
+    return false;
+  }
+  
+  if (consecutiveGuesses >= MAX_CONSECUTIVE_GUESSES) {
+    consecutiveGuesses = 0;
+    return false;
+  }
+  
+  lastGuessTime = now;
   
   const normalizedGuess = getNormalizedString(guess);
   const normalizedEmoteName = getNormalizedString(currentEmote.name);
+
+  const isCorrect = strictMode 
+    ? normalizedGuess === normalizedEmoteName
+    : checkPartialMatch(normalizedGuess, normalizedEmoteName);
   
-  console.log('Comparing:', { 
-    original: { guess, emoteName: currentEmote.name },
-    normalized: { normalizedGuess, normalizedEmoteName }
-  });
+  if (isCorrect) {
+    consecutiveGuesses = 0;
+    return true;
+  } else {
+    consecutiveGuesses++;
+    return false;
+  }
+}
+
+function checkPartialMatch(guess: string, emoteName: string): boolean {
+  if (guess.length < emoteName.length * 0.9) {
+    return false;
+  }
   
-  return normalizedGuess === normalizedEmoteName;
+  let emoteIndex = 0;
+  let matchedChars = 0;
+  
+  for (let i = 0; i < guess.length; i++) {
+    if (guess[i] !== emoteName[emoteIndex]) {
+      continue;
+    }
+    
+    matchedChars++;
+    emoteIndex++;
+  }
+  
+  return matchedChars >= emoteName.length * 0.8;
 }
 
 function getNormalizedString(str: string): string {
@@ -129,7 +180,7 @@ export function getEmoteNames(emotes: Emote[]): string[] {
   return [...new Set(emotes.map(emote => emote.name))];
 }
 
-function processEmotes(rawEmotes: any[]): Emote[] {
+export function processEmotes(rawEmotes: any[]): Emote[] {
   return rawEmotes
     .filter(emote => {
       return emote && 
@@ -147,12 +198,33 @@ function processEmotes(rawEmotes: any[]): Emote[] {
         imageUrl = emote.urls[0].url;
       }
       
+      const securityToken = generateSecurityToken(emote.code);
+      
       return {
         name: emote.code,
-        url: imageUrl
+        url: imageUrl,
+        securityToken
       };
     })
     .filter(emote => emote.url !== '');
+}
+
+function generateSecurityToken(emoteName: string): string {
+  const timestamp = Date.now();
+  return btoa(`${emoteName}-${timestamp}-${Math.random().toString(36).substring(2, 10)}`);
+}
+
+export function verifyEmoteIntegrity(emote: EmoteWithSecurity | null): boolean {
+  if (!emote || !emote.securityToken) {
+    return false;
+  }
+  
+  try {
+    const decoded = atob(emote.securityToken);
+    return decoded.startsWith(`${emote.name}-`);
+  } catch (e) {
+    return false;
+  }
 }
 
 function batchPreloadImages(emotes: Emote[]): void {
@@ -191,4 +263,6 @@ export function clearCache(): void {
   imageCache.clear();
   loadingImages.clear();
   normalizedNameCache.clear();
+  lastGuessTime = 0;
+  consecutiveGuesses = 0;
 } 

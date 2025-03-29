@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Achievement } from '../types';
+import { playAchievementSound } from '../utils/soundManager';
 
 interface AchievementNotificationProps {
   achievement: Achievement;
@@ -64,6 +65,7 @@ export function AchievementNotificationContainer({ children }: AchievementNotifi
   
   const addAchievement = (achievement: Achievement) => {
     setAchievements(prev => [...prev, achievement]);
+    playAchievementSound();
   };
   
   const removeAchievement = (id: string) => {
