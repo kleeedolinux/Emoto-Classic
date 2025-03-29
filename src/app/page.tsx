@@ -19,13 +19,23 @@ import { isFirstTimeUser, markUserAsReturning } from './utils/storageManager';
 import AchievementsDialog from './components/AchievementsDialog';
 import { AchievementNotificationContainer } from './components/AchievementNotification';
 import { Achievement } from './types';
+import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 
 export default function Home() {
   const emoteInputRef = useRef<EmoteInputHandles>(null);
   const [hasCheckedFirstTime, setHasCheckedFirstTime] = useState(false);
   const [isFirstVisit, setIsFirstVisit] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 768);
   
-  // Initialize sounds on component mount
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
   useEffect(() => {
     initSounds();
   }, []);
@@ -135,14 +145,28 @@ export default function Home() {
                     ) : (
                       <div className="game-container">
                         {(challengeMode === 'tempo' || challengeMode === 'tempodesfocado') && timeRemaining !== null && (
-                          <div className={`timer ${timeRemaining < 10 ? 'danger' : timeRemaining < 20 ? 'warning' : ''}`}>
-                            <div 
-                              className="timer-progress" 
-                              style={{ width: `${timePercentage}%` }}
-                            ></div>
-                            <div className="timerIcon">⏱️</div>
-                            <div className="timerValue">{timeRemaining}s</div>
-                          </div>
+                          <>
+                            <div className={`timer-wrapper ${timeRemaining < 10 ? 'critical' : timeRemaining < 20 ? 'warning' : ''}`}>
+                              <CountdownCircleTimer
+                                isPlaying
+                                duration={60}
+                                initialRemainingTime={timeRemaining}
+                                colors={['#3da35a', '#F7B801', '#A30000']}
+                                colorsTime={[30, 15, 0]}
+                                size={windowWidth < 480 ? 80 : timeRemaining < 10 ? 100 : 90}
+                                strokeWidth={windowWidth < 480 ? 7 : timeRemaining < 10 ? 10 : 8}
+                                trailColor="rgba(32, 37, 43, 0.4)"
+                                onComplete={() => ({ shouldRepeat: false })}
+                              >
+                                {() => (
+                                  <div className={`countdown-value ${timeRemaining < 10 ? 'critical-text' : ''}`}>
+                                    <span>{timeRemaining}s</span>
+                                  </div>
+                                )}
+                              </CountdownCircleTimer>
+                            </div>
+                            {timeRemaining < 10 && <div className="time-critical-overlay"></div>}
+                          </>
                         )}
                         
                         {gameActive && currentEmote && (
