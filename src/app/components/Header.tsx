@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import { stopAlarmSound } from '../utils/soundManager';
 
 interface HeaderProps {
   onHelpClick: () => void;
@@ -12,6 +13,14 @@ interface HeaderProps {
 
 export default function Header({ onHelpClick, onHomeClick, gameActive = false, onAchievementsClick }: HeaderProps) {
   const [isHovering, setIsHovering] = useState(false);
+  
+  const handleHomeClick = () => {
+    stopAlarmSound();
+    
+    if (onHomeClick) {
+      onHomeClick();
+    }
+  };
   
   return (
     <>
@@ -76,7 +85,7 @@ export default function Header({ onHelpClick, onHomeClick, gameActive = false, o
         <div className="container">
           <h1 
             className={`title ${gameActive ? 'clickable' : ''}`} 
-            onClick={gameActive ? onHomeClick : undefined}
+            onClick={gameActive ? handleHomeClick : undefined}
             onMouseEnter={() => setIsHovering(true)}
             onMouseLeave={() => setIsHovering(false)}
             style={{

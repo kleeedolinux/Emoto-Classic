@@ -5,7 +5,7 @@ import { useGameStateManager } from '../utils/gameStateManager';
 import { useLivesManager } from '../utils/livesManager';
 import { useModalManager } from '../utils/modalManager';
 import { fetchEmotes, checkGuess, getEmoteNames } from '../utils/emoteService';
-import { playSound } from '../utils/soundManager';
+import { playSound, startAlarmSound, stopAlarmSound, testAlarm } from '../utils/soundManager';
 import { Emote, Achievement } from '../types';
 import { EmoteInputHandles } from './EmoteInput';
 import { incrementCorrectGuesses, incrementTotalGames, updateBestScore } from '../utils/achievementManager';
@@ -100,6 +100,28 @@ export default function GameController({ children, onAchievementUnlocked }: Game
     closeAchievementsDialog,
   } = useModalManager();
 
+  const handleOpenGameOverDialog = useCallback(() => {
+    stopAlarmSound();
+    openGameOverDialog();
+  }, [openGameOverDialog]);
+  
+  const handleOpenWinDialog = useCallback(() => {
+    stopAlarmSound(); 
+    openWinDialog();
+  }, [openWinDialog]);
+
+  const handleReset = useCallback(() => {
+    resetGame();
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      setTimeRemaining(null);
+    }
+    stopAlarmSound();
+    setLastEmote(null);
+  }, [resetGame]);
+
+
+
   useEffect(() => {
     if (gameState.gameActive && (challengeMode === 'tempo' || challengeMode === 'tempodesfocado') && timeRemaining !== null) {
       timerRef.current = setInterval(() => {
@@ -123,7 +145,7 @@ export default function GameController({ children, onAchievementUnlocked }: Game
                 if (newHighScore) {
                   updateBestScore(gameState.score);
                 }
-                openGameOverDialog();
+                handleOpenGameOverDialog();
                 setIsLifeBeingReduced(false);
                 setTimerExpired(false);
                 return 0;
@@ -146,9 +168,23 @@ export default function GameController({ children, onAchievementUnlocked }: Game
             
             return 0;
           }
+          
+          if (prev === 10) {
+            console.log(`Timer reaching critical level (10s), playing alarm`);
+            playSound('alarm');
+          }
+          
           return prev - 1;
         });
       }, 1000);
+    }
+    
+    if (gameState.gameActive && 
+        (challengeMode === 'tempo' || challengeMode === 'tempodesfocado') && 
+        initialTime <= 5 && 
+        timeRemaining === initialTime) {
+      console.log(`Short timer (${initialTime}s), playing alarm sound immediately`);
+      playSound('alarm');
     }
     
     if (!gameState.gameActive && timerRef.current) {
@@ -163,7 +199,7 @@ export default function GameController({ children, onAchievementUnlocked }: Game
       }
     };
   }, [gameState.gameActive, challengeMode, timeRemaining, initialTime, updateRecordIfNeeded, 
-      gameState.score, openGameOverDialog, decrementLives, livesState.currentLives, 
+      gameState.score, handleOpenGameOverDialog, decrementLives, livesState.currentLives, 
       removeCurrentEmote, chooseNextEmote, gameState.emotes.length, gameState.currentEmote, isLifeBeingReduced, timerExpired]);
 
   const handleAchievementUnlocked = useCallback((achievement: Achievement) => {
@@ -257,7 +293,7 @@ export default function GameController({ children, onAchievementUnlocked }: Game
         if (newHighScore) {
           updateBestScore(score + 1);
         }
-        openWinDialog();
+        handleOpenWinDialog();
         return;
       }
       
@@ -284,14 +320,17 @@ export default function GameController({ children, onAchievementUnlocked }: Game
           resetConsecutiveCorrect();
           
           if (livesState.currentLives <= 1) { 
-            setLastEmote(currentEmote);
-            
+            if (gameState.currentEmote) {
+              setLastEmote(gameState.currentEmote);
+            }
+
             const newHighScore = updateRecordIfNeeded();
             if (newHighScore) {
               updateBestScore(score);
             }
-            openGameOverDialog();
+            handleOpenGameOverDialog();
             setIsLifeBeingReduced(false);
+            setTimerExpired(false);
             return;
           }
           
@@ -315,11 +354,11 @@ export default function GameController({ children, onAchievementUnlocked }: Game
     incrementLives, 
     removeCurrentEmote, 
     updateRecordIfNeeded, 
-    openWinDialog, 
+    handleOpenWinDialog, 
     chooseNextEmote, 
     resetConsecutiveCorrect, 
     decrementLives, 
-    openGameOverDialog,
+    handleOpenGameOverDialog,
     handleAchievementUnlocked,
     challengeMode,
     initialTime,
@@ -346,16 +385,10 @@ export default function GameController({ children, onAchievementUnlocked }: Game
     handleChannelSubmit,
     handleEmoteGuess,
     handleRetry: async () => {
+      stopAlarmSound(); 
       await handleChannelSubmit(gameState.channel, challengeMode, initialTime);
     },
-    handleReset: () => {
-      resetGame();
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-        setTimeRemaining(null);
-      }
-      setLastEmote(null);
-    },
+    handleReset,
     handleShare: () => {},
     openHelpDialog,
     closeHelpDialog,

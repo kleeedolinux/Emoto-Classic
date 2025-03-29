@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
+import { stopAlarmSound } from '../utils/soundManager';
 
 interface WinDialogProps {
   isOpen: boolean;
@@ -16,6 +17,8 @@ export default function WinDialog({ isOpen, score, onHome, onShare }: WinDialogP
   
   useEffect(() => {
     if (isOpen && dialogRef.current && !dialogRef.current.open) {
+      stopAlarmSound();
+      
       dialogRef.current.showModal();
       setTimeout(() => setAnimateIn(true), 50);
     } else if (!isOpen && dialogRef.current && dialogRef.current.open) {
@@ -30,6 +33,22 @@ export default function WinDialog({ isOpen, score, onHome, onShare }: WinDialogP
 
   const handleDialogClick = (e: React.MouseEvent<HTMLDialogElement>) => {
     e.stopPropagation();
+  };
+  
+  const handleHomeClick = () => {
+    stopAlarmSound();
+    
+    if (dialogRef.current) {
+      setAnimateIn(false);
+      setTimeout(() => {
+        if (dialogRef.current) {
+          dialogRef.current.close();
+        }
+        onHome();
+      }, 300);
+    } else {
+      onHome();
+    }
   };
   
   const renderConfetti = () => {
@@ -267,19 +286,7 @@ export default function WinDialog({ isOpen, score, onHome, onShare }: WinDialogP
           
           <button 
             className="dialogHomeButton"
-            onClick={() => {
-              if (dialogRef.current) {
-                setAnimateIn(false);
-                setTimeout(() => {
-                  if (dialogRef.current) {
-                    dialogRef.current.close();
-                  }
-                  onHome();
-                }, 300);
-              } else {
-                onHome();
-              }
-            }}
+            onClick={handleHomeClick}
           >
             <i className="fa fa-home" aria-hidden="true"></i>
             <span>Home</span>

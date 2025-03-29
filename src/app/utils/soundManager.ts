@@ -1,20 +1,15 @@
-import { Howl, HowlErrorCallback, Howler } from 'howler';
+import { Howl, Howler } from 'howler';
 
 let soundsInitialized = false;
 let audioSupported = true;
 
 const checkAudioSupport = () => {
   try {
-    if (!Howler.usingWebAudio && !Howler.noAudio) {
-      console.warn("WebAudio not available, falling back to HTML5 Audio");
-    }
-    
     if (Howler.noAudio) {
       console.error("No audio support detected");
       audioSupported = false;
       return false;
     }
-    
     return true;
   } catch (error) {
     console.error("Error checking audio support:", error);
@@ -25,75 +20,46 @@ const checkAudioSupport = () => {
 
 checkAudioSupport();
 
-const createSoundInstance = (path: string, label: string) => {
-  if (!audioSupported) {
-    return {
-      play: () => 0,
-      volume: () => 0,
-      load: () => {}
-    };
-  }
-  
-  return new Howl({
-    src: [path],
+const sounds = {
+  correct: new Howl({
+    src: ['/sound/correcty.mp3'],
     volume: 1.0,
     preload: true,
     html5: true,
-    format: ['mp3'],
-    onload: () => console.log(`Sound loaded: ${label}`),
-    onloaderror: (id, error) => {
-      console.error(`Failed to load sound ${label}:`, error || 'No audio support.');
-      
-      if (label === 'correct') {
-        audioSupported = false;
-      }
-    }
-  });
+    format: ['mp3']
+  }),
+  
+  incorrect: new Howl({
+    src: ['/sound/incorrecty.mp3'],
+    volume: 1.0,
+    preload: true,
+    html5: true,
+    format: ['mp3']
+  }),
+  
+  alarm: new Howl({
+    src: ['/sound/alarm.mp3'],
+    volume: 1.0,
+    preload: true,
+    html5: false, 
+    format: ['mp3']
+  })
 };
 
-// Sound instances
-const sounds = {
-  correct: createSoundInstance('/sound/correcty.mp3', 'correct'),
-  incorrect: createSoundInstance('/sound/incorrecty.mp3', 'incorrect')
-};
 export const initSounds = () => {
-  if (soundsInitialized || !audioSupported) return;
+  if (soundsInitialized) return;
   
   console.log('Initializing sound system...');
   
-  if (!checkAudioSupport()) {
-    console.error("Cannot initialize sounds: No audio support");
-    soundsInitialized = true;
-    return;
-  }
-  
-  const unlockSound = new Howl({
-    src: ['/sound/correcty.mp3'],
-    volume: 0.01,
-    autoplay: false,
-    html5: true,
-    onend: () => {
-      console.log('Sound system initialized successfully');
-      soundsInitialized = true;
-    },
-    onloaderror: (id, error) => {
-      console.error('Failed to initialize sound system:', error || 'No audio support.');
-      audioSupported = false;
-      soundsInitialized = true; 
-    }
-  });
-  
   const unlockAudio = () => {
-    if (!audioSupported) return;
-    
     console.log('Unlocking audio...');
-    unlockSound.play();
-    
-    Object.values(sounds).forEach(sound => {
-      if (typeof sound.load === 'function') {
-        sound.load();
-      }
+    const sound = new Howl({
+      src: ['/sound/correcty.mp3'],
+      volume: 0.01
     });
+    sound.play();
+    
+    soundsInitialized = true;
     
     document.removeEventListener('click', unlockAudio);
     document.removeEventListener('touchstart', unlockAudio);
@@ -105,34 +71,27 @@ export const initSounds = () => {
   document.addEventListener('keydown', unlockAudio);
   
   try {
-    unlockSound.play();
+    unlockAudio();
   } catch (error) {
-    console.log('Initial play failed, waiting for user interaction:', error);
+    console.log('Initial audio unlock failed, waiting for user interaction');
   }
-  
-  console.log('Sound system setup complete, waiting for user interaction');
 };
 
-export const playSound = (type: 'correct' | 'incorrect'): boolean => {
-  if (!audioSupported) {
-    console.log(`Audio not supported, skipping ${type} sound`);
-    return true;
+/**
+ * Simple sound play function
+ */
+export const playSound = (type: 'correct' | 'incorrect' | 'alarm'): boolean => {
+  if (!audioSupported) return false;
+  
+  if (!soundsInitialized) {
+    initSounds();
   }
   
   try {
-    if (!soundsInitialized) {
-      console.log('Sound system not initialized, initializing now...');
-      initSounds();
-    }
+    Howler.mute(false);
     
-    console.log(`Playing ${type} sound...`);
-    const id = sounds[type].play();
-    
-    if (id === undefined || id === null) {
-      console.error(`Failed to play ${type} sound`);
-      return false;
-    }
-    
+    sounds[type].volume(1.0);
+    sounds[type].play();
     return true;
   } catch (error) {
     console.error(`Error playing ${type} sound:`, error);
@@ -140,14 +99,21 @@ export const playSound = (type: 'correct' | 'incorrect'): boolean => {
   }
 };
 
-export const setVolume = (type: 'correct' | 'incorrect', volume: number): void => {
-  if (!audioSupported) return;
-  
-  try {
-    sounds[type].volume(volume);
-  } catch (error) {
-    console.error(`Error setting volume for ${type} sound:`, error);
-  }
+export const startAlarmSound = (): number => {
+  playSound('alarm');
+  return 1; 
+};
+
+export const stopAlarmSound = (): void => {
+  sounds.alarm.stop();
+};
+
+/**
+ * For debugging
+ */
+export const testAlarm = (): void => {
+  console.log('Testing alarm sound...');
+  playSound('alarm');
 };
 
 export default sounds; 
