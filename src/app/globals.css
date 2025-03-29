@@ -529,6 +529,56 @@ dialog:not([open])::backdrop {
 	color: #bcbcbc;
 }
 
+.input-container {
+	position: relative;
+	display: flex;
+	align-items: center;
+	width: 100%;
+	max-width: 330px;
+	margin: 0 auto;
+}
+
+.input-container .channelInput {
+	margin: 0;
+	border-radius: 6px 0 0 6px;
+	max-width: none;
+	width: 100%;
+}
+
+.play-button {
+	position: relative;
+	height: 100%;
+	min-height: 38px;
+	background: var(--color-primary);
+	border: none;
+	border-radius: 0 6px 6px 0;
+	color: white;
+	font-weight: bold;
+	padding: 0.75rem 1rem;
+	cursor: pointer;
+	transition: all 0.2s;
+	box-shadow: 0 0 0 2px #000000;
+	filter: drop-shadow(6px 6px 5px black);
+	animation: float 6s ease-in-out infinite;
+}
+
+.play-button:hover {
+	background: #8e4fff;
+	transform: scale(1.05);
+}
+
+.play-button:disabled {
+	background-color: rgb(60, 60, 60);
+	color: #bcbcbc;
+	cursor: not-allowed;
+	opacity: 0.7;
+}
+
+.play-button span {
+	display: block;
+	font-size: 1.2rem;
+}
+
 .invalidChannel {
 	font-weight: 600;
 	color: #ff0000;

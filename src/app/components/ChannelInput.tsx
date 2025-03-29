@@ -55,26 +55,43 @@ export default function ChannelInput({
   return (
     <>
       <form onSubmit={handleSubmit}>
-        <input 
-          type="text" 
-          className={`channelInput ${isLoading ? 'loading-state' : ''} ${animateShake ? 'shake' : ''}`}
-          placeholder={isLoading ? "Carregando..." : "Insira um canal da Twitch"}
-          value={channel}
-          onChange={(e) => setChannel(e.target.value)}
-          onKeyDown={handleKeyDown}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
-          autoComplete="off"
-          disabled={isLoading}
-          style={{
-            animation: isFocused 
-              ? 'pulse-input 2s infinite' 
-              : isLoading 
-                ? 'pulse 2s infinite' 
-                : 'float 6s ease-in-out infinite',
-            transition: 'all 0.3s ease-in-out'
-          }}
-        />
+        <div className="input-container">
+          <input 
+            type="text" 
+            className={`channelInput ${isLoading ? 'loading-state' : ''} ${animateShake ? 'shake' : ''}`}
+            placeholder={isLoading ? "Carregando..." : "Insira um canal da Twitch"}
+            value={channel}
+            onChange={(e) => setChannel(e.target.value)}
+            onKeyDown={handleKeyDown}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            autoComplete="off"
+            disabled={isLoading}
+            style={{
+              animation: isFocused 
+                ? 'pulse-input 2s infinite' 
+                : isLoading 
+                  ? 'pulse 2s infinite' 
+                  : 'float 6s ease-in-out infinite',
+              transition: 'all 0.3s ease-in-out'
+            }}
+          />
+          
+          <button 
+            type="submit" 
+            className="play-button"
+            disabled={isLoading || !channel.trim()}
+            style={{
+              animation: isFocused 
+                ? 'pulse-input 2s infinite' 
+                : isLoading 
+                  ? 'pulse 2s infinite' 
+                  : 'float 6s ease-in-out infinite'
+            }}
+          >
+            <span>▶</span>
+          </button>
+        </div>
         
         <div className="challenge-toggle" onClick={toggleChallengeSelector}>
           <span>{showChallengeSelector ? "Esconder" : "Escolha um"} desafio</span>
