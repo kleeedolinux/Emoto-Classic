@@ -1,27 +1,16 @@
 {
-  "compilerOptions": {
-    "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noEmit": true,
-    "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+	"compilerOptions": {
+		"strict": true,
+		"noImplicitAny": true, /* Raise error on expressions and declarations with an implied 'any' type. */
+		"noImplicitThis": true, /* Raise error on 'this' expressions with an implied 'any' type. */
+		"alwaysStrict": true, /* Parse in strict mode and emit "use strict" for each source file. */
+		"target": "ES6",
+		"module": "ES2020", /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', or 'es2015'. */
+		"sourceMap": true,
+		"declaration": true /* Generates corresponding '.d.ts' file. */,
+		"lib": ["es6", "dom"],
+		"rootDir": "public/scripts/src",
+		"outDir": "public/scripts/dist",
+		"experimentalDecorators": true, /* Enables experimental support for ES7 decorators. */
+	}
 }
