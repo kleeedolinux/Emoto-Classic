@@ -39,9 +39,7 @@ export class Game {
             console.log(channel);
             this.acertos = 0;
             try {
-                const data = yield fetch(
-                //pega os emotes do canal especificado
-                `https://emotes.adamcy.pl/v1/channel/${channel}/emotes/twitch.7tv.bttv`, {
+                const data = yield fetch(`https://emotes.crippled.dev/v1/channel/${channel}/all`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

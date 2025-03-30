@@ -97,8 +97,7 @@ export class Game {
         this.acertos = 0;
         try {
             const data: Response = await fetch(
-                //pega os emotes do canal especificado
-                `https://emotes.adamcy.pl/v1/channel/${channel}/emotes/twitch.7tv.bttv`,
+                `https://emotes.crippled.dev/v1/channel/${channel}/all`,
                 {
                     method: "GET",
                     headers: {

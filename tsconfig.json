@@ -6,6 +6,7 @@
 		"alwaysStrict": true, /* Parse in strict mode and emit "use strict" for each source file. */
 		"target": "ES6",
 		"module": "ES2020", /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', or 'es2015'. */
+		"moduleResolution": "node", /* Resolve modules using Node.js style */
 		"sourceMap": true,
 		"declaration": true /* Generates corresponding '.d.ts' file. */,
 		"lib": ["es6", "dom"],
